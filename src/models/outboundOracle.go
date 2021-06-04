@@ -2,13 +2,15 @@ package models
 
 import (
 	"fmt"
+
 	"gorm.io/gorm"
 )
 
 type OutboundOracle struct {
 	gorm.Model
-	URI                      string `json:uri`
-	OutboundOracleTemplateID uint   `json:outbound_oracle_template_id`
+	URI                      string
+	Name                     string
+	OutboundOracleTemplateID uint
 	OutboundOracleTemplate   OutboundOracleTemplate
 	OutboundEvents           []OutboundEvent
 }
@@ -22,7 +24,7 @@ SET EMISSION MODE \"streaming\";
 SET CONNECTION \"` + o.OutboundOracleTemplate.GetConnectionString() + `\";
 
 
-BLOCKS (0) (CONTINUOUS) {
+BLOCKS (CURRENT) (CONTINUOUS) {
 	LOG ENTRIES (` + o.OutboundOracleTemplate.Address + `) (` + o.OutboundOracleTemplate.EventName + `(` + o.OutboundOracleTemplate.GetEventParametersString() + `)) {
 		EMIT HTTP REQUEST (\"` + o.oracleFactoryOutboundEventLink() + `\") (` + o.OutboundOracleTemplate.GetEventParameterNamesString() + `);
 	}

@@ -6,7 +6,8 @@ import (
 )
 
 type OutboundOraclePostBody struct {
-	URI string "json:uri"
+	URI  string
+	Name string
 }
 
 func (o *OutboundOraclePostBody) Valid() bool {

@@ -17,12 +17,14 @@ func InitDB() {
 
 	// Check if table exists - if not create it
 	db.AutoMigrate(&models.OutboundOracleTemplate{})
+	db.AutoMigrate(&models.EventValue{})
 	db.AutoMigrate(&models.OutboundOracle{})
 	db.AutoMigrate(&models.EventParameter{})
 	db.AutoMigrate(&models.OutboundEvent{})
 	db.AutoMigrate(&models.EventParameter{})
 	db.AutoMigrate(&models.InboundOracleTemplate{})
 	db.AutoMigrate(&models.InboundOracle{})
+	db.AutoMigrate(&models.OutboundEvent{})
 	oot := &models.OutboundOracleTemplate{
 		Address:           "0xe4EFfB267484Cd790143484de3Bae7fDfbE31F00",
 		EventName:         "Stored",
@@ -39,13 +41,13 @@ func InitDB() {
 	iot := &models.InboundOracleTemplate{
 		ContractAddress:   "0xe4EFfB267484Cd790143484de3Bae7fDfbE31F00",
 		ContractName:      "set",
-		BlockchainName:        "Ethereum",
+		BlockchainName:    "Ethereum",
 		BlockchainAddress: "ws://eth-test-net:8545/",
 	}
 	db.Create(iot)
 	db.Create(&models.EventParameter{
-		Type:                     "uint256",
-		Name:                     "x",
+		Type:                    "uint256",
+		Name:                    "x",
 		InboundOracleTemplateID: iot.ID,
 	})
 }
@@ -56,13 +58,19 @@ func main() {
 	InitDB()
 
 	app.GET("/outboundOracles", routes.GetOutboundOracles)
+	app.GET("/outboundOracles/:outboundOracleId", routes.GetOutboundOracle)
+	app.PUT("/outboundOracles/:outboundOracleId", routes.UpdateOutboundOracle)
 	app.DELETE("/outboundOracles/:outboundOracleId", routes.DeleteOutboundOracle)
 	app.POST("/outboundOracles/:outboundOracleId/events", routes.PostOutboundOracleEvent)
 
 	app.GET("/outboundOracleTemplates", routes.GetOutboundOracleTemplates)
+	app.GET("/outboundOracleTemplates/:outboundOracleTemplateID", routes.GetOutboundOracleTemplate)
 	app.POST("/outboundOracleTemplates/:outboundOracleTemplateId/outboundOracles", routes.PostOutboundOracle)
 
+	app.GET("/inboundOracles/:inboundOracleId", routes.GetInboundOracle)
+	app.PUT("/inboundOracles/:inboundOracleId", routes.UpdateInboundOracle)
 	app.POST("/inboundOracles/:inboundOracleID/events", routes.PostInboundOracleEvent)
+	app.GET("/inboundOracleTemplates/:inboundOracleTemplateID", routes.GetInboundOracleTemplate)
 	app.GET("/inboundOracles", routes.GetInboundOracles)
 
 	app.POST("/inboundOracleTemplates/:inboundOracleTemplateID/inboundOracles", routes.PostInboundOracle)

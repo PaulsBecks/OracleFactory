@@ -6,10 +6,12 @@ import (
 
 type EventParameter struct {
 	gorm.Model
-	Name                     string `json:name`
-	Type                     string `json:type`
+	Name                     string
+	Type                     string
 	OutboundOracleTemplateID uint
-	InboundOracleTemplateID uint
+	OutboundOracleTemplate   OutboundOracleTemplate
+	InboundOracleTemplateID  uint
+	InboundOracleTemplate    InboundOracleTemplate
 }
 
 func (e *EventParameter) String() string {

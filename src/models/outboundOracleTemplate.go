@@ -1,8 +1,9 @@
 package models
 
 import (
-	"gorm.io/gorm"
 	"strings"
+
+	"gorm.io/gorm"
 )
 
 type OutboundOracleTemplate struct {
@@ -12,6 +13,7 @@ type OutboundOracleTemplate struct {
 	Address           string
 	EventName         string
 	EventParameters   []EventParameter
+	OutboundOracles   []OutboundOracle
 }
 
 func (o *OutboundOracleTemplate) GetEventParametersString() string {

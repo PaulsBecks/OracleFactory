@@ -2,15 +2,37 @@ package routes
 
 import (
 	"fmt"
-	"github.com/PaulsBecks/OracleFactory/src/models"
+	"net/http"
+	"strconv"
+
 	"github.com/PaulsBecks/OracleFactory/src/forms"
+	"github.com/PaulsBecks/OracleFactory/src/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-	"strconv"
-	"net/http"
 )
+
+func GetOutboundOracleTemplate(ctx *gin.Context) {
+	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"body": "Ups there was a mistake!"})
+		return
+	}
+
+	outboundOracleTemplateID := ctx.Param("outboundOracleTemplateID")
+	i, err := strconv.Atoi(outboundOracleTemplateID)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid oracle id!"})
+		return
+	}
+
+	var outboundOracleTemplate models.OutboundOracleTemplate
+	db.Preload(clause.Associations).First(&outboundOracleTemplate, i)
+
+	ctx.JSON(http.StatusOK, gin.H{"outboundOracleTemplate": outboundOracleTemplate})
+}
 
 func GetOutboundOracleTemplates(ctx *gin.Context) {
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
@@ -51,15 +73,15 @@ func PostOutboundOracle(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No valid oracle id!"})
 		return
 	}
-	fmt.Println(outboundOracleTemplate)
 
 	outboundOracle := &models.OutboundOracle{
 		OutboundOracleTemplate:   outboundOracleTemplate,
 		OutboundOracleTemplateID: outboundOracleTemplate.ID,
 		URI:                      outboundOraclePostBody.URI,
+		Name:                     outboundOraclePostBody.Name,
 	}
 
-	db.Create(outboundOracle)
+	db.Create(&outboundOracle)
 
 	manifest := outboundOracle.CreateManifest()
 	err = manifest.Run()

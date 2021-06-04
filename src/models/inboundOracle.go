@@ -6,6 +6,8 @@ import (
 
 type InboundOracle struct {
 	gorm.Model
-	InboundOracleTemplate InboundOracleTemplate
+	Name                    string
+	InboundOracleTemplate   InboundOracleTemplate
 	InboundOracleTemplateID uint
+	InboundEvents           []InboundEvent
 }
