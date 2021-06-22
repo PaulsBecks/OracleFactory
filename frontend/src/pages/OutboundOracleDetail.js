@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Form, Table } from "semantic-ui-react";
+import { Button, Table } from "semantic-ui-react";
 import useOutboundOracle from "../hooks/useOutboundOracle";
 import { OutboundOracleForm } from "../components";
-import putData from "../services/putData";
 
 export default function OutboundOracleDetail({}) {
   const { outboundOracleID } = useParams();

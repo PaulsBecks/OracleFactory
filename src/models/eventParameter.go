@@ -10,8 +10,8 @@ type EventParameter struct {
 	Type                     string
 	OutboundOracleTemplateID uint
 	OutboundOracleTemplate   OutboundOracleTemplate
-	InboundOracleTemplateID  uint
 	InboundOracleTemplate    InboundOracleTemplate
+	InboundOracleTemplateID  uint
 }
 
 func (e *EventParameter) String() string {

@@ -7,6 +7,10 @@ import {
   InboundOracleDetail,
   InboundOracleCreate,
   InboundOracleTemplateDetail,
+  OracleTemplateCreate,
+  OracleTemplates,
+  InboundOracleTemplates,
+  Settings,
 } from "./pages";
 import { Navbar } from "./components";
 import { Container } from "semantic-ui-react";
@@ -20,32 +24,54 @@ function App() {
           <Route exact path="/">
             <Home />
           </Route>
+
           <Route exact path="/outboundOracles/:outboundOracleID">
             <OutboundOracleDetail />
           </Route>
+
           <Route
             exact
             path="/outboundOracleTemplates/:outboundOracleTemplateID"
           >
             <OutboundOracleTemplateDetail />
           </Route>
+
           <Route
             exact
             path="/outboundOracleTemplates/:outboundOracleTemplateID/outboundOracles/create"
           >
             <OutboundOracleCreate />
           </Route>
+
           <Route exact path="/inboundOracles/:inboundOracleID">
             <InboundOracleDetail />
           </Route>
+
+          <Route exact path="/inboundOracleTemplates">
+            <InboundOracleTemplates />
+          </Route>
+
+          <Route exact path="/oracleTemplates">
+            <OracleTemplates />
+          </Route>
+
+          <Route exact path="/oracleTemplates/create">
+            <OracleTemplateCreate />
+          </Route>
+
           <Route exact path="/inboundOracleTemplates/:inboundOracleTemplateID">
             <InboundOracleTemplateDetail />
           </Route>
+
           <Route
             exact
             path="/inboundOracleTemplates/:inboundOracleTemplateID/inboundOracles/create"
           >
             <InboundOracleCreate />
+          </Route>
+
+          <Route exact path="/settings">
+            <Settings />
           </Route>
         </Switch>
       </Container>

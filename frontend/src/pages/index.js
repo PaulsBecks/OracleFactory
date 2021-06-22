@@ -4,4 +4,8 @@ export { default as OutboundOracleCreate } from "./OutboundOracleCreate";
 export { default as OutboundOracleTemplateDetail } from "./OutboundOracleTemplateDetail";
 export { default as InboundOracleDetail } from "./InboundOracleDetail";
 export { default as InboundOracleCreate } from "./InboundOracleCreate";
+export { default as InboundOracleTemplates } from "./InboundOracleTemplates";
 export { default as InboundOracleTemplateDetail } from "./InboundOracleTemplateDetail";
+export { default as OracleTemplateCreate } from "./OracleTemplateCreate";
+export { default as OracleTemplates } from "./OracleTemplates";
+export { default as Settings } from "./Settings";

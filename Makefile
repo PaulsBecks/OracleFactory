@@ -16,16 +16,16 @@ docker-update: docker-stop docker docker-start
 oracle-blueprint:
 	docker build -t "oracle_blueprint" ./oracleBlueprint
 
-testnet:
+eth-testnet:
 	docker run --detach -p 8545:8545 -p 7545:7545 --network=$(network_name) --name eth-test-net trufflesuite/ganache-cli:latest --accounts 10 --seed OracleFramework
 
-testnet-stop:
+eth-testnet-stop:
 	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="truffelsuite/ganache-cli" --format="{{.ID}}"))
 
 docker-network:
 	docker network create -d bridge $(network_name)
 
-deploy-test-contract:
+deploy-eth-test-contract:
 	cd testContract; truffle compile; truffle migrate
 
 fmt:

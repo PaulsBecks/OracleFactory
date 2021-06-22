@@ -1,75 +1,40 @@
-import useOutboundOracleTemplates from "../hooks/useOutboundOracleTemplates";
-import useInboundOraclesTemplates from "../hooks/useInboundOraclesTemplates";
-import { useHistory } from "react-router-dom";
-
+import useOutboundOracles from "../hooks/useOutboundOracles";
+import useInboundOracles from "../hooks/useInboundOracles";
+import { Link } from "react-router-dom";
+import { InboundOracleTable, OutboundOracleTable } from "../components";
+import { Button } from "semantic-ui-react";
 function Home() {
-  const history = useHistory();
-  const [outboundOracleTemplates] = useOutboundOracleTemplates();
-  const [inboundOracleTemplates] = useInboundOraclesTemplates();
+  const [outboundOracles] = useOutboundOracles();
+  const [inboundOracles] = useInboundOracles();
   return (
     <div>
       <h1>Home</h1>
-      <div>
-        <h2>Outbound Oracle Templates</h2>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          {outboundOracleTemplates.map((outboundOracleTemplate) => (
-            <div
-              style={{
-                border: "1px solid black",
-                borderRadius: "1em",
-                padding: "2em",
-                cursor: "pointer",
-              }}
-              onClick={() =>
-                history.push(
-                  "/outboundOracleTemplates/" + outboundOracleTemplate.ID
-                )
-              }
-            >
-              <h3 style={{ marginTop: "0" }}>
-                Event: {outboundOracleTemplate.EventName}
-              </h3>
-              <div>
-                <b>At:</b> {outboundOracleTemplate.Address}
-              </div>
-              <div>
-                <b>Running Oracles:</b>{" "}
-                {outboundOracleTemplate.OutboundOracles.length}
-              </div>
-            </div>
-          ))}
-        </div>
+      <div style={{ display: "flex" }}>
+        <Button
+          basic
+          primary
+          icon="plus"
+          content="Create Oracle"
+          as={Link}
+          to="/oracleTemplates"
+        />
+        <Button
+          basic
+          icon="settings"
+          content="Settings"
+          as={Link}
+          to="/settings"
+        />
       </div>
+      <br />
       <div>
-        <h2>Inbound Oracle Templates</h2>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          {inboundOracleTemplates.map((inboundOracleTemplate) => (
-            <div
-              style={{
-                border: "1px solid black",
-                borderRadius: "1em",
-                padding: "2em",
-                cursor: "pointer",
-              }}
-              onClick={() =>
-                history.push(
-                  "/inboundOracleTemplates/" + inboundOracleTemplate.ID
-                )
-              }
-            >
-              <h3 style={{ marginTop: "0" }}>
-                Method: {inboundOracleTemplate.ContractName}
-              </h3>
-              <div>
-                <b>At:</b> {inboundOracleTemplate.ContractAddress}
-              </div>
-              <div>
-                <b>Running Oracles:</b>{" "}
-                {inboundOracleTemplate.InboundOracles.length}
-              </div>
-            </div>
-          ))}
-        </div>
+        <h2>Outbound Oracles</h2>
+        <OutboundOracleTable outboundOracles={outboundOracles} />
+      </div>
+      <br />
+      <div>
+        <h2>Inbound Oracles</h2>
+        <InboundOracleTable inboundOracles={inboundOracles} />
       </div>
     </div>
   );

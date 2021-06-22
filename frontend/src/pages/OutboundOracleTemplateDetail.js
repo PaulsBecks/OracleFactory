@@ -1,8 +1,8 @@
 import React from "react";
 import { useHistory, useParams, Link } from "react-router-dom";
 import useOutboundOracleTemplate from "../hooks/useOutboundOracleTemplate";
-import { Button, Form, Table } from "semantic-ui-react";
-
+import { Button } from "semantic-ui-react";
+import { OutboundOracleTable } from "../components";
 export default function OutboundOracleTemplateDetail({}) {
   const { outboundOracleTemplateID } = useParams();
   const history = useHistory();
@@ -33,8 +33,10 @@ export default function OutboundOracleTemplateDetail({}) {
         <br />
       </div>
       <div>
-        <h2>Oracles</h2>
+        <h2>Active Oracles</h2>
         <Button
+          primary
+          basic
           content="Create Oracle"
           icon="plus"
           as={Link}
@@ -45,31 +47,9 @@ export default function OutboundOracleTemplateDetail({}) {
           }
         />
         {outboundOracleTemplate.OutboundOracles.length > 0 ? (
-          <Table>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Name</Table.HeaderCell>
-                <Table.HeaderCell>Forward To</Table.HeaderCell>
-                <Table.HeaderCell></Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {outboundOracleTemplate.OutboundOracles.map((outboundOracle) => (
-                <Table.Row>
-                  <Table.Cell>{outboundOracle.Name || ""}</Table.Cell>
-                  <Table.Cell>{outboundOracle.URI}</Table.Cell>
-                  <Table.Cell>
-                    <Button
-                      as={Link}
-                      to={"/outboundOracles/" + outboundOracle.ID}
-                      content="Detail"
-                      icon="edit"
-                    />
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
+          <OutboundOracleTable
+            outboundOracles={outboundOracleTemplate.OutboundOracles}
+          />
         ) : (
           <div>No oracles created yet.</div>
         )}

@@ -1,7 +1,8 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import useInboundOracleTemplate from "../hooks/useInboundOracleTemplate";
-import { Button, Table } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
+import { InboundOracleTable } from "../components";
 
 export default function InboundOracleTemplateDetail({}) {
   const { inboundOracleTemplateID } = useParams();
@@ -29,11 +30,22 @@ export default function InboundOracleTemplateDetail({}) {
         <p>
           <b>Blockchain Address:</b> {inboundOracleTemplate.BlockchainAddress}
         </p>
+        <p>
+          <b>Parameters:</b>
+          {JSON.stringify(
+            inboundOracleTemplate.EventParameters.map((parameter) => ({
+              name: parameter.Name,
+              type: parameter.Type,
+            }))
+          )}
+        </p>
       </div>
       <br />
       <div>
-        <h2>Inbound Oracles</h2>
+        <h2>Active Oracles</h2>
         <Button
+          basic
+          primary
           content="Create Oracle"
           icon="plus"
           as={Link}
@@ -44,35 +56,9 @@ export default function InboundOracleTemplateDetail({}) {
           }
         />
         {inboundOracleTemplate.InboundOracles.length > 0 ? (
-          <Table>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Name</Table.HeaderCell>
-                <Table.HeaderCell>Endpoint</Table.HeaderCell>
-                <Table.HeaderCell></Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {inboundOracleTemplate.InboundOracles.map((inboundOracle) => (
-                <Table.Row>
-                  <Table.Cell>{inboundOracle.Name || ""}</Table.Cell>
-                  <Table.Cell>
-                    {"http://localhost:8080/inboundOracles/" +
-                      inboundOracle.ID +
-                      "/events"}
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Button
-                      as={Link}
-                      to={"/inboundOracles/" + inboundOracle.ID}
-                      content="Detail"
-                      icon="edit"
-                    />
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
+          <InboundOracleTable
+            inboundOracles={inboundOracleTemplate.InboundOracles}
+          />
         ) : (
           <div>No oracles created yet.</div>
         )}

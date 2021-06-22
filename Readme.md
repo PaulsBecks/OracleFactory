@@ -3,8 +3,7 @@
 More to be added...
 
 # TODO
-[] Interface to create OutboundOracleTemplates
-    - From ABI? 
+[] Interface to create OutboundOracleTemplates 
     - Without ABI?
 
 [] Delete oracle

@@ -27,7 +27,7 @@ var (
 )
 
 // StoreABI is the input ABI used to generate the binding from.
-const StoreABI = "[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"x\",\"type\":\"uint256\"}],\"name\":\"set\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
+const StoreABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"storedInteger\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"storedBool\",\"type\":\"bool\"},{\"indexed\":false,\"internalType\":\"uint8\",\"name\":\"storedInteger8\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"storedAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"storedBytes32\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"storedBytes\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"storedString\",\"type\":\"string\"}],\"name\":\"StoredAll\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"storedInteger\",\"type\":\"uint256\"}],\"name\":\"StoredInteger\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"integer\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"boolean\",\"type\":\"bool\"},{\"internalType\":\"uint8\",\"name\":\"integer8\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"_address\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"_bytes32\",\"type\":\"bytes32\"},{\"internalType\":\"bytes\",\"name\":\"_bytes\",\"type\":\"bytes\"},{\"internalType\":\"string\",\"name\":\"_string\",\"type\":\"string\"}],\"name\":\"setAll\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"integer\",\"type\":\"uint256\"}],\"name\":\"setInteger\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
 
 // Store is an auto generated Go binding around an Ethereum contract.
 type Store struct {
@@ -171,23 +171,318 @@ func (_Store *StoreTransactorRaw) Transact(opts *bind.TransactOpts, method strin
 	return _Store.Contract.contract.Transact(opts, method, params...)
 }
 
-// Set is a paid mutator transaction binding the contract method 0x60fe47b1.
+// SetAll is a paid mutator transaction binding the contract method 0x67c157a1.
 //
-// Solidity: function set(uint256 x) returns()
-func (_Store *StoreTransactor) Set(opts *bind.TransactOpts, x *big.Int) (*types.Transaction, error) {
-	return _Store.contract.Transact(opts, "set", x)
+// Solidity: function setAll(uint256 integer, bool boolean, uint8 integer8, address _address, bytes32 _bytes32, bytes _bytes, string _string) returns()
+func (_Store *StoreTransactor) SetAll(opts *bind.TransactOpts, integer *big.Int, boolean bool, integer8 uint8, _address common.Address, _bytes32 [32]byte, _bytes []byte, _string string) (*types.Transaction, error) {
+	return _Store.contract.Transact(opts, "setAll", integer, boolean, integer8, _address, _bytes32, _bytes, _string)
 }
 
-// Set is a paid mutator transaction binding the contract method 0x60fe47b1.
+// SetAll is a paid mutator transaction binding the contract method 0x67c157a1.
 //
-// Solidity: function set(uint256 x) returns()
-func (_Store *StoreSession) Set(x *big.Int) (*types.Transaction, error) {
-	return _Store.Contract.Set(&_Store.TransactOpts, x)
+// Solidity: function setAll(uint256 integer, bool boolean, uint8 integer8, address _address, bytes32 _bytes32, bytes _bytes, string _string) returns()
+func (_Store *StoreSession) SetAll(integer *big.Int, boolean bool, integer8 uint8, _address common.Address, _bytes32 [32]byte, _bytes []byte, _string string) (*types.Transaction, error) {
+	return _Store.Contract.SetAll(&_Store.TransactOpts, integer, boolean, integer8, _address, _bytes32, _bytes, _string)
 }
 
-// Set is a paid mutator transaction binding the contract method 0x60fe47b1.
+// SetAll is a paid mutator transaction binding the contract method 0x67c157a1.
 //
-// Solidity: function set(uint256 x) returns()
-func (_Store *StoreTransactorSession) Set(x *big.Int) (*types.Transaction, error) {
-	return _Store.Contract.Set(&_Store.TransactOpts, x)
+// Solidity: function setAll(uint256 integer, bool boolean, uint8 integer8, address _address, bytes32 _bytes32, bytes _bytes, string _string) returns()
+func (_Store *StoreTransactorSession) SetAll(integer *big.Int, boolean bool, integer8 uint8, _address common.Address, _bytes32 [32]byte, _bytes []byte, _string string) (*types.Transaction, error) {
+	return _Store.Contract.SetAll(&_Store.TransactOpts, integer, boolean, integer8, _address, _bytes32, _bytes, _string)
+}
+
+// SetInteger is a paid mutator transaction binding the contract method 0xac588675.
+//
+// Solidity: function setInteger(uint256 integer) returns()
+func (_Store *StoreTransactor) SetInteger(opts *bind.TransactOpts, integer *big.Int) (*types.Transaction, error) {
+	return _Store.contract.Transact(opts, "setInteger", integer)
+}
+
+// SetInteger is a paid mutator transaction binding the contract method 0xac588675.
+//
+// Solidity: function setInteger(uint256 integer) returns()
+func (_Store *StoreSession) SetInteger(integer *big.Int) (*types.Transaction, error) {
+	return _Store.Contract.SetInteger(&_Store.TransactOpts, integer)
+}
+
+// SetInteger is a paid mutator transaction binding the contract method 0xac588675.
+//
+// Solidity: function setInteger(uint256 integer) returns()
+func (_Store *StoreTransactorSession) SetInteger(integer *big.Int) (*types.Transaction, error) {
+	return _Store.Contract.SetInteger(&_Store.TransactOpts, integer)
+}
+
+// StoreStoredAllIterator is returned from FilterStoredAll and is used to iterate over the raw logs and unpacked data for StoredAll events raised by the Store contract.
+type StoreStoredAllIterator struct {
+	Event *StoreStoredAll // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *StoreStoredAllIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(StoreStoredAll)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(StoreStoredAll)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *StoreStoredAllIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *StoreStoredAllIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// StoreStoredAll represents a StoredAll event raised by the Store contract.
+type StoreStoredAll struct {
+	StoredInteger  *big.Int
+	StoredBool     bool
+	StoredInteger8 uint8
+	StoredAddress  common.Address
+	StoredBytes32  [32]byte
+	StoredBytes    []byte
+	StoredString   string
+	Raw            types.Log // Blockchain specific contextual infos
+}
+
+// FilterStoredAll is a free log retrieval operation binding the contract event 0xb64568d9b0a86ee0722bd1773d93497c73572db44ac1c1c0baeb14cd8e02e837.
+//
+// Solidity: event StoredAll(uint256 storedInteger, bool storedBool, uint8 storedInteger8, address storedAddress, bytes32 storedBytes32, bytes storedBytes, string storedString)
+func (_Store *StoreFilterer) FilterStoredAll(opts *bind.FilterOpts) (*StoreStoredAllIterator, error) {
+
+	logs, sub, err := _Store.contract.FilterLogs(opts, "StoredAll")
+	if err != nil {
+		return nil, err
+	}
+	return &StoreStoredAllIterator{contract: _Store.contract, event: "StoredAll", logs: logs, sub: sub}, nil
+}
+
+// WatchStoredAll is a free log subscription operation binding the contract event 0xb64568d9b0a86ee0722bd1773d93497c73572db44ac1c1c0baeb14cd8e02e837.
+//
+// Solidity: event StoredAll(uint256 storedInteger, bool storedBool, uint8 storedInteger8, address storedAddress, bytes32 storedBytes32, bytes storedBytes, string storedString)
+func (_Store *StoreFilterer) WatchStoredAll(opts *bind.WatchOpts, sink chan<- *StoreStoredAll) (event.Subscription, error) {
+
+	logs, sub, err := _Store.contract.WatchLogs(opts, "StoredAll")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(StoreStoredAll)
+				if err := _Store.contract.UnpackLog(event, "StoredAll", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseStoredAll is a log parse operation binding the contract event 0xb64568d9b0a86ee0722bd1773d93497c73572db44ac1c1c0baeb14cd8e02e837.
+//
+// Solidity: event StoredAll(uint256 storedInteger, bool storedBool, uint8 storedInteger8, address storedAddress, bytes32 storedBytes32, bytes storedBytes, string storedString)
+func (_Store *StoreFilterer) ParseStoredAll(log types.Log) (*StoreStoredAll, error) {
+	event := new(StoreStoredAll)
+	if err := _Store.contract.UnpackLog(event, "StoredAll", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// StoreStoredIntegerIterator is returned from FilterStoredInteger and is used to iterate over the raw logs and unpacked data for StoredInteger events raised by the Store contract.
+type StoreStoredIntegerIterator struct {
+	Event *StoreStoredInteger // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *StoreStoredIntegerIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(StoreStoredInteger)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(StoreStoredInteger)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *StoreStoredIntegerIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *StoreStoredIntegerIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// StoreStoredInteger represents a StoredInteger event raised by the Store contract.
+type StoreStoredInteger struct {
+	StoredInteger *big.Int
+	Raw           types.Log // Blockchain specific contextual infos
+}
+
+// FilterStoredInteger is a free log retrieval operation binding the contract event 0xe6452fda282d738b0dafdab845143683b1ddb1739ed11699e10bea1e11aed170.
+//
+// Solidity: event StoredInteger(uint256 storedInteger)
+func (_Store *StoreFilterer) FilterStoredInteger(opts *bind.FilterOpts) (*StoreStoredIntegerIterator, error) {
+
+	logs, sub, err := _Store.contract.FilterLogs(opts, "StoredInteger")
+	if err != nil {
+		return nil, err
+	}
+	return &StoreStoredIntegerIterator{contract: _Store.contract, event: "StoredInteger", logs: logs, sub: sub}, nil
+}
+
+// WatchStoredInteger is a free log subscription operation binding the contract event 0xe6452fda282d738b0dafdab845143683b1ddb1739ed11699e10bea1e11aed170.
+//
+// Solidity: event StoredInteger(uint256 storedInteger)
+func (_Store *StoreFilterer) WatchStoredInteger(opts *bind.WatchOpts, sink chan<- *StoreStoredInteger) (event.Subscription, error) {
+
+	logs, sub, err := _Store.contract.WatchLogs(opts, "StoredInteger")
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(StoreStoredInteger)
+				if err := _Store.contract.UnpackLog(event, "StoredInteger", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseStoredInteger is a log parse operation binding the contract event 0xe6452fda282d738b0dafdab845143683b1ddb1739ed11699e10bea1e11aed170.
+//
+// Solidity: event StoredInteger(uint256 storedInteger)
+func (_Store *StoreFilterer) ParseStoredInteger(log types.Log) (*StoreStoredInteger, error) {
+	event := new(StoreStoredInteger)
+	if err := _Store.contract.UnpackLog(event, "StoredInteger", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
 }

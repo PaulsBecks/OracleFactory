@@ -6,6 +6,11 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	HYPERLEDGER_BLOCKCHAIN = "Hyperledger"
+	ETHEREUM_BLOCKCHAIN    = "Ethereum"
+)
+
 type OutboundOracleTemplate struct {
 	gorm.Model
 	Blockchain        string
@@ -30,8 +35,4 @@ func (o *OutboundOracleTemplate) GetEventParameterNamesString() string {
 		eventParameterStrings = append(eventParameterStrings, eventParameter.Name)
 	}
 	return strings.Join(eventParameterStrings, ", ")
-}
-
-func (o *OutboundOracleTemplate) GetConnectionString() string {
-	return o.BlockchainAddress
 }
