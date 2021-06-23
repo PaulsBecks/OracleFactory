@@ -6,12 +6,11 @@ import (
 
 type InboundOracleTemplate struct {
 	gorm.Model
-	BlockchainName    string
-	BlockchainAddress string
-	ContractName      string
-	ContractAddress   string
-	EventParameters   []EventParameter
-	InboundOracles    []InboundOracle
+	BlockchainName  string
+	ContractName    string
+	ContractAddress string
+	EventParameters []EventParameter
+	InboundOracles  []InboundOracle
 }
 
 func (iot *InboundOracleTemplate) GetEventParameterJSON() string {

@@ -27,10 +27,9 @@ func PostInboundOracleTemplate(ctx *gin.Context) {
 	}
 
 	inboundOracleTemplate := models.InboundOracleTemplate{
-		BlockchainAddress: inboundOracleTemplateBody.BlockchainAddress,
-		BlockchainName:    inboundOracleTemplateBody.BlockchainName,
-		ContractAddress:   inboundOracleTemplateBody.ContractAddress,
-		ContractName:      inboundOracleTemplateBody.ContractName,
+		BlockchainName:  inboundOracleTemplateBody.BlockchainName,
+		ContractAddress: inboundOracleTemplateBody.ContractAddress,
+		ContractName:    inboundOracleTemplateBody.ContractName,
 	}
 	db.Create(&inboundOracleTemplate)
 	ctx.JSON(http.StatusOK, gin.H{"inboundOracleTemplate": inboundOracleTemplate})

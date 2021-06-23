@@ -87,8 +87,7 @@ func PostOutboundOracle(ctx *gin.Context) {
 
 	db.Create(&outboundOracle)
 
-	manifest := outboundOracle.CreateManifest()
-	err = manifest.Run()
+	outboundOracle.CreateOracle()
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -115,10 +114,9 @@ func PostOutboundOracleTemplate(ctx *gin.Context) {
 	}
 
 	outboundOracleTemplate := models.OutboundOracleTemplate{
-		BlockchainAddress: outboundOracleTemplateBody.BlockchainAddress,
-		Blockchain:        outboundOracleTemplateBody.BlockchainName,
-		Address:           outboundOracleTemplateBody.ContractAddress,
-		EventName:         outboundOracleTemplateBody.EventName,
+		Blockchain: outboundOracleTemplateBody.BlockchainName,
+		Address:    outboundOracleTemplateBody.ContractAddress,
+		EventName:  outboundOracleTemplateBody.EventName,
 	}
 	db.Create(&outboundOracleTemplate)
 	ctx.JSON(http.StatusOK, gin.H{"outboundOracleTemplate": outboundOracleTemplate})

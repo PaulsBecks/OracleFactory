@@ -141,6 +141,18 @@ klhkxHSz4EwTh+XVyYpCqpuTszbaTPELBAtmFPSsdaeYOa8pumy7HEI4
 		InboundOracleTemplateID: inboundOracleTemplate.ID,
 	}
 	db.Create(&eventParameter)
+	outboundOracleTemplate := models.OutboundOracleTemplate{
+		Blockchain: "Hyperledger",
+		EventName:  "TransferAsset",
+		Address:    "basic",
+	}
+	db.Create(&outboundOracleTemplate)
+	eventParameterOut := models.EventParameter{
+		Name:                     "owner",
+		Type:                     "string",
+		OutboundOracleTemplateID: outboundOracleTemplate.ID,
+	}
+	db.Create(&eventParameterOut)
 }
 
 func auth(ctx *gin.Context) {
