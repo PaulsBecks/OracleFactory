@@ -10,6 +10,7 @@ type InboundOracleTemplateBody struct {
 	BlockchainAddress string
 	ContractName      string
 	ContractAddress   string
+	Private           bool
 }
 
 // TODO: create real validation

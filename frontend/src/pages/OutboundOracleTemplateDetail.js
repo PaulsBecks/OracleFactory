@@ -3,6 +3,7 @@ import { useHistory, useParams, Link } from "react-router-dom";
 import useOutboundOracleTemplate from "../hooks/useOutboundOracleTemplate";
 import { Button } from "semantic-ui-react";
 import { OutboundOracleTable } from "../components";
+import OutboundOracleTemplateCard from "../components/OutboundOracleTemplateCard";
 export default function OutboundOracleTemplateDetail({}) {
   const { outboundOracleTemplateID } = useParams();
   const history = useHistory();
@@ -17,21 +18,9 @@ export default function OutboundOracleTemplateDetail({}) {
   return (
     <div>
       <h1>Outbound Oracle Template</h1>
-      <div>
-        <p>
-          <b>Event Name:</b> {outboundOracleTemplate.EventName}
-        </p>
-        <p>
-          <b>Contract Address:</b> {outboundOracleTemplate.Address}
-        </p>
-        <p>
-          <b>Blockchain Name:</b> {outboundOracleTemplate.Blockchain}
-        </p>
-        <p>
-          <b>Blockchain Address:</b> {outboundOracleTemplate.BlockchainAddress}
-        </p>
-        <br />
-      </div>
+      <OutboundOracleTemplateCard
+        outboundOracleTemplate={outboundOracleTemplate}
+      />
       <div>
         <h2>Active Oracles</h2>
         <Button

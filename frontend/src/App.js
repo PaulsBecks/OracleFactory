@@ -14,8 +14,14 @@ import {
 } from "./pages";
 import { Navbar } from "./components";
 import { Container } from "semantic-ui-react";
-
+import getHeaders from "./services/utils/getHeaders.js";
+import Login from "./pages/Login";
 function App() {
+  const loggedIn = getHeaders();
+  if (!loggedIn) {
+    return <Login />;
+  }
+
   return (
     <Router>
       <Navbar />

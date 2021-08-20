@@ -11,8 +11,6 @@ export default function Settings() {
     setLocalUser(user);
   }, [user]);
 
-  console.log(localUser);
-
   return (
     <div>
       <h1>Settings</h1>

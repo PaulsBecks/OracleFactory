@@ -7,13 +7,11 @@ import { Link, useHistory } from "react-router-dom";
 export default function InboundOracleTemplateCreate() {
   const history = useHistory();
   const [inboundOracleTemplate, setInboundOracleTemplate] = useState({
-    BlockchainAddress: "",
+    Private: true,
     BlockchainName: "Ethereum",
     ContractAddress: "",
     inboundOracleTemplates: [],
   });
-
-  console.log(inboundOracleTemplate);
 
   const [loading, setLoading] = useState(false);
 
@@ -48,6 +46,7 @@ export default function InboundOracleTemplateCreate() {
                 BlockchainName: inboundOracleTemplate.BlockchainName,
                 ContractAddress: inboundOracleTemplate.ContractAddress,
                 ContractName: element.ContractName,
+                Private: inboundOracleTemplate.Private,
               });
             } else {
               result = await postData(`/outboundOracleTemplates`, {
@@ -55,13 +54,13 @@ export default function InboundOracleTemplateCreate() {
                 BlockchainName: inboundOracleTemplate.BlockchainName,
                 ContractAddress: inboundOracleTemplate.ContractAddress,
                 EventName: element.ContractName,
+                Private: inboundOracleTemplate.Private,
               });
             }
             const oracleTemplate =
               element.Type === "function"
                 ? result.inboundOracleTemplate
                 : result.outboundOracleTemplate;
-            console.log(oracleTemplate);
             for (const input of element.inputs) {
               if (element.Type === "function") {
                 await postData(

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useInboundOracle from "../hooks/useInboundOracle";
-import { Button, Table } from "semantic-ui-react";
+import { Button, Form, Table } from "semantic-ui-react";
 import { InboundOracleForm } from "../components";
+import FilterForm from "../components/FilterForm";
 
 export default function InboundOracleDetail({}) {
   const { inboundOracleID } = useParams();
@@ -14,6 +15,10 @@ export default function InboundOracleDetail({}) {
   useEffect(() => {
     setLocalInboundOracle(inboundOracle);
   }, [inboundOracle]);
+
+  const createFilter = () => {
+    console.log(createFilter);
+  };
 
   if (!inboundOracle) {
     return "Loading...";
@@ -48,9 +53,14 @@ export default function InboundOracleDetail({}) {
         </p>
       </div>
       <br />
+      <FilterForm
+        oracleTemplateID={inboundOracle.InboundOracleTemplate.OracleTemplate.ID}
+        oracleID={inboundOracle.Oracle.ID}
+      />
+      <br />
       <div>
         <h2>Events</h2>
-        {inboundOracle.InboundEvents.length > 0 ? (
+        {inboundOracle.Oracle.Events.length > 0 ? (
           <Table>
             <Table.Header>
               <Table.Row>
@@ -60,7 +70,7 @@ export default function InboundOracleDetail({}) {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {inboundOracle.InboundEvents.map((inboundEvent) => (
+              {inboundOracle.Oracle.Events.map((inboundEvent) => (
                 <Table.Row>
                   <Table.Cell>{inboundEvent.ID}</Table.Cell>
                   <Table.Cell>

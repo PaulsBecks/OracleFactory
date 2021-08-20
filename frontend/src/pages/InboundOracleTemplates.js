@@ -2,9 +2,10 @@ import useInboundOraclesTemplates from "../hooks/useInboundOraclesTemplates";
 import { useHistory, Link } from "react-router-dom";
 import { Button } from "semantic-ui-react";
 
-function Home() {
+function InboundOracleTemplates() {
   const history = useHistory();
   const [inboundOracleTemplates] = useInboundOraclesTemplates();
+  console.log(inboundOracleTemplates);
   return (
     <div>
       <h1>Inbound Oracle Templates</h1>
@@ -54,4 +55,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default InboundOracleTemplates;

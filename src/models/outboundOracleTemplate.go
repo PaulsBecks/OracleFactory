@@ -13,16 +13,14 @@ const (
 
 type OutboundOracleTemplate struct {
 	gorm.Model
-	Blockchain      string
-	Address         string
-	EventName       string
-	EventParameters []EventParameter
-	OutboundOracles []OutboundOracle
+	OracleTemplateID uint
+	OracleTemplate   OracleTemplate
+	OutboundOracles  []OutboundOracle
 }
 
 func (o *OutboundOracleTemplate) GetEventParametersString() string {
 	eventParameterStrings := []string{}
-	for _, eventParameter := range o.EventParameters {
+	for _, eventParameter := range o.OracleTemplate.EventParameters {
 		eventParameterStrings = append(eventParameterStrings, eventParameter.String())
 	}
 	return strings.Join(eventParameterStrings, ", ")
@@ -30,7 +28,7 @@ func (o *OutboundOracleTemplate) GetEventParametersString() string {
 
 func (o *OutboundOracleTemplate) GetEventParameterNamesString() string {
 	eventParameterStrings := []string{}
-	for _, eventParameter := range o.EventParameters {
+	for _, eventParameter := range o.OracleTemplate.EventParameters {
 		eventParameterStrings = append(eventParameterStrings, eventParameter.Name)
 	}
 	return strings.Join(eventParameterStrings, ", ")

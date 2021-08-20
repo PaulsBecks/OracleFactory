@@ -16,7 +16,7 @@ import (
 func PostInboundOracleTemplate(ctx *gin.Context) {
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"body": "Ups there was a mistake!"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"body": "Oh, there was a mistake!"})
 		return
 	}
 
@@ -26,10 +26,19 @@ func PostInboundOracleTemplate(ctx *gin.Context) {
 		return
 	}
 
-	inboundOracleTemplate := models.InboundOracleTemplate{
+	userInterface, _ := ctx.Get("user")
+	user, _ := userInterface.(models.User)
+
+	oracleTemplate := models.OracleTemplate{
 		BlockchainName:  inboundOracleTemplateBody.BlockchainName,
 		ContractAddress: inboundOracleTemplateBody.ContractAddress,
-		ContractName:    inboundOracleTemplateBody.ContractName,
+		EventName:       inboundOracleTemplateBody.ContractName,
+		UserID:          user.ID,
+		Private:         inboundOracleTemplateBody.Private,
+	}
+	db.Create(&oracleTemplate)
+	inboundOracleTemplate := models.InboundOracleTemplate{
+		OracleTemplate: oracleTemplate,
 	}
 	db.Create(&inboundOracleTemplate)
 	ctx.JSON(http.StatusOK, gin.H{"inboundOracleTemplate": inboundOracleTemplate})
@@ -38,7 +47,7 @@ func PostInboundOracleTemplate(ctx *gin.Context) {
 func GetInboundOracleTemplate(ctx *gin.Context) {
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"body": "Ups there was a mistake!"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"body": "Oh, there was a mistake!"})
 		return
 	}
 
@@ -50,10 +59,18 @@ func GetInboundOracleTemplate(ctx *gin.Context) {
 		return
 	}
 
-	var inboundOracleTemplate models.InboundOracleTemplate
-	db.Preload(clause.Associations).First(&inboundOracleTemplate, i)
+	userInterface, _ := ctx.Get("user")
+	user, _ := userInterface.(models.User)
 
-	ctx.JSON(http.StatusOK, gin.H{"inboundOracleTemplate": inboundOracleTemplate})
+	var inboundOracleTemplate models.InboundOracleTemplate
+	db.Joins("OracleTemplate").Preload("OracleTemplate.EventParameters").Find(&inboundOracleTemplate, i)
+
+	var inboundOracles []models.InboundOracle
+	db.Joins("Oracle").Preload("InboundOracleTemplate.OracleTemplate").Find(&inboundOracles, "inbound_oracle_template_id = ? AND Oracle.user_id = ?", inboundOracleTemplate.ID, user.ID)
+
+	inboundOracleTemplate.InboundOracles = inboundOracles
+	fmt.Println(inboundOracleTemplate)
+	ctx.JSON(http.StatusOK, gin.H{"inboundOracleTemplate": inboundOracleTemplate, "inboundOracles": inboundOracles})
 }
 
 func GetInboundOracleTemplates(ctx *gin.Context) {
@@ -63,10 +80,11 @@ func GetInboundOracleTemplates(ctx *gin.Context) {
 		return
 	}
 
-	var inboundOracleTemplates []models.InboundOracleTemplate
-	db.Preload(clause.Associations).Find(&inboundOracleTemplates)
+	userInterface, _ := ctx.Get("user")
+	user, _ := userInterface.(models.User)
 
-	fmt.Println(inboundOracleTemplates)
+	var inboundOracleTemplates []models.InboundOracleTemplate
+	db.Joins("OracleTemplate").Find(&inboundOracleTemplates, "OracleTemplate.private = 0 OR OracleTemplate.user_id = ?", user.ID)
 
 	ctx.JSON(http.StatusOK, gin.H{"inboundOracleTemplates": inboundOracleTemplates})
 }
@@ -96,11 +114,17 @@ func PostInboundOracle(ctx *gin.Context) {
 
 	var inboundOracleTemplate models.InboundOracleTemplate
 	db.Preload(clause.Associations).First(&inboundOracleTemplate, inboundOracleTemplateID)
+
+	oracle := models.Oracle{
+		Name: inboundOracleBody.Oracle.Name,
+		User: user,
+	}
+	db.Create(&oracle)
+
 	inboundOracle := models.InboundOracle{
 		InboundOracleTemplate:   inboundOracleTemplate,
 		InboundOracleTemplateID: inboundOracleTemplate.ID,
-		Name:                    inboundOracleBody.Name,
-		User:                    user,
+		Oracle:                  oracle,
 	}
 	db.Create(&inboundOracle)
 	ctx.JSON(http.StatusOK, gin.H{"inboundOracle": inboundOracle})
@@ -134,9 +158,9 @@ func PostInboundEventParameters(ctx *gin.Context) {
 	}
 
 	eventParameter := models.EventParameter{
-		Name:                    eventParameterBody.Name,
-		Type:                    eventParameterBody.Type,
-		InboundOracleTemplateID: inboundOracleTemplate.ID,
+		Name:             eventParameterBody.Name,
+		Type:             eventParameterBody.Type,
+		OracleTemplateID: inboundOracleTemplate.OracleTemplate.ID,
 	}
 	db.Create(&eventParameter)
 	ctx.JSON(http.StatusOK, gin.H{"eventParameter": eventParameter})

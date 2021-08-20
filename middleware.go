@@ -8,5 +8,6 @@ import (
 func middleware(app *gin.Engine) {
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
+	config.AddAllowHeaders("authorization")
 	app.Use(cors.New(config))
 }

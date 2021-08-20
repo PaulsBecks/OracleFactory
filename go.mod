@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/btcsuite/btcd v0.21.0-beta // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/ethereum/go-ethereum v1.10.3
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.1

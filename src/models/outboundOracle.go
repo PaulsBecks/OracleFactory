@@ -10,34 +10,32 @@ import (
 type OutboundOracle struct {
 	gorm.Model
 	URI                      string
-	Name                     string
-	UserID                   uint
-	User                     User
+	OracleID                 uint
+	Oracle                   Oracle
 	OutboundOracleTemplateID uint
 	OutboundOracleTemplate   OutboundOracleTemplate
-	OutboundEvents           []OutboundEvent
 }
 
 func (o *OutboundOracle) GetConnectionString() string {
 	// TODO: Describe how this can be extended to add additional blockchains
-	switch o.OutboundOracleTemplate.Blockchain {
+	switch o.OutboundOracleTemplate.OracleTemplate.BlockchainName {
 	case HYPERLEDGER_BLOCKCHAIN:
 		return `{
 	\"connection.yaml\",
 	\"server.key\",
 	\"server.crt\",
-	\"` + o.User.HyperledgerOrganizationName + `\",
-	\"` + o.User.HyperledgerChannel + `\"
+	\"` + o.Oracle.User.HyperledgerOrganizationName + `\",
+	\"` + o.Oracle.User.HyperledgerChannel + `\"
 }`
 	case ETHEREUM_BLOCKCHAIN:
-		return `\"` + o.User.EthereumAddress + `\"`
+		return `\"` + o.Oracle.User.EthereumAddress + `\"`
 	}
 	// TODO: Handle the issue if there is no blockchain with corresponding
 	return ""
 }
 
 func (o *OutboundOracle) createManifest() string {
-	return `SET BLOCKCHAIN \"` + o.OutboundOracleTemplate.Blockchain + `\";
+	return `SET BLOCKCHAIN \"` + o.OutboundOracleTemplate.OracleTemplate.BlockchainName + `\";
 
 SET OUTPUT FOLDER \"./output\";
 SET EMISSION MODE \"streaming\";
@@ -46,7 +44,7 @@ SET CONNECTION ` + o.GetConnectionString() + `;
 
 
 BLOCKS (CURRENT) (CONTINUOUS) {
-	LOG ENTRIES (\"` + o.OutboundOracleTemplate.Address + `\") (` + o.OutboundOracleTemplate.EventName + `(` + o.OutboundOracleTemplate.GetEventParametersString() + `)) {
+	LOG ENTRIES (\"` + o.OutboundOracleTemplate.OracleTemplate.ContractAddress + `\") (` + o.OutboundOracleTemplate.OracleTemplate.EventName + `(` + o.OutboundOracleTemplate.GetEventParametersString() + `)) {
 		EMIT HTTP REQUEST (\"` + o.oracleFactoryOutboundEventLink() + `\") (` + o.OutboundOracleTemplate.GetEventParameterNamesString() + `);
 	}
 }`
@@ -59,10 +57,10 @@ func echoStringToFile(content, path string) string {
 func (o *OutboundOracle) CreateOracle() error {
 	manifest := o.createManifest()
 	copyFilesToContainerCommand := echoStringToFile(manifest, "manifest.bloql")
-	if o.OutboundOracleTemplate.Blockchain == "Hyperledger" {
-		copyFilesToContainerCommand += echoStringToFile(o.User.HyperledgerCert, "server.crt")
-		copyFilesToContainerCommand += echoStringToFile(o.User.HyperledgerConfig, "connection.yaml")
-		copyFilesToContainerCommand += echoStringToFile(o.User.HyperledgerKey, "server.key")
+	if o.OutboundOracleTemplate.OracleTemplate.BlockchainName == "Hyperledger" {
+		copyFilesToContainerCommand += echoStringToFile(o.Oracle.User.HyperledgerCert, "server.crt")
+		copyFilesToContainerCommand += echoStringToFile(o.Oracle.User.HyperledgerConfig, "connection.yaml")
+		copyFilesToContainerCommand += echoStringToFile(o.Oracle.User.HyperledgerKey, "server.key")
 	}
 	cmd := exec.Command(
 		"docker",

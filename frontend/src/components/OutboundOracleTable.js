@@ -1,11 +1,13 @@
 import { Button, Table } from "semantic-ui-react";
 import { Link } from "react-router-dom";
+import Identicon from "react-identicons";
 
 export default function OutboundOracleTable({ outboundOracles }) {
   return (
     <Table>
       <Table.Header>
         <Table.Row>
+          <Table.HeaderCell></Table.HeaderCell>
           <Table.HeaderCell>Name</Table.HeaderCell>
           <Table.HeaderCell>Forward To</Table.HeaderCell>
           <Table.HeaderCell></Table.HeaderCell>
@@ -14,7 +16,16 @@ export default function OutboundOracleTable({ outboundOracles }) {
       <Table.Body>
         {outboundOracles.map((outboundOracle) => (
           <Table.Row>
-            <Table.Cell>{outboundOracle.Name || ""}</Table.Cell>
+            <Table.Cell>
+              <Identicon
+                string={
+                  outboundOracle.OutboundOracleTemplate.OracleTemplate
+                    .ContractAddress
+                }
+                size={50}
+              />
+            </Table.Cell>
+            <Table.Cell>{outboundOracle.Oracle.Name || ""}</Table.Cell>
             <Table.Cell>{outboundOracle.URI}</Table.Cell>
             <Table.Cell>
               <Button

@@ -2,9 +2,11 @@ import useOutboundOracleTemplates from "../hooks/useOutboundOracleTemplates";
 import useInboundOraclesTemplates from "../hooks/useInboundOraclesTemplates";
 import { useHistory, Link } from "react-router-dom";
 import { Button, Table } from "semantic-ui-react";
+import Identicon from "react-identicons";
+import OutboundOracleTemplateCard from "../components/OutboundOracleTemplateCard";
+import InboundOracleTemplateCard from "../components/InboundOracleTemplateCard";
 
 function Home() {
-  const history = useHistory();
   const [outboundOracleTemplates] = useOutboundOracleTemplates();
   const [inboundOracleTemplates] = useInboundOraclesTemplates();
   return (
@@ -29,40 +31,14 @@ function Home() {
             flexWrap: "wrap",
           }}
         >
-          <Table>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Event Name</Table.HeaderCell>
-                <Table.HeaderCell>Contract Address</Table.HeaderCell>
-                <Table.HeaderCell></Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {outboundOracleTemplates.map((outboundOracleTemplate) => {
-                console.log(outboundOracleTemplate);
-                return (
-                  <Table.Row>
-                    <Table.Cell>
-                      {outboundOracleTemplate.EventName || ""}
-                    </Table.Cell>
-                    <Table.Cell>{outboundOracleTemplate.Address}</Table.Cell>
-                    <Table.Cell>
-                      <Button
-                        as={Link}
-                        to={
-                          "/outboundOracleTemplates/" +
-                          outboundOracleTemplate.ID
-                        }
-                        content="Select"
-                      />
-                    </Table.Cell>
-                  </Table.Row>
-                );
-              })}
-            </Table.Body>
-          </Table>
+          {outboundOracleTemplates.map((outboundOracleTemplate) => (
+            <OutboundOracleTemplateCard
+              outboundOracleTemplate={outboundOracleTemplate}
+            />
+          ))}
         </div>
       </div>
+      <br />
       <br />
       <div>
         <h2>Inbound Oracle Templates</h2>
@@ -72,34 +48,11 @@ function Home() {
             flexWrap: "wrap",
           }}
         >
-          <Table>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Contract Name</Table.HeaderCell>
-                <Table.HeaderCell>Contract Address</Table.HeaderCell>
-                <Table.HeaderCell></Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-            <Table.Body>
-              {inboundOracleTemplates.map((inboundOracleTemplate) => (
-                <Table.Row>
-                  <Table.Cell>
-                    {inboundOracleTemplate.ContractName || ""}
-                  </Table.Cell>
-                  <Table.Cell>
-                    {inboundOracleTemplate.ContractAddress}
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Button
-                      as={Link}
-                      to={"/inboundOracleTemplates/" + inboundOracleTemplate.ID}
-                      content="Select"
-                    />
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
+          {inboundOracleTemplates.map((inboundOracleTemplate) => (
+            <InboundOracleTemplateCard
+              inboundOracleTemplate={inboundOracleTemplate}
+            />
+          ))}
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Container } from "semantic-ui-react";
+import { Button, Container } from "semantic-ui-react";
 export default function Navbar() {
   return (
     <div
@@ -14,10 +14,34 @@ export default function Navbar() {
         alignItems: "center",
       }}
     >
-      <Container>
+      <Container
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Link to="/" style={{ color: "white", fontSize: "25px" }}>
           Oracle Factory
         </Link>
+        <div>
+          <Button
+            basic
+            icon="settings"
+            content="Settings"
+            as={Link}
+            to="/settings"
+          />
+          <Button
+            content="Logout"
+            primary
+            style={{ margin: "2em" }}
+            onClick={() => {
+              localStorage.removeItem("authToken");
+              window.location.reload();
+            }}
+          />
+        </div>
       </Container>
     </div>
   );

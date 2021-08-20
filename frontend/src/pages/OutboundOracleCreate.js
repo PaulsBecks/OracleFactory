@@ -8,7 +8,10 @@ import { Link, useHistory } from "react-router-dom";
 export default function OutboundOracleCreate() {
   const history = useHistory();
   const { outboundOracleTemplateID } = useParams();
-  const [outboundOracle, setOutboundOracle] = useState({ Name: "", URI: "" });
+  const [outboundOracle, setOutboundOracle] = useState({
+    Oracle: { Name: "" },
+    URI: "",
+  });
   const [loading, setLoading] = useState(false);
 
   return (

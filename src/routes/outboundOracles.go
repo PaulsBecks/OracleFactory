@@ -21,11 +21,15 @@ func GetOutboundOracles(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	var outboundOracles []models.OutboundOracle
-	db.Preload(clause.Associations).Find(&outboundOracles)
-	fmt.Println(outboundOracles)
 
-	ctx.JSON(http.StatusOK, gin.H{"outboundOracles": outboundOracles})
+	userInterface, _ := ctx.Get("user")
+	user, _ := userInterface.(models.User)
+
+	var oracles []models.OutboundOracle
+	db.Preload(clause.Associations).Preload("OutboundOracleTemplate.OracleTemplate").Joins("Oracle").Find(&oracles, "Oracle.user_id = ?", user.ID)
+	fmt.Println(oracles)
+
+	ctx.JSON(http.StatusOK, gin.H{"outboundOracles": oracles})
 }
 
 func GetOutboundOracle(ctx *gin.Context) {
@@ -42,7 +46,7 @@ func GetOutboundOracle(ctx *gin.Context) {
 		panic(err)
 	}
 	var outboundOracle models.OutboundOracle
-	result := db.Preload("OutboundEvents.EventValues.EventParameter").Preload(clause.Associations).First(&outboundOracle, i)
+	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("Oracle.ParameterFilters.Filter").Preload(clause.Associations).First(&outboundOracle, i)
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No outbound Oracle with this ID available."})
 		return
@@ -64,7 +68,7 @@ func UpdateOutboundOracle(ctx *gin.Context) {
 		panic(err)
 	}
 	var outboundOracle models.OutboundOracle
-	result := db.First(&outboundOracle, i)
+	result := db.Preload(clause.Associations).First(&outboundOracle, i)
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No outbound Oracle with this ID available."})
 		return
@@ -75,10 +79,13 @@ func UpdateOutboundOracle(ctx *gin.Context) {
 		return
 	}
 
-	outboundOracle.Name = outboundOraclePostBody.Name
 	outboundOracle.URI = outboundOraclePostBody.URI
-
 	db.Save(&outboundOracle)
+
+	oracle := outboundOracle.Oracle
+	oracle.Name = outboundOraclePostBody.Oracle.Name
+	db.Save(&oracle)
+
 	ctx.JSON(http.StatusOK, gin.H{"outboundOracle": outboundOracle})
 }
 
@@ -105,12 +112,10 @@ func PostOutboundOracleEvent(ctx *gin.Context) {
 	var outboundOracle models.OutboundOracle
 	db.First(&outboundOracle, i)
 
-	fmt.Println(outboundOracle)
-
 	// TODO: Filter outbound oracle event.
-	outboundEvent := &models.OutboundEvent{
-		OutboundOracle:   outboundOracle,
-		OutboundOracleID: outboundOracle.ID,
+	outboundEvent := &models.Event{
+		Oracle:   outboundOracle.Oracle,
+		OracleID: outboundOracle.ID,
 	}
 	db.Create(&outboundEvent)
 
@@ -121,18 +126,16 @@ func PostOutboundOracleEvent(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Println(bodyData)
-
 	for key, value := range bodyData {
 		var eventParameter models.EventParameter
 		// Add .Where("OutboundOracleTemplateID = ?", outboundOracle.OutboundOracleTemplateID)
-		db.Where("Name = ?", key).First(&eventParameter)
+		db.Where("name = ? AND outbound_oracle_template_id", key, outboundOracle.OutboundOracleTemplateID).First(&eventParameter)
 		sValue := fmt.Sprintf("%v", value)
 		fmt.Println(key, sValue)
 		eventValue := models.EventValue{
 			EventParameterID: eventParameter.ID,
 			Value:            sValue,
-			OutboundEventID:  outboundEvent.ID,
+			EventID:          outboundEvent.ID,
 		}
 		fmt.Println(eventValue)
 		db.Create(&eventValue)

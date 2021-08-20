@@ -15,8 +15,13 @@ export default function OutboundOracleForm({
       <Form.Input
         label="Name"
         name="Name"
-        value={outboundOracle.Name}
-        onChange={updateOutboundOracle}
+        value={outboundOracle.Oracle.Name}
+        onChange={(_, { value }) =>
+          setOutboundOracle({
+            ...outboundOracle,
+            Oracle: { ...outboundOracle.Oracle, Name: value },
+          })
+        }
         placeholder="A name to recognize the oracle"
       />
       <Form.Input

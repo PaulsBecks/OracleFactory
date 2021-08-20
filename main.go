@@ -1,8 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/PaulsBecks/OracleFactory/src/models"
 	"github.com/PaulsBecks/OracleFactory/src/routes"
+	"github.com/PaulsBecks/OracleFactory/src/utils"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -21,13 +26,17 @@ func InitDB() {
 		&models.EventValue{},
 		&models.OutboundOracle{},
 		&models.EventParameter{},
-		&models.OutboundEvent{},
+		&models.Event{},
 		&models.InboundOracleTemplate{},
 		&models.InboundOracle{},
-		&models.OutboundEvent{},
 		&models.User{},
+		&models.Filter{},
+		&models.ParameterFilter{},
 	)
+	models.InitFilter(db)
 	user := models.User{
+		Email:                       "test@example.com",
+		Password:                    utils.HashAndSalt([]byte("test")),
 		EthereumPrivateKey:          "b28c350293dcf09cc5b5a9e5922e2f73e48983fe8d325855f04f749b1a82e0e6",
 		EthereumAddress:             "ws://eth-test-net:8545/",
 		HyperledgerOrganizationName: "Org1MSP",
@@ -123,34 +132,38 @@ klhkxHSz4EwTh+XVyYpCqpuTszbaTPELBAtmFPSsdaeYOa8pumy7HEI4
 	}
 
 	db.Create(&user)
-	inboundOracleTemplate := models.InboundOracleTemplate{
+	oracleTemplate := models.OracleTemplate{
 		BlockchainName:  "Hyperledger",
-		ContractName:    "TransferAsset",
+		EventName:       "TransferAsset",
 		ContractAddress: "basic",
 	}
+	db.Create(&oracleTemplate)
+	inboundOracleTemplate := models.InboundOracleTemplate{OracleTemplate: oracleTemplate}
 	db.Create(&inboundOracleTemplate)
+	oracle := models.Oracle{
+		Name:   "Hyperledger Test",
+		UserID: user.ID,
+	}
+	db.Create(&oracle)
 	inboundOracle := models.InboundOracle{
-		Name:                    "Hyperledger Test",
-		UserID:                  user.ID,
+		Oracle:                  oracle,
 		InboundOracleTemplateID: inboundOracleTemplate.ID,
 	}
 	db.Create(&inboundOracle)
 	eventParameter := models.EventParameter{
-		Name:                    "asset1",
-		Type:                    "string",
-		InboundOracleTemplateID: inboundOracleTemplate.ID,
+		Name:             "asset1",
+		Type:             "string",
+		OracleTemplateID: oracle.ID,
 	}
 	db.Create(&eventParameter)
 	outboundOracleTemplate := models.OutboundOracleTemplate{
-		Blockchain: "Hyperledger",
-		EventName:  "TransferAsset",
-		Address:    "basic",
+		OracleTemplate: oracleTemplate,
 	}
 	db.Create(&outboundOracleTemplate)
 	eventParameterOut := models.EventParameter{
-		Name:                     "owner",
-		Type:                     "string",
-		OutboundOracleTemplateID: outboundOracleTemplate.ID,
+		Name:             "owner",
+		Type:             "string",
+		OracleTemplateID: oracle.ID,
 	}
 	db.Create(&eventParameterOut)
 }
@@ -160,17 +173,33 @@ func auth(ctx *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	var user models.User
-	// TODO: get ID from token
-	userID := 1
-	db.First(&user, userID)
-	ctx.Set("user", user)
+	authHeader := ctx.GetHeader("Authorization")
+	tokenString := authHeader[len("Bearer "):]
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+		if _, isvalid := t.Method.(*jwt.SigningMethodHMAC); !isvalid {
+			return nil, fmt.Errorf("Invalid token", t.Header["alg"])
+		}
+		return []byte(utils.JWT_SECRET), nil
+	})
+	if err == nil && token.Valid {
+		claims := token.Claims.(jwt.MapClaims)
+		userID := uint(claims["id"].(float64))
+		var user models.User
+		db.First(&user, userID)
+		ctx.Set("user", user)
+	} else {
+		fmt.Println(err)
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+	}
 }
 
 func main() {
 	app := gin.Default()
 	middleware(app)
 	InitDB()
+
+	app.POST("/users/login", routes.Login)
+	app.POST("/users/signup", routes.Register)
 
 	authorized := app.Group("/", auth)
 	{
@@ -196,6 +225,14 @@ func main() {
 		authorized.POST("/inboundOracleTemplates/:inboundOracleTemplateID/eventParameters", routes.PostInboundEventParameters)
 		authorized.GET("/inboundOracleTemplates", routes.GetInboundOracleTemplates)
 		authorized.POST("/inboundOracleTemplates", routes.PostInboundOracleTemplate)
+
+		authorized.GET("/filters", routes.GetFilters)
+
+		authorized.GET("/oracles/:oracleID/parameterFilters", routes.GetOracleParameterFilters)
+		authorized.POST("/oracles/:oracleID/parameterFilters", routes.PostOracleParameterFilters)
+		authorized.DELETE("/oracles/:oracleID/parameterFilters/:parameterFilterID", routes.DeleteOracleParameterFilter)
+
+		authorized.GET("/oracleTemplates/:oracleTemplateID/eventParameters", routes.GetOracleTemplateEventParameters)
 
 		authorized.GET("/user", routes.GetCurrentUserDetail)
 		authorized.PUT("/user", routes.UpdateCurrentUser)

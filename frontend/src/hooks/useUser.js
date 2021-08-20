@@ -3,7 +3,7 @@ import getData from "../services/getData";
 import putData from "../services/putData";
 
 export default function useUser() {
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
 
   async function fetchUser() {

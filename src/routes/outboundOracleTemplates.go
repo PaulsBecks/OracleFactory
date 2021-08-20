@@ -28,8 +28,15 @@ func GetOutboundOracleTemplate(ctx *gin.Context) {
 		return
 	}
 
+	userInterface, _ := ctx.Get("user")
+	user, _ := userInterface.(models.User)
+
 	var outboundOracleTemplate models.OutboundOracleTemplate
-	db.Preload(clause.Associations).First(&outboundOracleTemplate, i)
+	db.Joins("OracleTemplate").Preload("OracleTemplate.EventParameters").Preload("OutboundOracles.Oracle").Find(&outboundOracleTemplate, i)
+
+	var outboundOracles []models.OutboundOracle
+	db.Joins("Oracle").Preload("OutboundOracleTemplate.OracleTemplate").Find(&outboundOracles, "outbound_oracle_template_id = ? AND Oracle.user_id = ?", outboundOracleTemplate.ID, user.ID)
+	outboundOracleTemplate.OutboundOracles = outboundOracles
 
 	ctx.JSON(http.StatusOK, gin.H{"outboundOracleTemplate": outboundOracleTemplate})
 }
@@ -41,8 +48,11 @@ func GetOutboundOracleTemplates(ctx *gin.Context) {
 		return
 	}
 
+	userInterface, _ := ctx.Get("user")
+	user, _ := userInterface.(models.User)
+
 	var outboundOracleTemplates []models.OutboundOracleTemplate
-	db.Preload(clause.Associations).Find(&outboundOracleTemplates)
+	db.Joins("OracleTemplate").Preload(clause.Associations).Find(&outboundOracleTemplates, "OracleTemplate.private = 0 OR OracleTemplate.user_id = ?", user.ID)
 
 	fmt.Println(outboundOracleTemplates)
 
@@ -77,12 +87,16 @@ func PostOutboundOracle(ctx *gin.Context) {
 	userInterface, _ := ctx.Get("user")
 	user, _ := userInterface.(models.User)
 
+	oracle := models.Oracle{
+		Name: outboundOraclePostBody.Oracle.Name,
+		User: user,
+	}
+
 	outboundOracle := &models.OutboundOracle{
 		OutboundOracleTemplate:   outboundOracleTemplate,
 		OutboundOracleTemplateID: outboundOracleTemplate.ID,
 		URI:                      outboundOraclePostBody.URI,
-		Name:                     outboundOraclePostBody.Name,
-		User:                     user,
+		Oracle:                   oracle,
 	}
 
 	db.Create(&outboundOracle)
@@ -113,11 +127,19 @@ func PostOutboundOracleTemplate(ctx *gin.Context) {
 		return
 	}
 
-	outboundOracleTemplate := models.OutboundOracleTemplate{
-		Blockchain: outboundOracleTemplateBody.BlockchainName,
-		Address:    outboundOracleTemplateBody.ContractAddress,
-		EventName:  outboundOracleTemplateBody.EventName,
+	userInterface, _ := ctx.Get("user")
+	user, _ := userInterface.(models.User)
+
+	oracleTemplate := models.OracleTemplate{
+		BlockchainName:  outboundOracleTemplateBody.BlockchainName,
+		ContractAddress: outboundOracleTemplateBody.ContractAddress,
+		EventName:       outboundOracleTemplateBody.EventName,
+		UserID:          user.ID,
+		Private:         outboundOracleTemplateBody.Private,
 	}
+	db.Create(&oracleTemplate)
+
+	outboundOracleTemplate := models.OutboundOracleTemplate{OracleTemplate: oracleTemplate}
 	db.Create(&outboundOracleTemplate)
 	ctx.JSON(http.StatusOK, gin.H{"outboundOracleTemplate": outboundOracleTemplate})
 }
@@ -150,9 +172,9 @@ func PostOutboundEventParameters(ctx *gin.Context) {
 	}
 
 	eventParameter := models.EventParameter{
-		Name:                     eventParameterBody.Name,
-		Type:                     eventParameterBody.Type,
-		OutboundOracleTemplateID: outboundOracleTemplate.ID,
+		Name:             eventParameterBody.Name,
+		Type:             eventParameterBody.Type,
+		OracleTemplateID: outboundOracleTemplate.OracleTemplate.ID,
 	}
 	db.Create(&eventParameter)
 	ctx.JSON(http.StatusOK, gin.H{"eventParameter": eventParameter})

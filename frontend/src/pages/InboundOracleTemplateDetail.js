@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import useInboundOracleTemplate from "../hooks/useInboundOracleTemplate";
 import { Button } from "semantic-ui-react";
 import { InboundOracleTable } from "../components";
+import InboundOracleTemplateCard from "../components/InboundOracleTemplateCard";
 
 export default function InboundOracleTemplateDetail({}) {
   const { inboundOracleTemplateID } = useParams();
@@ -16,27 +17,19 @@ export default function InboundOracleTemplateDetail({}) {
 
   return (
     <div>
-      <h1>Inbound Oracle Template</h1>
       <div>
-        <p>
-          <b>Event Name:</b> {inboundOracleTemplate.ContractName}
-        </p>
-        <p>
-          <b>Contract Address:</b> {inboundOracleTemplate.ContractAddress}
-        </p>
-        <p>
-          <b>Blockchain Name:</b> {inboundOracleTemplate.BlockchainName}
-        </p>
-        <p>
-          <b>Blockchain Address:</b> {inboundOracleTemplate.BlockchainAddress}
-        </p>
+        <InboundOracleTemplateCard
+          inboundOracleTemplate={inboundOracleTemplate}
+        />
         <p>
           <b>Parameters:</b>
           {JSON.stringify(
-            inboundOracleTemplate.EventParameters.map((parameter) => ({
-              name: parameter.Name,
-              type: parameter.Type,
-            }))
+            inboundOracleTemplate.OracleTemplate.EventParameters.map(
+              (parameter) => ({
+                name: parameter.Name,
+                type: parameter.Type,
+              })
+            )
           )}
         </p>
       </div>

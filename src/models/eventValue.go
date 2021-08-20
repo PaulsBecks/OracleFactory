@@ -1,6 +1,9 @@
 package models
 
 import (
+	"fmt"
+
+	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"gorm.io/gorm"
 )
 
@@ -9,8 +12,23 @@ type EventValue struct {
 	Value            string
 	EventParameterID uint
 	EventParameter   EventParameter
-	OutboundEventID  uint
-	OutboundEvent    OutboundEvent
-	InboundEventID   uint
-	InboundEvent     InboundEvent
+	EventID          uint
+	Event            Event
+}
+
+func ParseEventValues(bodyData map[string]interface{}, inboundEvent Event, inboundOracleTemplateID uint) ([]EventValue, error) {
+	var eventParameters []EventParameter
+	db, err := utils.DBConnection()
+	if err != nil {
+		return nil, err
+	}
+	db.Find(&eventParameters, "inbound_oracle_template_id=?", inboundOracleTemplateID)
+	var eventValues []EventValue
+	for _, eventParameter := range eventParameters {
+		v := bodyData[eventParameter.Name]
+		eventValue := EventValue{EventID: inboundEvent.ID, Event: inboundEvent, Value: fmt.Sprintf("%v", v), EventParameterID: eventParameter.ID, EventParameter: eventParameter}
+		db.Create(&eventValue)
+		eventValues = append(eventValues, eventValue)
+	}
+	return eventValues, nil
 }

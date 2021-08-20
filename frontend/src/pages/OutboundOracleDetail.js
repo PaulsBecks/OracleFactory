@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Button, Table } from "semantic-ui-react";
 import useOutboundOracle from "../hooks/useOutboundOracle";
 import { OutboundOracleForm } from "../components";
+import FilterForm from "../components/FilterForm";
 
 export default function OutboundOracleDetail({}) {
   const { outboundOracleID } = useParams();
@@ -41,11 +42,18 @@ export default function OutboundOracleDetail({}) {
             </>
           )}
         </div>
-        <br />
       </div>
+      <br />
+      <FilterForm
+        oracleID={outboundOracle.OracleID}
+        oracleTemplateID={
+          outboundOracle.OutboundOracleTemplate.OracleTemplateID
+        }
+      />
+      <br />
       <div>
         <h2>Events</h2>
-        {outboundOracle.OutboundEvents.length > 0 ? (
+        {outboundOracle.Oracle.Events.length > 0 ? (
           <Table>
             <Table.Header>
               <Table.Row>
@@ -55,7 +63,7 @@ export default function OutboundOracleDetail({}) {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {outboundOracle.OutboundEvents.map((outboundEvent) => (
+              {outboundOracle.Oracle.Events.map((outboundEvent) => (
                 <Table.Row>
                   <Table.Cell>{outboundEvent.ID}</Table.Cell>
                   <Table.Cell>

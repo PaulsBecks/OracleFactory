@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Segment, Header } from "semantic-ui-react";
-
+import { Checkbox, Form, Segment, Header } from "semantic-ui-react";
+import Identicon from "react-identicons";
 function formToAbi(oracles) {
   return JSON.stringify(
     oracles.map((oracle) => {
@@ -59,13 +59,7 @@ export default function InboundOracleTemplateForm({
           disabled
           placeholder="The name of the blockchain"
         />
-        <Form.Input
-          label="Blockchain Address"
-          name="BlockchainAddress"
-          value={inboundOracleTemplate.BlockchainAddress}
-          onChange={updateInboundOracleTemplate}
-          placeholder="The address of the blockchain"
-        />
+
         <Form.Input
           label="Contract Address"
           name="ContractAddress"
@@ -74,7 +68,26 @@ export default function InboundOracleTemplateForm({
           placeholder="The address of the contract"
         />
       </Form.Group>
-
+      <Form.Group>
+        <Form.Field>
+          <label>Icon</label>
+          <Identicon
+            string={inboundOracleTemplate.ContractAddress}
+            size={200}
+          />
+        </Form.Field>
+      </Form.Group>
+      <Form.Group>
+        <Form.Checkbox
+          checked={inboundOracleTemplate.Private}
+          label="Private Oracle"
+          name="Private"
+          toggle
+          onChange={(event, { name, checked }) =>
+            updateInboundOracleTemplate(event, { name, value: checked })
+          }
+        />
+      </Form.Group>
       <Form.TextArea
         label="ABI"
         value={abi}

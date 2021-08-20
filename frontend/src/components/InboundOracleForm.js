@@ -12,8 +12,13 @@ export default function InboundOracleForm({ inboundOracle, setInboundOracle }) {
       <Form.Input
         label="Name"
         name="Name"
-        value={inboundOracle.Name}
-        onChange={updateInboundOracle}
+        value={inboundOracle.Oracle.Name}
+        onChange={(_, { value }) =>
+          setInboundOracle({
+            ...inboundOracle,
+            Oracle: { ...inboundOracle.Oracle, Name: value },
+          })
+        }
         placeholder="A name to recognize the oracle"
       />
     </Form>

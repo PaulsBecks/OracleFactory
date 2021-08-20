@@ -6,8 +6,8 @@ import (
 )
 
 type OutboundOraclePostBody struct {
-	URI  string
-	Name string
+	URI    string
+	Oracle OracleBody
 }
 
 // TODO: create real validation

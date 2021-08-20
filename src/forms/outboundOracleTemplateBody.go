@@ -10,6 +10,7 @@ type OutboundOracleTemplateBody struct {
 	BlockchainAddress string
 	EventName         string
 	ContractAddress   string
+	Private           bool
 }
 
 // TODO: create real validation
