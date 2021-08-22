@@ -16,7 +16,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func ParseValues(event models.Event) ([]interface{}, error) {
+func ParseValues(event *models.Event) ([]interface{}, error) {
 	var bodyData map[string]interface{}
 
 	if e := json.Unmarshal(event.Body, &bodyData); e != nil {
@@ -35,7 +35,7 @@ func ParseValues(event models.Event) ([]interface{}, error) {
 	return parameters, nil
 }
 
-func CreateTransaction(inboundOracle *models.InboundOracle, user *models.User, event models.Event) error {
+func CreateTransaction(inboundOracle *models.InboundOracle, user *models.User, event *models.Event) error {
 	client, err := ethclient.Dial(inboundOracle.Oracle.User.EthereumAddress)
 	if err != nil {
 		log.Fatal(err)
@@ -87,6 +87,6 @@ func CreateTransaction(inboundOracle *models.InboundOracle, user *models.User, e
 		return err
 	}
 
-	fmt.Println("INFO: tx sent %s", tx.Hash().Hex())
+	fmt.Printf("INFO: tx sent %s\n", tx.Hash().Hex())
 	return nil
 }

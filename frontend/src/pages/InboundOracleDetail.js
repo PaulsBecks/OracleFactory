@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useInboundOracle from "../hooks/useInboundOracle";
-import { Button, Form, Table } from "semantic-ui-react";
-import { InboundOracleForm } from "../components";
+import { Button, Form, Icon, Table, TableCell } from "semantic-ui-react";
+import { InboundOracleForm, StartStopButton } from "../components";
 import FilterForm from "../components/FilterForm";
+import { ORACLE_STATUS_STARTED } from "../config/constants";
 
 export default function InboundOracleDetail({}) {
   const { inboundOracleID } = useParams();
-  const [inboundOracle, updateInboundOracle, loading] =
-    useInboundOracle(inboundOracleID);
+  const [
+    inboundOracle,
+    updateInboundOracle,
+    loading,
+    startInboundOracle,
+    stopInboundOracle,
+  ] = useInboundOracle(inboundOracleID);
 
   const [localInboundOracle, setLocalInboundOracle] = useState();
 
@@ -51,6 +57,14 @@ export default function InboundOracleDetail({}) {
           <b>Webhook:</b> http://localhost:8080/inboundOracle/
           {inboundOracle.ID}/events
         </p>
+        <StartStopButton
+          loading={loading}
+          oracleStarted={inboundOracle.Oracle.Status === ORACLE_STATUS_STARTED}
+          stopOracle={stopInboundOracle}
+          startOracle={startInboundOracle}
+        />
+        <br />
+        <br />
       </div>
       <br />
       <FilterForm
@@ -61,12 +75,13 @@ export default function InboundOracleDetail({}) {
       <div>
         <h2>Events</h2>
         {inboundOracle.Oracle.Events.length > 0 ? (
-          <Table>
+          <Table unstackable>
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell>ID</Table.HeaderCell>
                 <Table.HeaderCell>At</Table.HeaderCell>
                 <Table.HeaderCell>Content</Table.HeaderCell>
+                <Table.HeaderCell>Success</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -85,6 +100,13 @@ export default function InboundOracleDetail({}) {
                       </>
                     ))}
                   </Table.Cell>
+                  <TableCell>
+                    {inboundEvent.Success ? (
+                      <Icon name="check" />
+                    ) : (
+                      <Icon name="times" />
+                    )}
+                  </TableCell>
                 </Table.Row>
               ))}
             </Table.Body>

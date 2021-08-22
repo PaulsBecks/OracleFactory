@@ -208,6 +208,8 @@ func main() {
 		authorized.PUT("/outboundOracles/:outboundOracleId", routes.UpdateOutboundOracle)
 		authorized.DELETE("/outboundOracles/:outboundOracleId", routes.DeleteOutboundOracle)
 		authorized.POST("/outboundOracles/:outboundOracleId/events", routes.PostOutboundOracleEvent)
+		authorized.POST("/outboundOracles/:outboundOracleId/start", routes.StartOutboundOracle)
+		authorized.POST("/outboundOracles/:outboundOracleId/stop", routes.StopOutboundOracle)
 
 		authorized.GET("/outboundOracleTemplates", routes.GetOutboundOracleTemplates)
 		authorized.POST("/outboundOracleTemplates", routes.PostOutboundOracleTemplate)
@@ -220,6 +222,8 @@ func main() {
 		authorized.POST("/inboundOracles/:inboundOracleID/events", routes.PostInboundOracleEvent)
 		authorized.GET("/inboundOracleTemplates/:inboundOracleTemplateID", routes.GetInboundOracleTemplate)
 		authorized.GET("/inboundOracles", routes.GetInboundOracles)
+		authorized.POST("/inboundOracles/:inboundOracleID/start", routes.StartInboundOracle)
+		authorized.POST("/inboundOracles/:inboundOracleID/stop", routes.StopInboundOracle)
 
 		authorized.POST("/inboundOracleTemplates/:inboundOracleTemplateID/inboundOracles", routes.PostInboundOracle)
 		authorized.POST("/inboundOracleTemplates/:inboundOracleTemplateID/eventParameters", routes.PostInboundEventParameters)

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import getData from "../services/getData";
+import postData from "../services/postData";
 import putData from "../services/putData";
 
 export default function useOutboundOracle(id) {
@@ -11,16 +12,40 @@ export default function useOutboundOracle(id) {
     setOutboundOracle(_outboundOracle.outboundOracle);
   }
 
-  async function updateOutboundOracle(data) {
+  async function fetchWrapper(callback) {
     setLoading(true);
-    await putData("/outboundOracles/" + id, data);
+    await callback();
     await fetchOutboundOracle();
     setLoading(false);
+  }
+
+  async function updateOutboundOracle(data) {
+    await fetchWrapper(
+      async () => await putData("/outboundOracles/" + id, data)
+    );
+  }
+
+  async function startOutboundOracle() {
+    await fetchWrapper(
+      async () => await postData("/outboundOracles/" + id + "/start")
+    );
+  }
+
+  async function stopOutboundOracle() {
+    await fetchWrapper(
+      async () => await postData("/outboundOracles/" + id + "/stop")
+    );
   }
 
   useEffect(() => {
     fetchOutboundOracle();
   }, []);
 
-  return [outboundOracle, updateOutboundOracle, loading];
+  return [
+    outboundOracle,
+    updateOutboundOracle,
+    loading,
+    startOutboundOracle,
+    stopOutboundOracle,
+  ];
 }

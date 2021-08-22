@@ -9,7 +9,6 @@ function Home() {
   const [inboundOracles] = useInboundOracles();
   return (
     <div>
-      <h1>Home</h1>
       <div style={{ display: "flex" }}>
         <Button
           basic

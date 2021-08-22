@@ -16,13 +16,13 @@ type EventValue struct {
 	Event            Event
 }
 
-func ParseEventValues(bodyData map[string]interface{}, inboundEvent Event, inboundOracleTemplateID uint) ([]EventValue, error) {
+func ParseEventValues(bodyData map[string]interface{}, inboundEvent Event, oracleTemplateID uint) ([]EventValue, error) {
 	var eventParameters []EventParameter
 	db, err := utils.DBConnection()
 	if err != nil {
 		return nil, err
 	}
-	db.Find(&eventParameters, "inbound_oracle_template_id=?", inboundOracleTemplateID)
+	db.Find(&eventParameters, "oracle_template_id = ?", oracleTemplateID)
 	var eventValues []EventValue
 	for _, eventParameter := range eventParameters {
 		v := bodyData[eventParameter.Name]
@@ -30,5 +30,6 @@ func ParseEventValues(bodyData map[string]interface{}, inboundEvent Event, inbou
 		db.Create(&eventValue)
 		eventValues = append(eventValues, eventValue)
 	}
+	fmt.Print(eventValues)
 	return eventValues, nil
 }

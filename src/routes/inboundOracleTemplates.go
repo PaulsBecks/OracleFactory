@@ -90,13 +90,7 @@ func GetInboundOracleTemplates(ctx *gin.Context) {
 }
 
 func PostInboundOracle(ctx *gin.Context) {
-	inboundOracleTemplateIDString := ctx.Param("inboundOracleTemplateID")
-	inboundOracleTemplateID, err := strconv.Atoi(inboundOracleTemplateIDString)
-	if err != nil {
-		fmt.Println("Error: " + err.Error())
-		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid oracle id!"})
-		return
-	}
+	inboundOracleTemplateID := ctx.Param("inboundOracleTemplateID")
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"body": "Ups there was a mistake!"})

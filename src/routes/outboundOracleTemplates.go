@@ -101,7 +101,7 @@ func PostOutboundOracle(ctx *gin.Context) {
 
 	db.Create(&outboundOracle)
 
-	outboundOracle.CreateOracle()
+	outboundOracle.StartOracle()
 
 	if err != nil {
 		fmt.Println(err.Error())

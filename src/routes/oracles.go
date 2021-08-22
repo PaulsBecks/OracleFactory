@@ -50,7 +50,6 @@ func PostOracleParameterFilters(ctx *gin.Context) {
 }
 
 func DeleteOracleParameterFilter(ctx *gin.Context) {
-	//oracleID := ctx.Param("oracleID")
 	parameterFilterID := ctx.Param("parameterFilterID")
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
 	if err != nil {

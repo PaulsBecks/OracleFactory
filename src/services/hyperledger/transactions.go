@@ -9,7 +9,7 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/gateway"
 )
 
-func CreateTransaction(inboundOracle *models.InboundOracle, user *models.User, event models.Event) error {
+func CreateTransaction(inboundOracle *models.InboundOracle, user *models.User, event *models.Event) error {
 	err := os.Setenv("DISCOVERY_AS_LOCALHOST", "true")
 	organizationName := user.HyperledgerOrganizationName
 	cert := user.HyperledgerCert

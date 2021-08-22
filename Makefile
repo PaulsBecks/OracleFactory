@@ -1,6 +1,6 @@
 network_name=oracle-factory-network
 
-all: docker-network oracle-blueprint
+all: docker-network eth-testnet eth-test-contract n8n
 
 docker:
 	docker build -t "oracle_factory" .
@@ -22,11 +22,11 @@ eth-testnet:
 eth-testnet-stop:
 	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="truffelsuite/ganache-cli" --format="{{.ID}}"))
 
-docker-network:
-	docker network create -d bridge $(network_name)
-
-deploy-eth-test-contract:
+eth-test-contract:
 	cd testContract; truffle compile; truffle migrate
+
+docker-network:
+	docker network create -d bridge $(network_name) || true
 
 fmt:
 	go fmt ./...

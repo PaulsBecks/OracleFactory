@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 
 	"github.com/PaulsBecks/OracleFactory/src/forms"
 	"github.com/PaulsBecks/OracleFactory/src/models"
@@ -20,28 +19,13 @@ import (
 
 func PostInboundOracleEvent(ctx *gin.Context) {
 	inboundOracleID := ctx.Param("inboundOracleID")
-	var inboundOracle models.InboundOracle
-
-	// check if oracle with provided id exists
-	i, err := strconv.Atoi(inboundOracleID)
+	inboundOracle, err := models.GetInboundOracleByID(inboundOracleID)
 	if err != nil {
-		fmt.Println("Error: " + err.Error())
-		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid oracle id!"})
-		return
-	}
-	db, err := utils.DBConnection()
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"body": "Ups an error occured!"})
-		return
-	}
-	result := db.Preload(clause.Associations).Preload("InboundOracleTemplate.EventParameters").First(&inboundOracle, i)
-	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No valid oracle id!"})
 		return
 	}
 
-	userInterface, _ := ctx.Get("user")
-	user, _ := userInterface.(models.User)
+	user := models.UserFromContext(ctx)
 
 	data, _ := ioutil.ReadAll(ctx.Request.Body)
 	var bodyData map[string]interface{}
@@ -50,46 +34,37 @@ func PostInboundOracleEvent(ctx *gin.Context) {
 		return
 	}
 
-	inboundEvent := models.Event{
-		OracleID: inboundOracle.ID,
-		Success:  false,
-		Body:     data,
-	}
-	db.Create(&inboundEvent)
+	inboundEvent := models.CreateEvent(inboundOracle.GetOracle().ID, data)
 
-	valid := inboundOracle.GetOracle().CheckInput(bodyData)
-
-	if !valid {
-		ctx.JSON(http.StatusAccepted, gin.H{"msg": "Event data is not passing filters!"})
-		return
-	}
-
-	eventValues, err := models.ParseEventValues(bodyData, inboundEvent, inboundOracle.InboundOracleTemplateID)
+	eventValues, err := models.ParseEventValues(bodyData, *inboundEvent, inboundOracle.InboundOracleTemplateID)
 	if err != nil {
 		fmt.Print(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"msg": "Parameters have wrong types!"})
 	}
 	inboundEvent.EventValues = eventValues
 
+	// Check if event should be filtered
+	if valid := inboundOracle.GetOracle().CheckInput(bodyData); !valid {
+		ctx.JSON(http.StatusAccepted, gin.H{"msg": "Event data is not passing filters!"})
+		return
+	}
+
 	if inboundOracle.InboundOracleTemplate.OracleTemplate.BlockchainName == "Ethereum" {
-		err = ethereum.CreateTransaction(&inboundOracle, &user, inboundEvent)
+		err = ethereum.CreateTransaction(inboundOracle, &user, inboundEvent)
 	}
 	if inboundOracle.InboundOracleTemplate.OracleTemplate.BlockchainName == "Hyperledger" {
-		err = hyperledger.CreateTransaction(&inboundOracle, &user, inboundEvent)
+		err = hyperledger.CreateTransaction(inboundOracle, &user, inboundEvent)
 	}
 
 	if err != nil {
 		fmt.Println(err.Error())
 		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "Unable to create transaction."})
-		inboundEvent.Success = false
-		db.Save(&inboundEvent)
+		inboundEvent.SetSuccess(false)
 		return
 	}
 
-	inboundEvent.Success = true
-	db.Save(&inboundEvent)
+	inboundEvent.SetSuccess(true)
 	ctx.JSON(http.StatusOK, gin.H{})
-
 }
 
 func GetInboundOracles(ctx *gin.Context) {
@@ -108,19 +83,12 @@ func GetInboundOracles(ctx *gin.Context) {
 
 func GetInboundOracle(ctx *gin.Context) {
 	id := ctx.Param("inboundOracleId")
-	i, err := strconv.Atoi(id)
-	if err != nil {
-		fmt.Println("Error: " + err.Error())
-		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid oracle id!"})
-		return
-	}
-
 	db, err := utils.DBConnection()
 	if err != nil {
 		panic(err)
 	}
 	var inboundOracle models.InboundOracle
-	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("InboundOracleTemplate.OracleTemplate").Preload(clause.Associations).First(&inboundOracle, i)
+	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("InboundOracleTemplate.OracleTemplate").Preload(clause.Associations).First(&inboundOracle, id)
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No inbound Oracle with this ID available."})
 		return
@@ -130,19 +98,12 @@ func GetInboundOracle(ctx *gin.Context) {
 
 func UpdateInboundOracle(ctx *gin.Context) {
 	id := ctx.Param("inboundOracleId")
-	i, err := strconv.Atoi(id)
-	if err != nil {
-		fmt.Println("Error: " + err.Error())
-		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid oracle id!"})
-		return
-	}
-
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
 	var inboundOracle models.InboundOracle
-	result := db.Preload(clause.Associations).First(&inboundOracle, i)
+	result := db.Preload(clause.Associations).First(&inboundOracle, id)
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No inbound Oracle with this ID available."})
 		return
@@ -158,4 +119,26 @@ func UpdateInboundOracle(ctx *gin.Context) {
 
 	db.Save(&oracle)
 	ctx.JSON(http.StatusOK, gin.H{"inboundOracle": inboundOracle})
+}
+
+func StartInboundOracle(ctx *gin.Context) {
+	id := ctx.Param("inboundOracleId")
+	inboundOracle, err := models.GetInboundOracleByID(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No inbound Oracle with this ID available."})
+		return
+	}
+	inboundOracle.GetOracle().Start()
+	ctx.JSON(http.StatusOK, gin.H{"msg": "Oracle got started successfully."})
+}
+
+func StopInboundOracle(ctx *gin.Context) {
+	id := ctx.Param("inboundOracleId")
+	inboundOracle, err := models.GetInboundOracleByID(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No inbound Oracle with this ID available."})
+		return
+	}
+	inboundOracle.GetOracle().Stop()
+	ctx.JSON(http.StatusOK, gin.H{"msg": "Oracle got stopped successfully."})
 }

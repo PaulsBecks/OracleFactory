@@ -10,7 +10,6 @@ export default function OutboundOracleTemplateCard({ outboundOracleTemplate }) {
 
   return (
     <Card
-      style={{ margin: "0 1em 0 1em" }}
       onClick={() =>
         history.push("/outboundOracleTemplates/" + outboundOracleTemplate.ID)
       }

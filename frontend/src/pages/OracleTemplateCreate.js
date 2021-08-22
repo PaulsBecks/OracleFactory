@@ -17,7 +17,7 @@ export default function InboundOracleTemplateCreate() {
 
   return (
     <div>
-      <h1>Create Inbound Oracle</h1>
+      <h1>Create Oracles</h1>
       <InboundOracleTemplateForm
         inboundOracleTemplate={inboundOracleTemplate}
         setInboundOracleTemplate={setInboundOracleTemplate}

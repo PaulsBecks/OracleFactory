@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 
@@ -24,6 +25,7 @@ type Filter struct {
 }
 
 func (f *Filter) Check(scheme string, value string) bool {
+	fmt.Printf("Check %s against %s with filter type %s\n", scheme, value, f.Type)
 	switch f.Type {
 	case TYPE_EQUAL:
 		return scheme == value

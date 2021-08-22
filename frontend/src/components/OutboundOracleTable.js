@@ -1,13 +1,15 @@
-import { Button, Table } from "semantic-ui-react";
+import { Button, Label, Table } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import Identicon from "react-identicons";
+import { ORACLE_STATUS_STARTED } from "../config/constants";
 
 export default function OutboundOracleTable({ outboundOracles }) {
   return (
-    <Table>
+    <Table color="orange">
       <Table.Header>
         <Table.Row>
-          <Table.HeaderCell></Table.HeaderCell>
+          <Table.HeaderCell collapsing></Table.HeaderCell>
+          <Table.HeaderCell collapsing></Table.HeaderCell>
           <Table.HeaderCell>Name</Table.HeaderCell>
           <Table.HeaderCell>Forward To</Table.HeaderCell>
           <Table.HeaderCell></Table.HeaderCell>
@@ -16,6 +18,21 @@ export default function OutboundOracleTable({ outboundOracles }) {
       <Table.Body>
         {outboundOracles.map((outboundOracle) => (
           <Table.Row>
+            <Table.Cell>
+              <Label
+                ribbon
+                content={
+                  outboundOracle.Oracle.Status === ORACLE_STATUS_STARTED
+                    ? "ON"
+                    : "OFF"
+                }
+                color={
+                  outboundOracle.Oracle.Status === ORACLE_STATUS_STARTED
+                    ? "green"
+                    : "red"
+                }
+              />
+            </Table.Cell>
             <Table.Cell>
               <Identicon
                 string={
@@ -27,12 +44,14 @@ export default function OutboundOracleTable({ outboundOracles }) {
             </Table.Cell>
             <Table.Cell>{outboundOracle.Oracle.Name || ""}</Table.Cell>
             <Table.Cell>{outboundOracle.URI}</Table.Cell>
-            <Table.Cell>
+            <Table.Cell textAlign="right">
               <Button
                 as={Link}
                 to={"/outboundOracles/" + outboundOracle.ID}
                 content="Detail"
                 icon="edit"
+                primary
+                basic
               />
             </Table.Cell>
           </Table.Row>

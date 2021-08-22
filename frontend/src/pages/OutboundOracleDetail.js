@@ -2,13 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, Table } from "semantic-ui-react";
 import useOutboundOracle from "../hooks/useOutboundOracle";
-import { OutboundOracleForm } from "../components";
+import { OutboundOracleForm, StartStopButton } from "../components";
 import FilterForm from "../components/FilterForm";
+import { ORACLE_STATUS_STARTED } from "../config/constants";
 
 export default function OutboundOracleDetail({}) {
   const { outboundOracleID } = useParams();
-  const [outboundOracle, updateOutboundOracle, loading] =
-    useOutboundOracle(outboundOracleID);
+  const [
+    outboundOracle,
+    updateOutboundOracle,
+    loading,
+    startOutboundOracle,
+    stopOutboundOracle,
+  ] = useOutboundOracle(outboundOracleID);
 
   const [localOutboundOracles, setLocalOutboundOracle] = useState({});
 
@@ -41,6 +47,15 @@ export default function OutboundOracleDetail({}) {
               />
             </>
           )}
+          <br />
+          <StartStopButton
+            loading={loading}
+            oracleStarted={
+              outboundOracle.Oracle.Status === ORACLE_STATUS_STARTED
+            }
+            stopOracle={stopOutboundOracle}
+            startOracle={startOutboundOracle}
+          />
         </div>
       </div>
       <br />

@@ -56,20 +56,8 @@ func GetOutboundOracle(ctx *gin.Context) {
 
 func UpdateOutboundOracle(ctx *gin.Context) {
 	id := ctx.Param("outboundOracleId")
-	i, err := strconv.Atoi(id)
+	outboundOracle, err := models.GetOutboundOracleById(id)
 	if err != nil {
-		fmt.Println("Error: " + err.Error())
-		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid oracle id!"})
-		return
-	}
-
-	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
-	var outboundOracle models.OutboundOracle
-	result := db.Preload(clause.Associations).First(&outboundOracle, i)
-	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No outbound Oracle with this ID available."})
 		return
 	}
@@ -80,18 +68,51 @@ func UpdateOutboundOracle(ctx *gin.Context) {
 	}
 
 	outboundOracle.URI = outboundOraclePostBody.URI
-	db.Save(&outboundOracle)
+	outboundOracle.Save()
 
 	oracle := outboundOracle.Oracle
 	oracle.Name = outboundOraclePostBody.Oracle.Name
-	db.Save(&oracle)
+	oracle.Save()
 
 	ctx.JSON(http.StatusOK, gin.H{"outboundOracle": outboundOracle})
 }
 
 func DeleteOutboundOracle(ctx *gin.Context) {
 	// TODO: delete oracle for the provided id
-	ctx.JSON(http.StatusOK, gin.H{"body": "Hi there, deletion is not implemented yet!"})
+	ctx.JSON(http.StatusNotImplemented, gin.H{"body": "Hi there, deletion is not implemented yet!"})
+}
+
+func StartOutboundOracle(ctx *gin.Context) {
+	id := ctx.Param("outboundOracleId")
+	outboundOracle, err := models.GetOutboundOracleById(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No outbound Oracle with this ID available."})
+		return
+	}
+	err = outboundOracle.StartOracle()
+	if err != nil {
+		fmt.Print(err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "Unable to start oracle, try again later."})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"msg": "Oracle got started successfully."})
+}
+
+func StopOutboundOracle(ctx *gin.Context) {
+	id := ctx.Param("outboundOracleId")
+	outboundOracle, err := models.GetOutboundOracleById(id)
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No outbound Oracle with this ID available."})
+		return
+	}
+	fmt.Print(outboundOracle)
+	err = outboundOracle.StopOracle()
+	if err != nil {
+		fmt.Print(err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "Unable to stop oracle, try again later."})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{"msg": "Oracle got stopped successfully."})
 }
 
 func PostOutboundOracleEvent(ctx *gin.Context) {
