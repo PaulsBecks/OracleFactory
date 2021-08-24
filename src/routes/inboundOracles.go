@@ -88,7 +88,7 @@ func GetInboundOracle(ctx *gin.Context) {
 		panic(err)
 	}
 	var inboundOracle models.InboundOracle
-	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("InboundOracleTemplate.OracleTemplate").Preload(clause.Associations).First(&inboundOracle, id)
+	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("InboundOracleTemplate.OracleTemplate.EventParameters").Preload(clause.Associations).First(&inboundOracle, id)
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No inbound Oracle with this ID available."})
 		return

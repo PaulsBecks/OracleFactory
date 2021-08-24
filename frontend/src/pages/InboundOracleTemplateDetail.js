@@ -2,7 +2,7 @@ import React from "react";
 import { useParams, Link } from "react-router-dom";
 import useInboundOracleTemplate from "../hooks/useInboundOracleTemplate";
 import { Button } from "semantic-ui-react";
-import { InboundOracleTable } from "../components";
+import { ExampleRequest, InboundOracleTable } from "../components";
 import InboundOracleTemplateCard from "../components/InboundOracleTemplateCard";
 
 export default function InboundOracleTemplateDetail({}) {
@@ -17,21 +17,17 @@ export default function InboundOracleTemplateDetail({}) {
 
   return (
     <div>
-      <div>
+      <div style={{ display: "flex" }}>
         <InboundOracleTemplateCard
           inboundOracleTemplate={inboundOracleTemplate}
         />
-        <p>
-          <b>Parameters:</b>
-          {JSON.stringify(
-            inboundOracleTemplate.OracleTemplate.EventParameters.map(
-              (parameter) => ({
-                name: parameter.Name,
-                type: parameter.Type,
-              })
-            )
-          )}
-        </p>
+        <div style={{ marginLeft: "2em" }}>
+          <ExampleRequest
+            eventParameters={
+              inboundOracleTemplate.OracleTemplate.EventParameters
+            }
+          />
+        </div>
       </div>
       <br />
       <div>

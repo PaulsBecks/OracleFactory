@@ -12,7 +12,7 @@ import {
   InboundOracleTemplates,
   Settings,
 } from "./pages";
-import { Navbar } from "./components";
+import { Footer, Navbar } from "./components";
 import { Container } from "semantic-ui-react";
 import getHeaders from "./services/utils/getHeaders.js";
 import Login from "./pages/Login";
@@ -81,6 +81,7 @@ function App() {
           </Route>
         </Switch>
       </Container>
+      <Footer />
     </Router>
   );
 }

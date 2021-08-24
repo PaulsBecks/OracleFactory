@@ -8,8 +8,10 @@ export default function StartStopButton({
 }) {
   return (
     <Button
+      basic
+      fluid
       loading={loading}
-      content={oracleStarted ? "Stop" : "Start"}
+      content={oracleStarted ? "Stop Oracle" : "Start Oracle"}
       color={oracleStarted ? "negative" : "positive"}
       onClick={oracleStarted ? stopOracle : startOracle}
     />

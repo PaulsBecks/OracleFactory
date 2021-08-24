@@ -46,7 +46,7 @@ func GetOutboundOracle(ctx *gin.Context) {
 		panic(err)
 	}
 	var outboundOracle models.OutboundOracle
-	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("Oracle.ParameterFilters.Filter").Preload(clause.Associations).First(&outboundOracle, i)
+	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("OutboundOracleTemplate.OracleTemplate.EventParameters").Preload("Oracle.ParameterFilters.Filter").Preload(clause.Associations).First(&outboundOracle, i)
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No outbound Oracle with this ID available."})
 		return

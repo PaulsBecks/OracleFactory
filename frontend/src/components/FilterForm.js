@@ -1,4 +1,4 @@
-import { Button, Form, Table, TableHeader } from "semantic-ui-react";
+import { Button, Form, Segment, Table, TableHeader } from "semantic-ui-react";
 import useFilters from "../hooks/useFilters";
 import useParameterFilters from "../hooks/useParameterFilters";
 import useParameters from "../hooks/useEventParameters";
@@ -22,91 +22,94 @@ export default function FilterForm({ oracleTemplateID, oracleID }) {
 
   return (
     <div>
-      <h2>Filters</h2>
-      {parameterFilters.length > 0 ? (
-        <Table>
-          <Table.Header>
-            <Table.HeaderCell>Event Parameter</Table.HeaderCell>
-            <Table.HeaderCell>Filter</Table.HeaderCell>
-            <Table.HeaderCell>Scheme</Table.HeaderCell>
-            <Table.HeaderCell>Action</Table.HeaderCell>
-          </Table.Header>
-          <Table.Body>
-            {parameterFilters.map((parameterFilter) => (
-              <Table.Row>
-                <Table.Cell>{parameterFilter.EventParameter.Name}</Table.Cell>
-                <Table.Cell>{parameterFilter.Filter.Type}</Table.Cell>
-                <Table.Cell> {parameterFilter.Scheme}</Table.Cell>
-                <Table.Cell>
-                  <Button
-                    icon="close"
-                    basic
-                    negative
-                    onClick={() => deleteParameterFilter(parameterFilter.ID)}
-                  />
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
-      ) : (
-        <p>No filters set for this oracle yet.</p>
-      )}
-      <Form>
-        <Form.Group>
-          <Form.Dropdown
-            options={parameters.map((eventParameter) => ({
-              key: eventParameter.ID,
-              text: eventParameter.Name,
-              value: eventParameter.ID,
-            }))}
-            label="Parameter"
-            placeholder="Select event parameter"
-            value={newParameterFilter.EventParameterID}
-            onChange={(_, { value }) =>
-              setNewParameterFilter({
-                ...newParameterFilter,
-                EventParameterID: value,
-              })
-            }
-            selection
-          />
-          <Form.Dropdown
-            options={filters.map((filter) => ({
-              key: filter.ID,
-              text: filter.Type,
-              value: filter.ID,
-            }))}
-            selection
-            placeholder="Select filter"
-            onChange={(_, { value }) => {
-              setNewParameterFilter({
-                ...newParameterFilter,
-                FilterID: value,
-              });
-            }}
-            label="Filter"
-            value={newParameterFilter.FilterID}
-          />
-          <Form.Input
-            label="Scheme"
-            value={newParameterFilter.Scheme}
-            onChange={(_, { value }) =>
-              setNewParameterFilter({ ...newParameterFilter, Scheme: value })
-            }
-          />
-        </Form.Group>
-      </Form>
-      <Button
-        content="Add new Filter"
-        basic
-        primary
-        icon="plus"
-        onClick={async () => {
-          await createParameterFilter(newParameterFilter);
-          setNewParameterFilter(createParameterFilterSceleton(oracleID));
-        }}
-      />
+      <Segment>
+        <h2>Filters</h2>
+        {parameterFilters.length > 0 ? (
+          <Table unstackable>
+            <Table.Header>
+              <Table.HeaderCell>Event Parameter</Table.HeaderCell>
+              <Table.HeaderCell>Filter</Table.HeaderCell>
+              <Table.HeaderCell>Scheme</Table.HeaderCell>
+              <Table.HeaderCell>Action</Table.HeaderCell>
+            </Table.Header>
+            <Table.Body>
+              {parameterFilters.map((parameterFilter) => (
+                <Table.Row>
+                  <Table.Cell>{parameterFilter.EventParameter.Name}</Table.Cell>
+                  <Table.Cell>{parameterFilter.Filter.Type}</Table.Cell>
+                  <Table.Cell> {parameterFilter.Scheme}</Table.Cell>
+                  <Table.Cell>
+                    <Button
+                      icon="close"
+                      basic
+                      negative
+                      onClick={() => deleteParameterFilter(parameterFilter.ID)}
+                    />
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+        ) : (
+          <p>No filters set for this oracle yet.</p>
+        )}
+        <Form>
+          <Form.Group widths="3">
+            <Form.Dropdown
+              options={parameters.map((eventParameter) => ({
+                key: eventParameter.ID,
+                text: eventParameter.Name,
+                value: eventParameter.ID,
+              }))}
+              label="Parameter"
+              placeholder="Select event parameter"
+              value={newParameterFilter.EventParameterID}
+              onChange={(_, { value }) =>
+                setNewParameterFilter({
+                  ...newParameterFilter,
+                  EventParameterID: value,
+                })
+              }
+              selection
+            />
+            <Form.Dropdown
+              options={filters.map((filter) => ({
+                key: filter.ID,
+                text: filter.Type,
+                value: filter.ID,
+              }))}
+              selection
+              placeholder="Select filter"
+              onChange={(_, { value }) => {
+                setNewParameterFilter({
+                  ...newParameterFilter,
+                  FilterID: value,
+                });
+              }}
+              label="Filter"
+              value={newParameterFilter.FilterID}
+            />
+            <Form.Input
+              label="Scheme"
+              value={newParameterFilter.Scheme}
+              onChange={(_, { value }) =>
+                setNewParameterFilter({ ...newParameterFilter, Scheme: value })
+              }
+            />
+          </Form.Group>
+        </Form>
+        <Button
+          content="Add new Filter"
+          basic
+          fluid
+          primary
+          icon="plus"
+          onClick={async () => {
+            await createParameterFilter(newParameterFilter);
+            setNewParameterFilter(createParameterFilterSceleton(oracleID));
+          }}
+        />
+      </Segment>
     </div>
   );
 }

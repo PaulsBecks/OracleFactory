@@ -1,10 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useInboundOracle from "../hooks/useInboundOracle";
-import { Button, Form, Icon, Table, TableCell } from "semantic-ui-react";
-import { InboundOracleForm, StartStopButton } from "../components";
+import {
+  Button,
+  Form,
+  Icon,
+  Segment,
+  Table,
+  TableCell,
+} from "semantic-ui-react";
+import {
+  ExampleRequest,
+  InboundOracleForm,
+  OracleOnOffRibbon,
+  StartStopButton,
+} from "../components";
 import FilterForm from "../components/FilterForm";
 import { ORACLE_STATUS_STARTED } from "../config/constants";
+import InboundOracleTemplateCard from "../components/InboundOracleTemplateCard";
 
 export default function InboundOracleDetail({}) {
   const { inboundOracleID } = useParams();
@@ -30,41 +43,64 @@ export default function InboundOracleDetail({}) {
     return "Loading...";
   }
 
+  console.log(inboundOracle);
+
   return (
     <div>
       <h1>Inbound Oracle</h1>
-      <div>
-        <InboundOracleForm
-          inboundOracle={localInboundOracle}
-          setInboundOracle={setLocalInboundOracle}
-        />
-        {JSON.stringify(localInboundOracle) !==
-          JSON.stringify(inboundOracle) && (
-          <>
-            <br />
-            <Button
-              positive
-              basic
-              loading={loading}
-              content="Save"
-              onClick={() => updateInboundOracle(localInboundOracle)}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+        }}
+      >
+        <div style={{ marginLeft: "1em", marginTop: "1em" }}>
+          <Segment>
+            <OracleOnOffRibbon
+              oracleStarted={
+                inboundOracle.Oracle.Status === ORACLE_STATUS_STARTED
+              }
             />
+            <InboundOracleForm
+              inboundOracle={localInboundOracle}
+              setInboundOracle={setLocalInboundOracle}
+            />
+            {JSON.stringify(localInboundOracle) !==
+              JSON.stringify(inboundOracle) && (
+              <>
+                <br />
+                <Button
+                  positive
+                  basic
+                  loading={loading}
+                  content="Save"
+                  onClick={() => updateInboundOracle(localInboundOracle)}
+                />
+                <br />
+              </>
+            )}
             <br />
-          </>
-        )}
-        <br />
-        <p>
-          <b>Webhook:</b> http://localhost:8080/inboundOracle/
-          {inboundOracle.ID}/events
-        </p>
-        <StartStopButton
-          loading={loading}
-          oracleStarted={inboundOracle.Oracle.Status === ORACLE_STATUS_STARTED}
-          stopOracle={stopInboundOracle}
-          startOracle={startInboundOracle}
-        />
-        <br />
-        <br />
+            <p>
+              <b>Webhook:</b> http://localhost:8080/inboundOracle/
+              {inboundOracle.ID}/events
+            </p>
+            <StartStopButton
+              loading={loading}
+              oracleStarted={
+                inboundOracle.Oracle.Status === ORACLE_STATUS_STARTED
+              }
+              stopOracle={stopInboundOracle}
+              startOracle={startInboundOracle}
+            />
+          </Segment>
+        </div>
+        <div style={{ marginLeft: "1em", marginTop: "1em" }}>
+          <ExampleRequest
+            eventParameters={
+              inboundOracle.InboundOracleTemplate.OracleTemplate.EventParameters
+            }
+          />
+        </div>
       </div>
       <br />
       <FilterForm

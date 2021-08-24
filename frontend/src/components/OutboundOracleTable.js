@@ -2,6 +2,7 @@ import { Button, Label, Table } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import Identicon from "react-identicons";
 import { ORACLE_STATUS_STARTED } from "../config/constants";
+import OracleOnOffRibbon from "./OracleOnOffRibbon";
 
 export default function OutboundOracleTable({ outboundOracles }) {
   return (
@@ -19,17 +20,9 @@ export default function OutboundOracleTable({ outboundOracles }) {
         {outboundOracles.map((outboundOracle) => (
           <Table.Row>
             <Table.Cell>
-              <Label
-                ribbon
-                content={
+              <OracleOnOffRibbon
+                oracleStarted={
                   outboundOracle.Oracle.Status === ORACLE_STATUS_STARTED
-                    ? "ON"
-                    : "OFF"
-                }
-                color={
-                  outboundOracle.Oracle.Status === ORACLE_STATUS_STARTED
-                    ? "green"
-                    : "red"
                 }
               />
             </Table.Cell>

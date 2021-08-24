@@ -7,8 +7,8 @@ export default function Navbar() {
       style={{
         width: "100vw",
         height: "70px",
-        backgroundColor: "var(--primary-color)",
         marginBottom: "2em",
+        borderBottom: "3px solid var(--primary-color)",
         display: "flex",
         justifyContent: "flex-start",
         alignItems: "center",
@@ -21,7 +21,10 @@ export default function Navbar() {
           alignItems: "center",
         }}
       >
-        <Link to="/" style={{ color: "white", fontSize: "25px" }}>
+        <Link
+          to="/"
+          style={{ color: "var(--primary-color)", fontSize: "25px" }}
+        >
           Oracle Factory
         </Link>
         <div>
@@ -34,7 +37,8 @@ export default function Navbar() {
           />
           <Button
             content="Logout"
-            primary
+            negative
+            basic
             style={{ margin: "2em" }}
             onClick={() => {
               localStorage.removeItem("authToken");

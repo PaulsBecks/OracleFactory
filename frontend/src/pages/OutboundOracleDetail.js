@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Table } from "semantic-ui-react";
+import { Button, Segment, Table } from "semantic-ui-react";
 import useOutboundOracle from "../hooks/useOutboundOracle";
-import { OutboundOracleForm, StartStopButton } from "../components";
+import {
+  ExampleRequest,
+  OracleOnOffRibbon,
+  OutboundOracleForm,
+  StartStopButton,
+} from "../components";
 import FilterForm from "../components/FilterForm";
 import { ORACLE_STATUS_STARTED } from "../config/constants";
+import OutboundOracleTemplateCard from "../components/OutboundOracleTemplateCard";
 
 export default function OutboundOracleDetail({}) {
   const { outboundOracleID } = useParams();
@@ -25,36 +31,49 @@ export default function OutboundOracleDetail({}) {
     return "Loading...";
   }
 
+  let oracleStarted = outboundOracle.Oracle.Status === ORACLE_STATUS_STARTED;
   return (
     <div>
       <h1>Outbound Oracle</h1>
-      <div>
-        <div style={{ maxWidth: "400px" }}>
-          <OutboundOracleForm
-            outboundOracle={localOutboundOracles}
-            setOutboundOracle={setLocalOutboundOracle}
-          />
-          {JSON.stringify(localOutboundOracles) !==
-            JSON.stringify(outboundOracle) && (
-            <>
-              <br />
-              <Button
-                loading={loading}
-                content="Save"
-                positive
-                basic
-                onClick={async () => updateOutboundOracle(localOutboundOracles)}
-              />
-            </>
-          )}
-          <br />
-          <StartStopButton
-            loading={loading}
-            oracleStarted={
-              outboundOracle.Oracle.Status === ORACLE_STATUS_STARTED
+      <div style={{ display: "flex", flexWrap: "wrap" }}>
+        <div style={{ marginLeft: "1em", marginTop: "1em" }}>
+          <Segment>
+            <OracleOnOffRibbon oracleStarted={oracleStarted} />
+            <OutboundOracleForm
+              outboundOracle={localOutboundOracles}
+              setOutboundOracle={setLocalOutboundOracle}
+            />
+            {JSON.stringify(localOutboundOracles) !==
+              JSON.stringify(outboundOracle) && (
+              <>
+                <br />
+                <Button
+                  loading={loading}
+                  content="Save"
+                  positive
+                  basic
+                  onClick={async () =>
+                    updateOutboundOracle(localOutboundOracles)
+                  }
+                />
+                <br />
+              </>
+            )}
+            <br />
+            <StartStopButton
+              loading={loading}
+              oracleStarted={oracleStarted}
+              stopOracle={stopOutboundOracle}
+              startOracle={startOutboundOracle}
+            />
+          </Segment>
+        </div>
+        <div style={{ marginLeft: "1em", marginTop: "1em" }}>
+          <ExampleRequest
+            eventParameters={
+              outboundOracle.OutboundOracleTemplate.OracleTemplate
+                .EventParameters
             }
-            stopOracle={stopOutboundOracle}
-            startOracle={startOutboundOracle}
           />
         </div>
       </div>
