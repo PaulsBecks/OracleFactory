@@ -20,7 +20,7 @@ export default function OutboundOracleTemplateCard({ outboundOracleTemplate }) {
       />
       <Card.Content>
         <Card.Header>
-          {outboundOracleTemplate.OracleTemplate.ContractAddress} -{" "}
+          {outboundOracleTemplate.OracleTemplate.ContractAddressSynonym} -{" "}
           {outboundOracleTemplate.OracleTemplate.EventName}
         </Card.Header>
         <Card.Meta>

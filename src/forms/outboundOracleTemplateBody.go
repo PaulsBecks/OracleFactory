@@ -6,11 +6,12 @@ import (
 )
 
 type OutboundOracleTemplateBody struct {
-	BlockchainName    string
-	BlockchainAddress string
-	EventName         string
-	ContractAddress   string
-	Private           bool
+	BlockchainName         string
+	BlockchainAddress      string
+	EventName              string
+	ContractAddress        string
+	ContractAddressSynonym string
+	Private                bool
 }
 
 // TODO: create real validation

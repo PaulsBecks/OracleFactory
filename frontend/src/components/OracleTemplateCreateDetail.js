@@ -10,9 +10,16 @@ export default function OracleTemplateCreate({ fromABI, inbound, outbound }) {
     Private: true,
     BlockchainName: "Ethereum",
     ContractAddress: "",
+    ContractAddressSynonym: "",
     inboundOracleTemplates: fromABI
       ? []
-      : [{ ContractName: "", Type: "function", inputs: [] }],
+      : [
+          {
+            ContractName: "",
+            Type: inbound ? "function" : "event",
+            inputs: [],
+          },
+        ],
   });
 
   const [loading, setLoading] = useState(false);
@@ -42,6 +49,8 @@ export default function OracleTemplateCreate({ fromABI, inbound, outbound }) {
                 BlockchainAddress: inboundOracleTemplate.BlockchainAddress,
                 BlockchainName: inboundOracleTemplate.BlockchainName,
                 ContractAddress: inboundOracleTemplate.ContractAddress,
+                ContractAddressSynonym:
+                  inboundOracleTemplate.ContractAddressSynonym,
                 ContractName: element.ContractName,
                 Private: inboundOracleTemplate.Private,
               });
@@ -50,6 +59,8 @@ export default function OracleTemplateCreate({ fromABI, inbound, outbound }) {
                 BlockchainAddress: inboundOracleTemplate.BlockchainAddress,
                 BlockchainName: inboundOracleTemplate.BlockchainName,
                 ContractAddress: inboundOracleTemplate.ContractAddress,
+                ContractAddressSynonym:
+                  inboundOracleTemplate.ContractAddressSynonym,
                 EventName: element.ContractName,
                 Private: inboundOracleTemplate.Private,
               });

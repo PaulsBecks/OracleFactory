@@ -8,6 +8,8 @@ export default function InboundOracleTemplateCard({ inboundOracleTemplate }) {
     return "";
   }
 
+  console.log(inboundOracleTemplate);
+
   return (
     <Card
       onClick={() =>
@@ -21,7 +23,7 @@ export default function InboundOracleTemplateCard({ inboundOracleTemplate }) {
       />
       <Card.Content>
         <Card.Header>
-          {inboundOracleTemplate.OracleTemplate.ContractAddress} -{" "}
+          {inboundOracleTemplate.OracleTemplate.ContractAddressSynonym} -{" "}
           {inboundOracleTemplate.OracleTemplate.EventName}
         </Card.Header>
         <Card.Meta>

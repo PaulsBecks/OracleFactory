@@ -131,11 +131,12 @@ func PostOutboundOracleTemplate(ctx *gin.Context) {
 	user, _ := userInterface.(models.User)
 
 	oracleTemplate := models.OracleTemplate{
-		BlockchainName:  outboundOracleTemplateBody.BlockchainName,
-		ContractAddress: outboundOracleTemplateBody.ContractAddress,
-		EventName:       outboundOracleTemplateBody.EventName,
-		UserID:          user.ID,
-		Private:         outboundOracleTemplateBody.Private,
+		BlockchainName:         outboundOracleTemplateBody.BlockchainName,
+		ContractAddress:        outboundOracleTemplateBody.ContractAddress,
+		ContractAddressSynonym: outboundOracleTemplateBody.ContractAddressSynonym,
+		EventName:              outboundOracleTemplateBody.EventName,
+		UserID:                 user.ID,
+		Private:                outboundOracleTemplateBody.Private,
 	}
 	db.Create(&oracleTemplate)
 

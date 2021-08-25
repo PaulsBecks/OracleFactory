@@ -71,6 +71,23 @@ export default function InboundOracleTemplateForm({
             placeholder="The address of the contract"
           />
         </Form.Group>
+        <Form.Group widths="equal">
+          <Form.Input
+            label={
+              <label>
+                Contract Address Synonym{" "}
+                <Popup
+                  content="This synonym will be part of the name of the oracle template to identify it. The full name will be a combination of the Contract Address Synonym and the Contract Name."
+                  trigger={<Icon name="info circle" />}
+                />
+              </label>
+            }
+            name="ContractAddressSynonym"
+            value={inboundOracleTemplate.ContractAddressSynonym}
+            onChange={updateInboundOracleTemplate}
+            placeholder="The Oracle Name"
+          />
+        </Form.Group>
         <Form.Group widths="2">
           <Form.Field>
             <label>

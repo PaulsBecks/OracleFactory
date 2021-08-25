@@ -9,13 +9,14 @@ import (
 
 type OracleTemplate struct {
 	gorm.Model
-	BlockchainName  string
-	EventName       string
-	ContractAddress string
-	EventParameters []EventParameter
-	UserID          uint
-	User            User
-	Private         bool
+	BlockchainName         string
+	EventName              string
+	ContractAddress        string
+	ContractAddressSynonym string
+	EventParameters        []EventParameter
+	UserID                 uint
+	User                   User
+	Private                bool
 }
 
 func (o *OracleTemplate) GetEventParameters() []EventParameter {

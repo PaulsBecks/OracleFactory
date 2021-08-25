@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  frontend:
+    build: ./frontend/
+    ports:
+      - "3000:3000"
+    networks:
+      - oracle-factory-network
+  server:
+    build: .
+    ports:
+      - "8080:8080"
+    networks: 
+      - oracle-factory-network
+
+networks:
+    oracle-factory-network:
+        name: oracle-factory-network
