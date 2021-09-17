@@ -1,0 +1,131 @@
+{
+  "id": "a026eb36-d472-42c3-acaa-803773f6a671",
+  "version": "2.0",
+  "name": "Master Thesis",
+  "url": "http://localhost:3000",
+  "tests": [{
+    "id": "09fb5ac5-e01d-4d7c-857f-1d9b90cdf591",
+    "name": "Test",
+    "commands": [{
+      "id": "a8772194-4bae-4475-95ce-ec6171b2dc1d",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "17226350-b4ca-43c7-b759-95ed5ebdcb43",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "778x693",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c879f3cc-27d2-4ab1-ad35-a98f360a1cd7",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=create a new account",
+      "targets": [
+        ["linkText=create a new account", "linkText"],
+        ["css=a", "css:finder"],
+        ["xpath=//a[contains(text(),'create a new account')]", "xpath:link"],
+        ["xpath=//div[@id='root']/div/div/form/p/a", "xpath:idRelative"],
+        ["xpath=//a", "xpath:position"],
+        ["xpath=//a[contains(.,'create a new account')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "03cee2f4-fe0f-4210-a245-d7411e71a274",
+      "comment": "",
+      "command": "click",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.field:nth-child(2) input", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/form/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "cf023702-c98b-4107-b833-fb8ddc7eb1c3",
+      "comment": "",
+      "command": "type",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.field:nth-child(2) input", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/form/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "test@test.com"
+    }, {
+      "id": "9751ad34-a3a9-42b9-8e3b-8c5188366afd",
+      "comment": "",
+      "command": "type",
+      "target": "name=password",
+      "targets": [
+        ["name=password", "name"],
+        ["css=.field:nth-child(3) input", "css:finder"],
+        ["xpath=//input[@name='password']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/form/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": "test"
+    }, {
+      "id": "49f19416-21e7-4fbc-9a55-6a1174add235",
+      "comment": "",
+      "command": "click",
+      "target": "css=.fluid",
+      "targets": [
+        ["css=.fluid", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/form/div[3]/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Signup')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "2f8285b6-cf0f-43a2-a8e0-23c6f5c114aa",
+      "comment": "",
+      "command": "click",
+      "target": "css=.ui:nth-child(2) > div",
+      "targets": [
+        ["css=.ui:nth-child(2) > div", "css:finder"],
+        ["xpath=//div[@id='root']/div[2]/div", "xpath:idRelative"],
+        ["xpath=//div[2]/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d1576b7f-d9df-47f2-bb4d-9e6877d73ef8",
+      "comment": "",
+      "command": "click",
+      "target": "css=.negative",
+      "targets": [
+        ["css=.negative", "css:finder"],
+        ["xpath=//div[@id='root']/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'Logout')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "53fbf46c-f0ab-4ddf-a8cf-3046f1cf0ddd",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "b0476b0e-fa0f-492c-972e-cf7adb1396c3",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["09fb5ac5-e01d-4d7c-857f-1d9b90cdf591"]
+  }],
+  "urls": ["http://localhost:3000/"],
+  "plugins": []
+}

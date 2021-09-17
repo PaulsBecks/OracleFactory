@@ -3,12 +3,19 @@
 More to be added...
 
 # TODO
-[] Interface to create OutboundOracleTemplates 
-    - Without ABI?
-
 [] Delete oracle
 
 
-# Of lesser concern
-[] Create Users and link them to Oracles
-[] Make the oracles only visible to the user authenticated
+
+# Prerequirements
+
+node 16.5
+golang
+npm
+Make
+Docker
+
+## For use cases
+npm install -g selenium-side-runner
+
+npm install -g chromedriver

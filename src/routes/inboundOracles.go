@@ -25,7 +25,8 @@ func PostInboundOracleEvent(ctx *gin.Context) {
 		return
 	}
 
-	user := models.UserFromContext(ctx)
+	//user := models.UserFromContext(ctx)
+	user := inboundOracle.GetOracle().GetUser()
 
 	data, _ := ioutil.ReadAll(ctx.Request.Body)
 	var bodyData map[string]interface{}
@@ -36,7 +37,7 @@ func PostInboundOracleEvent(ctx *gin.Context) {
 
 	inboundEvent := models.CreateEvent(inboundOracle.GetOracle().ID, data)
 
-	eventValues, err := models.ParseEventValues(bodyData, *inboundEvent, inboundOracle.InboundOracleTemplateID)
+	eventValues, err := models.ParseEventValues(bodyData, *inboundEvent, inboundOracle.InboundOracleTemplate.OracleTemplateID)
 	if err != nil {
 		fmt.Print(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"msg": "Parameters have wrong types!"})
@@ -50,10 +51,10 @@ func PostInboundOracleEvent(ctx *gin.Context) {
 	}
 
 	if inboundOracle.InboundOracleTemplate.OracleTemplate.BlockchainName == "Ethereum" {
-		err = ethereum.CreateTransaction(inboundOracle, &user, inboundEvent)
+		err = ethereum.CreateTransaction(inboundOracle, user, inboundEvent)
 	}
 	if inboundOracle.InboundOracleTemplate.OracleTemplate.BlockchainName == "Hyperledger" {
-		err = hyperledger.CreateTransaction(inboundOracle, &user, inboundEvent)
+		err = hyperledger.CreateTransaction(inboundOracle, user, inboundEvent)
 	}
 
 	if err != nil {
@@ -122,7 +123,7 @@ func UpdateInboundOracle(ctx *gin.Context) {
 }
 
 func StartInboundOracle(ctx *gin.Context) {
-	id := ctx.Param("inboundOracleId")
+	id := ctx.Param("inboundOracleID")
 	inboundOracle, err := models.GetInboundOracleByID(id)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No inbound Oracle with this ID available."})
@@ -133,7 +134,7 @@ func StartInboundOracle(ctx *gin.Context) {
 }
 
 func StopInboundOracle(ctx *gin.Context) {
-	id := ctx.Param("inboundOracleId")
+	id := ctx.Param("inboundOracleID")
 	inboundOracle, err := models.GetInboundOracleByID(id)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No inbound Oracle with this ID available."})

@@ -81,7 +81,7 @@ export default function InboundOracleDetail({}) {
             )}
             <br />
             <p>
-              <b>Webhook:</b> http://localhost:8080/inboundOracle/
+              <b>Webhook:</b> http://localhost:8080/inboundOracles/
               {inboundOracle.ID}/events
             </p>
             <StartStopButton

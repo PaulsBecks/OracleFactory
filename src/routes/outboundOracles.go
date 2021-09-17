@@ -10,6 +10,7 @@ import (
 
 	"github.com/PaulsBecks/OracleFactory/src/forms"
 	"github.com/PaulsBecks/OracleFactory/src/models"
+	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -124,7 +125,7 @@ func PostOutboundOracleEvent(ctx *gin.Context) {
 		return
 	}
 
-	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
+	db, err := utils.DBConnection()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Ups there was a mistake!"})
 		return
@@ -135,8 +136,8 @@ func PostOutboundOracleEvent(ctx *gin.Context) {
 
 	// TODO: Filter outbound oracle event.
 	outboundEvent := &models.Event{
-		Oracle:   outboundOracle.Oracle,
-		OracleID: outboundOracle.ID,
+		Oracle:   *outboundOracle.GetOracle(),
+		OracleID: outboundOracle.GetOracle().ID,
 	}
 	db.Create(&outboundEvent)
 
@@ -150,7 +151,7 @@ func PostOutboundOracleEvent(ctx *gin.Context) {
 	for key, value := range bodyData {
 		var eventParameter models.EventParameter
 		// Add .Where("OutboundOracleTemplateID = ?", outboundOracle.OutboundOracleTemplateID)
-		db.Where("name = ? AND outbound_oracle_template_id", key, outboundOracle.OutboundOracleTemplateID).First(&eventParameter)
+		db.Where("name = ? AND oracle_template_id", key, outboundOracle.ID).First(&eventParameter)
 		sValue := fmt.Sprintf("%v", value)
 		fmt.Println(key, sValue)
 		eventValue := models.EventValue{

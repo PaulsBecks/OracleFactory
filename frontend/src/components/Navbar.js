@@ -42,7 +42,7 @@ export default function Navbar() {
             style={{ margin: "2em" }}
             onClick={() => {
               localStorage.removeItem("authToken");
-              window.location.reload();
+              document.location.href = "/";
             }}
           />
         </div>

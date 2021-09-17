@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"gorm.io/gorm"
@@ -25,6 +26,7 @@ func ParseEventValues(bodyData map[string]interface{}, inboundEvent Event, oracl
 	db.Find(&eventParameters, "oracle_template_id = ?", oracleTemplateID)
 	var eventValues []EventValue
 	for _, eventParameter := range eventParameters {
+		fmt.Println("EventParameter", eventParameter)
 		v := bodyData[eventParameter.Name]
 		eventValue := EventValue{EventID: inboundEvent.ID, Event: inboundEvent, Value: fmt.Sprintf("%v", v), EventParameterID: eventParameter.ID, EventParameter: eventParameter}
 		db.Create(&eventValue)
@@ -32,4 +34,14 @@ func ParseEventValues(bodyData map[string]interface{}, inboundEvent Event, oracl
 	}
 	fmt.Print(eventValues)
 	return eventValues, nil
+}
+
+func (e *EventValue) GetEventParameter() EventParameter {
+	var eventParameter EventParameter
+	db, err := utils.DBConnection()
+	if err != nil {
+		log.Fatal("No DB connection")
+	}
+	db.Find(&eventParameter, e.EventParameterID)
+	return eventParameter
 }

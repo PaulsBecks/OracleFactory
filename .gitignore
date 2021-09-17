@@ -1,2 +1,4 @@
+node_modules/
 OracleFactory
 OracleFactory.db
+fabric-samples/

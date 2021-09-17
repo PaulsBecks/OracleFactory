@@ -22,11 +22,14 @@ func ParseValues(event *models.Event) ([]interface{}, error) {
 	if e := json.Unmarshal(event.Body, &bodyData); e != nil {
 		return nil, e
 	}
+	fmt.Println(event)
 
 	var parameters []interface{}
 	for _, eventValue := range event.EventValues {
-		v := bodyData[eventValue.EventParameter.Name]
-		parameter, err := utils.TransformParameterType(v, eventValue.EventParameter.Type)
+		eventParameter := eventValue.GetEventParameter()
+		fmt.Println(eventValue, eventParameter)
+		v := bodyData[eventParameter.Name]
+		parameter, err := utils.TransformParameterType(v, eventParameter.Type)
 		if err != nil {
 			return nil, err
 		}
@@ -36,7 +39,7 @@ func ParseValues(event *models.Event) ([]interface{}, error) {
 }
 
 func CreateTransaction(inboundOracle *models.InboundOracle, user *models.User, event *models.Event) error {
-	client, err := ethclient.Dial(inboundOracle.Oracle.User.EthereumAddress)
+	client, err := ethclient.Dial(inboundOracle.GetOracle().GetUser().EthereumAddress)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -72,9 +75,10 @@ func CreateTransaction(inboundOracle *models.InboundOracle, user *models.User, e
 	address := common.HexToAddress(inboundOracle.InboundOracleTemplate.OracleTemplate.ContractAddress)
 	inputs := inboundOracle.InboundOracleTemplate.GetEventParameterJSON()
 	name := inboundOracle.InboundOracleTemplate.OracleTemplate.EventName
+	fmt.Println(address)
 	fmt.Println(inputs, name)
 	abi := "[{\"inputs\":" + inputs + ",\"name\":\"" + name + "\",\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
-
+	fmt.Println(abi)
 	instance, err := NewStore(address, client, abi)
 	if err != nil {
 		return err

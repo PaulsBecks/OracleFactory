@@ -111,8 +111,9 @@ func PostInboundOracle(ctx *gin.Context) {
 	db.Preload(clause.Associations).First(&inboundOracleTemplate, inboundOracleTemplateID)
 
 	oracle := models.Oracle{
-		Name: inboundOracleBody.Oracle.Name,
-		User: user,
+		Name:   inboundOracleBody.Oracle.Name,
+		User:   user,
+		Status: models.STATUS_STOPPED,
 	}
 	db.Create(&oracle)
 

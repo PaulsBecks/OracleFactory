@@ -1,5 +1,7 @@
 network_name=oracle-factory-network
 
+TEST_SMART_CONTRACT=${smart_contract}
+
 all: docker-network eth-testnet eth-test-contract n8n
 
 docker:
@@ -22,8 +24,8 @@ eth-testnet:
 eth-testnet-stop:
 	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="truffelsuite/ganache-cli" --format="{{.ID}}"))
 
-eth-test-contract:
-	cd testContract; truffle compile; truffle migrate
+install-eth-contract:
+	cd "caseStudies/${TEST_SMART_CONTRACT}"; truffle compile; truffle migrate
 
 docker-network:
 	docker network create -d bridge $(network_name) || true
@@ -44,3 +46,30 @@ frontend-update: frontend-stop frontend-build frontend-start
 
 n8n:
 	docker run --detach --rm --name n8n -p 5678:5678 -v ~/.n8n:/home/node/.n8n --network=$(network_name) n8nio/n8n
+
+init-test-setup: docker-network eth-testnet hyperledger-testnet oracle-blueprint docker docker-start frontend-build frontend-start n8n
+
+prune-test-setup:
+	docker stop $$(docker ps -aq)
+	docker network prune -f
+	docker container prune -f
+
+register:
+	selenium-side-runner "caseStudies/${TEST_SMART_CONTRACT}/register.side"
+
+create-oracle-template:
+	selenium-side-runner "caseStudies/${TEST_SMART_CONTRACT}/create_oracle_template.side"
+
+create-oracle:
+	echo "Not implemented yet"
+
+use-case: register create-oracle-template create-oracle
+
+evaluation:
+	echo "Evaluation not implemented yet!"
+
+case-study: init-test-setup install-eth-contract use-case evaluation prune-test-setup
+
+hyperledger-testnet:
+	curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.2 1.4.9
+	cd fabric-samples/test-network; ./network.sh down; ./network.sh up; ./network.sh deployCC -ccep "OR('Org1MSP.peer','Org2MSP.peer')"  -ccl java -ccp ./../asset-transfer-events/chaincode-java/ -ccn asset-transfer-events-java; cd ../..

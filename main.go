@@ -46,13 +46,15 @@ func main() {
 	app.POST("/users/login", routes.Login)
 	app.POST("/users/signup", routes.Register)
 
+	app.POST("/outboundOracles/:outboundOracleId/events", routes.PostOutboundOracleEvent)
+	app.POST("/inboundOracles/:inboundOracleID/events", routes.PostInboundOracleEvent)
+
 	authorized := app.Group("/", auth)
 	{
 		authorized.GET("/outboundOracles", routes.GetOutboundOracles)
 		authorized.GET("/outboundOracles/:outboundOracleId", routes.GetOutboundOracle)
 		authorized.PUT("/outboundOracles/:outboundOracleId", routes.UpdateOutboundOracle)
 		authorized.DELETE("/outboundOracles/:outboundOracleId", routes.DeleteOutboundOracle)
-		authorized.POST("/outboundOracles/:outboundOracleId/events", routes.PostOutboundOracleEvent)
 		authorized.POST("/outboundOracles/:outboundOracleId/start", routes.StartOutboundOracle)
 		authorized.POST("/outboundOracles/:outboundOracleId/stop", routes.StopOutboundOracle)
 
@@ -64,7 +66,6 @@ func main() {
 
 		authorized.GET("/inboundOracles/:inboundOracleId", routes.GetInboundOracle)
 		authorized.PUT("/inboundOracles/:inboundOracleId", routes.UpdateInboundOracle)
-		authorized.POST("/inboundOracles/:inboundOracleID/events", routes.PostInboundOracleEvent)
 		authorized.GET("/inboundOracleTemplates/:inboundOracleTemplateID", routes.GetInboundOracleTemplate)
 		authorized.GET("/inboundOracles", routes.GetInboundOracles)
 		authorized.POST("/inboundOracles/:inboundOracleID/start", routes.StartInboundOracle)
