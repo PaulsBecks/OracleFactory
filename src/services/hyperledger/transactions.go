@@ -2,7 +2,7 @@ package hyperledger
 
 import (
 	"fmt"
-	"os"
+	"log"
 
 	"github.com/PaulsBecks/OracleFactory/src/models"
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
@@ -10,7 +10,7 @@ import (
 )
 
 func CreateTransaction(inboundOracle *models.InboundOracle, user *models.User, event *models.Event) error {
-	err := os.Setenv("DISCOVERY_AS_LOCALHOST", "true")
+	//_ = os.Setenv("DISCOVERY_AS_LOCALHOST", "false")
 	organizationName := user.HyperledgerOrganizationName
 	cert := user.HyperledgerCert
 	key := user.HyperledgerKey
@@ -27,7 +27,7 @@ func CreateTransaction(inboundOracle *models.InboundOracle, user *models.User, e
 
 	wallet := gateway.NewInMemoryWallet()
 	wallet.Put("appUser", gateway.NewX509Identity(organizationName, string(cert), string(key)))
-
+	log.Println("GATEWAY_CONFIG: %s", gatewayConfig)
 	gw, err := gateway.Connect(
 		gateway.WithConfig(config.FromRaw([]byte(gatewayConfig), "yaml")),
 		gateway.WithIdentity(wallet, "appUser"),
@@ -35,6 +35,7 @@ func CreateTransaction(inboundOracle *models.InboundOracle, user *models.User, e
 	if err != nil {
 		return err
 	}
+	log.Println(gw)
 	defer gw.Close()
 
 	network, err := gw.GetNetwork(channel)

@@ -1,7 +1,13 @@
-FROM node:alpine
+# build stage
+FROM node:alpine AS builder
 
+WORKDIR /usr/app/
+COPY . /usr/app/
+
+RUN yarn install
+RUN yarn build
 RUN npm install http-server -g
 
-COPY ./build/ ./
+EXPOSE 3000
 
-CMD ["http-server", "-p", "3000", "-a", "0.0.0.0"]
+CMD ["http-server", "./build/", "-p", "3000", "-a", "0.0.0.0"]

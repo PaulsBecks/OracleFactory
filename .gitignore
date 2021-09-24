@@ -2,3 +2,8 @@ node_modules/
 OracleFactory
 OracleFactory.db
 fabric-samples/
+
+# hyperledger test files
+connection-org1.yaml
+hyperledger_key
+hyperledger_cert

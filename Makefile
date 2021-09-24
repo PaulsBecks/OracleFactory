@@ -34,7 +34,7 @@ fmt:
 	go fmt ./...
 
 frontend-build:
-	pushd ./frontend; yarn build; docker build -t "oracle_factory_frontend" .; popd
+	pushd ./frontend; docker build -t "oracle_factory_frontend" .; popd
 
 frontend-start:
 	docker run --detach -p 3000:3000 --network=$(network_name) --name oracle-factory-frontend oracle_factory_frontend
@@ -72,4 +72,14 @@ case-study: init-test-setup install-eth-contract use-case evaluation prune-test-
 
 hyperledger-testnet:
 	curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.2 1.4.9
-	cd fabric-samples/test-network; ./network.sh down; ./network.sh up; ./network.sh deployCC -ccep "OR('Org1MSP.peer','Org2MSP.peer')"  -ccl java -ccp ./../asset-transfer-events/chaincode-java/ -ccn asset-transfer-events-java; cd ../..
+	cd fabric-samples/test-network; ./network.sh down; ./network.sh up createChannel -c mychannel -ca; ./network.sh deployCC -ccs 1  -ccv 1 -ccep "OR('Org1MSP.peer','Org2MSP.peer')" -ccl javascript -ccp ./../asset-transfer-events/chaincode-javascript/ -ccn asset-transfer-events-javascript; cd ../..
+	cp fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.yaml . 
+	cp fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/* hyperledger_key
+	cp fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/cert.pem hyperledger_cert
+	docker network connect oracle-factory-network peer0.org1.example.com
+	docker network connect oracle-factory-network peer0.org2.example.com
+	docker network connect oracle-factory-network ca_org1
+	docker network connect oracle-factory-network ca_org2
+	docker network connect oracle-factory-network orderer.example.com
+
+test-setup: prune-test-setup init-test-setup
