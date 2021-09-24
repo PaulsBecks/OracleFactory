@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/PaulsBecks/OracleFactory/src/forms"
@@ -28,7 +27,6 @@ func PostInboundOracleEvent(ctx *gin.Context) {
 
 	//user := models.UserFromContext(ctx)
 	user := inboundOracle.GetOracle().GetUser()
-	log.Println(user)
 	data, _ := ioutil.ReadAll(ctx.Request.Body)
 	var bodyData map[string]interface{}
 	if e := json.Unmarshal(data, &bodyData); e != nil {

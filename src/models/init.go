@@ -60,62 +60,111 @@ func initPerformanceTestSetup(db *gorm.DB) {
 	db.Create(&user)
 
 	// create hyperledger performance test oracles
-	oracleTemplate := OracleTemplate{
+	initHyperledgerOracles(db, user)
+
+	// create ethereum performance test oracle
+	initEthereumOracles(db, user)
+
+}
+func initEthereumOracles(db *gorm.DB, user User) {
+	ethereumOracleTemplate := OracleTemplate{
+		BlockchainName:         "Ethereum",
+		EventName:              "mint",
+		ContractAddress:        "0xe4EFfB267484Cd790143484de3Bae7fDfbE31F00",
+		ContractAddressSynonym: "Token",
+	}
+	db.Create(&ethereumOracleTemplate)
+	ethereumInboundOracleTemplate := InboundOracleTemplate{OracleTemplate: ethereumOracleTemplate}
+	db.Create(&ethereumInboundOracleTemplate)
+	ethereumOracle := Oracle{
+		Name:   "Ethereum Test",
+		UserID: user.ID,
+	}
+	db.Create(&ethereumOracle)
+	inboundOracle := InboundOracle{
+		Oracle:                  ethereumOracle,
+		InboundOracleTemplateID: ethereumInboundOracleTemplate.ID,
+	}
+	db.Create(&inboundOracle)
+	eventParameter := EventParameter{
+		Name:             "receiver",
+		Type:             "address",
+		OracleTemplateID: ethereumOracleTemplate.ID,
+	}
+	db.Create(&eventParameter)
+
+	eventParameter = EventParameter{
+		Name:             "amount",
+		Type:             "uint256",
+		OracleTemplateID: ethereumOracleTemplate.ID,
+	}
+	db.Create(&eventParameter)
+	/*outboundOracleTemplate := OutboundOracleTemplate{
+		OracleTemplate: oracleTemplate,
+	}
+	db.Create(&outboundOracleTemplate)
+	eventParameterOut := EventParameter{
+		Name:             "owner",
+		Type:             "string",
+		OracleTemplateID: oracle.ID,
+	}
+	db.Create(&eventParameterOut)*/
+}
+
+func initHyperledgerOracles(db *gorm.DB, user User) {
+	hyperledgerOracleTemplate := OracleTemplate{
 		BlockchainName:         "Hyperledger",
 		EventName:              "CreateAsset",
 		ContractAddress:        "events",
 		ContractAddressSynonym: "Events",
 	}
-	db.Create(&oracleTemplate)
-	inboundOracleTemplate := InboundOracleTemplate{OracleTemplate: oracleTemplate}
-	db.Create(&inboundOracleTemplate)
-	oracle := Oracle{
+	db.Create(&hyperledgerOracleTemplate)
+	hyperledgerInboundOracleTemplate := InboundOracleTemplate{OracleTemplate: hyperledgerOracleTemplate}
+	db.Create(&hyperledgerInboundOracleTemplate)
+	hyperledgerOracle := Oracle{
 		Name:   "Hyperledger Test",
 		UserID: user.ID,
 	}
-	db.Create(&oracle)
+	db.Create(&hyperledgerOracle)
 	inboundOracle := InboundOracle{
-		Oracle:                  oracle,
-		InboundOracleTemplateID: inboundOracleTemplate.ID,
+		Oracle:                  hyperledgerOracle,
+		InboundOracleTemplateID: hyperledgerInboundOracleTemplate.ID,
 	}
 	db.Create(&inboundOracle)
 	eventParameter := EventParameter{
 		Name:             "assetID",
 		Type:             "string",
-		OracleTemplateID: oracle.ID,
+		OracleTemplateID: hyperledgerOracleTemplate.ID,
 	}
 	db.Create(&eventParameter)
 
 	eventParameter = EventParameter{
 		Name:             "color",
 		Type:             "string",
-		OracleTemplateID: oracle.ID,
+		OracleTemplateID: hyperledgerOracleTemplate.ID,
 	}
 	db.Create(&eventParameter)
 
 	eventParameter = EventParameter{
 		Name:             "size",
 		Type:             "string",
-		OracleTemplateID: oracle.ID,
+		OracleTemplateID: hyperledgerOracleTemplate.ID,
 	}
 	db.Create(&eventParameter)
 
 	eventParameter = EventParameter{
 		Name:             "owner",
 		Type:             "string",
-		OracleTemplateID: oracle.ID,
+		OracleTemplateID: hyperledgerOracleTemplate.ID,
 	}
 	db.Create(&eventParameter)
 
 	eventParameter = EventParameter{
 		Name:             "appraisedValue",
 		Type:             "int",
-		OracleTemplateID: oracle.ID,
+		OracleTemplateID: hyperledgerOracleTemplate.ID,
 	}
 	db.Create(&eventParameter)
-
-	// create ethereum performance test oracle
-
 	/*outboundOracleTemplate := OutboundOracleTemplate{
 		OracleTemplate: oracleTemplate,
 	}
