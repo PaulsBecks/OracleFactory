@@ -38,7 +38,7 @@ fmt:
 	go fmt ./...
 
 frontend-build:
-	pushd ./frontend; docker build -t "oracle_factory_frontend" .; popd
+	cd ./frontend; docker build -t "oracle_factory_frontend" .; cd ..
 
 frontend-start:
 	docker run --detach -p 3000:3000 --network=$(network_name) --name oracle-factory-frontend oracle_factory_frontend
