@@ -3,19 +3,15 @@ package models
 import (
 	"io/ioutil"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/PaulsBecks/OracleFactory/src/utils"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 func InitDB() {
-	//db, err := sql.Open("sqlite", c.filePath)
-	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
+	db := utils.DBConnection()
 
 	// Check if table exists - if not create it
 	db.AutoMigrate(&EventParameter{},
@@ -31,6 +27,22 @@ func InitDB() {
 		&ParameterFilter{},
 	)
 	InitFilter(db)
+	env := os.Getenv("ENV")
+	if env == "PERFORMANCE_TEST" {
+		initPerformanceTestSetup(db)
+	}
+}
+
+func fromFile(path string) string {
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Printf("Error: Unable to read data from path %s, %v", path, err)
+	}
+	return string(data)
+}
+
+func initPerformanceTestSetup(db *gorm.DB) {
+	// create user
 	config := strings.Replace(fromFile("connection-org1.yaml"), "localhost", "peer0.org1.example.com", -1)
 	cert := fromFile("hyperledger_cert")
 	key := fromFile("hyperledger_key")
@@ -45,12 +57,9 @@ func InitDB() {
 		HyperledgerCert:             cert,
 		HyperledgerKey:              key,
 	}
-
-	log.Println(user)
-
 	db.Create(&user)
-	log.Println(user)
 
+	// create hyperledger performance test oracles
 	oracleTemplate := OracleTemplate{
 		BlockchainName:         "Hyperledger",
 		EventName:              "CreateAsset",
@@ -104,6 +113,9 @@ func InitDB() {
 		OracleTemplateID: oracle.ID,
 	}
 	db.Create(&eventParameter)
+
+	// create ethereum performance test oracle
+
 	/*outboundOracleTemplate := OutboundOracleTemplate{
 		OracleTemplate: oracleTemplate,
 	}
@@ -114,12 +126,4 @@ func InitDB() {
 		OracleTemplateID: oracle.ID,
 	}
 	db.Create(&eventParameterOut)*/
-}
-
-func fromFile(path string) string {
-	data, err := ioutil.ReadFile(path)
-	if err != nil {
-		log.Printf("Error: Unable to read data from path %s, %v", path, err)
-	}
-	return string(data)
 }

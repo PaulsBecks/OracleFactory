@@ -21,7 +21,7 @@ func CreateTransaction(inboundOracle *models.InboundOracle, user *models.User, e
 	contractName := inboundOracle.InboundOracleTemplate.OracleTemplate.EventName
 	parameters := []string{}
 	for _, eventValue := range event.EventValues {
-		parameters = append(parameters, eventValue.EventParameter.Name, eventValue.Value)
+		parameters = append(parameters, eventValue.Value)
 	}
 	fmt.Println(parameters)
 

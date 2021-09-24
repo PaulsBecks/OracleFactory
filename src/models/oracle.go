@@ -1,8 +1,6 @@
 package models
 
 import (
-	"log"
-
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"gorm.io/gorm"
 )
@@ -35,20 +33,16 @@ func (o *Oracle) CheckInput(input map[string]interface{}) bool {
 }
 
 func (o *Oracle) GetParameterFilters() []ParameterFilter {
-	db, err := utils.DBConnection()
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := utils.DBConnection()
+
 	var parameterFilters []ParameterFilter
 	db.Find(&parameterFilters, "oracle_id = ?", o.ID)
 	return parameterFilters
 }
 
 func (o *Oracle) setStatus(status string) {
-	db, err := utils.DBConnection()
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := utils.DBConnection()
+
 	o.Status = status
 	db.Save(&o)
 }
@@ -70,19 +64,15 @@ func (o *Oracle) IsStopped() bool {
 }
 
 func (o *Oracle) GetUser() *User {
-	db, err := utils.DBConnection()
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := utils.DBConnection()
+
 	var user *User
 	db.Find(&user, o.UserID)
 	return user
 }
 
 func (o *Oracle) Save() {
-	db, err := utils.DBConnection()
-	if err != nil {
-		panic(err)
-	}
+	db := utils.DBConnection()
+
 	db.Save(o)
 }

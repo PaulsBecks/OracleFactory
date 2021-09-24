@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/PaulsBecks/OracleFactory/src/utils"
@@ -22,10 +21,8 @@ type OutboundOracleTemplate struct {
 }
 
 func (o *OutboundOracleTemplate) GetOracleTemplate() *OracleTemplate {
-	db, err := utils.DBConnection()
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := utils.DBConnection()
+
 	var oracleTemplate OracleTemplate
 	db.Find(&oracleTemplate, o.OracleTemplateID)
 	return &oracleTemplate

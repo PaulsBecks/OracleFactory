@@ -1,8 +1,6 @@
 package models
 
 import (
-	"log"
-
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -17,10 +15,8 @@ type InboundOracle struct {
 }
 
 func (i *InboundOracle) GetOracle() *Oracle {
-	db, err := utils.DBConnection()
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := utils.DBConnection()
+
 	var oracle Oracle
 	db.Find(&oracle, i.OracleID)
 	return &oracle
@@ -28,10 +24,7 @@ func (i *InboundOracle) GetOracle() *Oracle {
 
 func GetInboundOracleByID(id interface{}) (*InboundOracle, error) {
 	var inboundOracle InboundOracle
-	db, err := utils.DBConnection()
-	if err != nil {
-		log.Fatal("No DB connection")
-	}
+	db := utils.DBConnection()
 	result := db.Preload(clause.Associations).Preload("InboundOracleTemplate.OracleTemplate.EventParameters").First(&inboundOracle, id)
 	if result.Error != nil {
 		return &inboundOracle, result.Error

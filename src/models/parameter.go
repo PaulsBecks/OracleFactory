@@ -1,8 +1,6 @@
 package models
 
 import (
-	"log"
-
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"gorm.io/gorm"
 )
@@ -20,10 +18,8 @@ func (e *EventParameter) String() string {
 }
 
 func GetEventParameterByID(id interface{}) EventParameter {
-	db, err := utils.DBConnection()
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := utils.DBConnection()
+
 	eventParameter := &EventParameter{}
 	db.First(eventParameter, id)
 	return *eventParameter

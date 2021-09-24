@@ -71,11 +71,7 @@ func PostInboundOracleEvent(ctx *gin.Context) {
 
 func GetInboundOracles(ctx *gin.Context) {
 	user := models.UserFromContext(ctx)
-	db, err := utils.DBConnection()
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"body": "Ups there was a mistake!"})
-		return
-	}
+	db := utils.DBConnection()
 
 	var inboundOracles []models.InboundOracle
 	db.Preload(clause.Associations).Preload("InboundOracleTemplate.OracleTemplate").Joins("Oracle").Find(&inboundOracles, "Oracle.user_id = ?", user.ID)
@@ -85,10 +81,8 @@ func GetInboundOracles(ctx *gin.Context) {
 
 func GetInboundOracle(ctx *gin.Context) {
 	id := ctx.Param("inboundOracleId")
-	db, err := utils.DBConnection()
-	if err != nil {
-		panic(err)
-	}
+	db := utils.DBConnection()
+
 	var inboundOracle models.InboundOracle
 	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("InboundOracleTemplate.OracleTemplate.EventParameters").Preload(clause.Associations).First(&inboundOracle, id)
 	if result.Error != nil {

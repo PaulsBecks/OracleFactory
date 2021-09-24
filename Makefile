@@ -10,6 +10,9 @@ docker:
 docker-start:
 	docker run -p 8080:8080 -d --name oracle-factory --network=$(network_name) -v /var/run/docker.sock:/var/run/docker.sock oracle_factory
 
+docker-test-start:
+	docker run -p 8080:8080 -d --name oracle-factory --network=$(network_name) --env ENV=PERFORMANCE_TEST -v /var/run/docker.sock:/var/run/docker.sock oracle_factory
+
 docker-stop:
 	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="oracle_factory" --format="{{.ID}}"))
 
@@ -20,6 +23,7 @@ oracle-blueprint:
 
 eth-testnet:
 	docker run --detach -p 8545:8545 -p 7545:7545 --network=$(network_name) --name eth-test-net trufflesuite/ganache-cli:latest --accounts 10 --seed OracleFramework
+	cd caseStudies/blindAuctionEthereum; truffle migrate; cd ../..
 
 eth-testnet-stop:
 	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="truffelsuite/ganache-cli" --format="{{.ID}}"))
@@ -47,10 +51,10 @@ frontend-update: frontend-stop frontend-build frontend-start
 n8n:
 	docker run --detach --rm --name n8n -p 5678:5678 -v ~/.n8n:/home/node/.n8n --network=$(network_name) n8nio/n8n
 
-init-test-setup: docker-network eth-testnet hyperledger-testnet oracle-blueprint docker docker-start frontend-build frontend-start n8n
+init-test-setup: docker-network eth-testnet hyperledger-testnet oracle-blueprint docker docker-test-start frontend-build frontend-start n8n
 
 prune-test-setup:
-	docker stop $$(docker ps -aq)
+	docker stop $$(docker ps -aq) || true
 	docker network prune -f
 	docker container prune -f
 
@@ -71,8 +75,8 @@ evaluation:
 case-study: init-test-setup install-eth-contract use-case evaluation prune-test-setup
 
 hyperledger-testnet:
-	curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.2.2 1.4.9
-	cd fabric-samples/test-network; ./network.sh down; ./network.sh up createChannel -c mychannel -ca; ./network.sh deployCC -ccs 1  -ccv 1 -ccep "OR('Org1MSP.peer','Org2MSP.peer')" -ccl javascript -ccp ./../asset-transfer-events/chaincode-javascript/ -ccn asset-transfer-events-javascript; cd ../..
+	curl -sSL https://bit.ly/2ysbOFE | bash -s
+	cd fabric-samples/test-network; ./network.sh down; ./network.sh up createChannel -c mychannel -ca; ./network.sh deployCC -ccs 1  -ccv 1 -ccep "OR('Org1MSP.peer','Org2MSP.peer')" -ccl javascript -ccp ./../asset-transfer-events/chaincode-javascript/ -ccn events; cd ../..
 	cp fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.yaml . 
 	cp fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/* hyperledger_key
 	cp fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/cert.pem hyperledger_cert
@@ -83,3 +87,9 @@ hyperledger-testnet:
 	docker network connect oracle-factory-network orderer.example.com
 
 test-setup: prune-test-setup init-test-setup
+
+performance-test:
+	cd ./caseStudies/inboundOraclePerformanceTests; go build; ./inboundOraclePerformanceTests; cd ../..
+	cd ./caseStudies/outboundOraclePerformanceTests; go build; ./outboundOraclePerformanceTests; cd ../..
+
+setup-and-test: test-setup performance-test

@@ -125,7 +125,7 @@ func PostOutboundOracleEvent(ctx *gin.Context) {
 		return
 	}
 
-	db, err := utils.DBConnection()
+	db := utils.DBConnection()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Ups there was a mistake!"})
 		return

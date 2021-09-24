@@ -1,8 +1,6 @@
 package models
 
 import (
-	"log"
-
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"gorm.io/gorm"
 )
@@ -19,10 +17,8 @@ type ParameterFilter struct {
 }
 
 func (p *ParameterFilter) GetFilter() *Filter {
-	db, err := utils.DBConnection()
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := utils.DBConnection()
+
 	var filter Filter
 	db.First(&filter, p.FilterID)
 	return &filter

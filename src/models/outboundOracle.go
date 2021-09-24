@@ -21,10 +21,8 @@ type OutboundOracle struct {
 }
 
 func (o *OutboundOracle) GetOutboundOracleTemplate() *OutboundOracleTemplate {
-	db, err := utils.DBConnection()
-	if err != nil {
-		panic(err)
-	}
+	db := utils.DBConnection()
+
 	var outboundOracleTemplate *OutboundOracleTemplate
 	db.Find(&outboundOracleTemplate, o.OutboundOracleTemplateID)
 	return outboundOracleTemplate
@@ -125,28 +123,22 @@ func (o *OutboundOracle) oracleFactoryOutboundEventLink() string {
 }
 
 func (o *OutboundOracle) GetOracle() *Oracle {
-	db, err := utils.DBConnection()
-	if err != nil {
-		panic(err)
-	}
+	db := utils.DBConnection()
+
 	var oracle *Oracle
 	db.Find(&oracle, o.OracleID)
 	return oracle
 }
 
 func (o *OutboundOracle) Save() {
-	db, err := utils.DBConnection()
-	if err != nil {
-		panic(err)
-	}
+	db := utils.DBConnection()
+
 	db.Save(o)
 }
 
 func GetOutboundOracleById(id interface{}) (*OutboundOracle, error) {
-	db, err := utils.DBConnection()
-	if err != nil {
-		panic(err)
-	}
+	db := utils.DBConnection()
+
 	var outboundOracle *OutboundOracle
 	result := db.Preload(clause.Associations).First(&outboundOracle, id)
 	if result.Error != nil {

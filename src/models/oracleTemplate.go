@@ -1,8 +1,6 @@
 package models
 
 import (
-	"log"
-
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"gorm.io/gorm"
 )
@@ -20,10 +18,8 @@ type OracleTemplate struct {
 }
 
 func (o *OracleTemplate) GetEventParameters() []EventParameter {
-	db, err := utils.DBConnection()
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := utils.DBConnection()
+
 	var eventParameters []EventParameter
 	db.Find(&eventParameters, "oracle_template_id = ?", o.ID)
 	return eventParameters

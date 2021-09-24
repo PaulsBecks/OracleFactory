@@ -5,6 +5,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func DBConnection() (*gorm.DB, error) {
-	return gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
+var db, _ = gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
+
+func DBConnection() *gorm.DB {
+	return db
 }

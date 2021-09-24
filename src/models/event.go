@@ -2,7 +2,6 @@ package models
 
 import (
 	"encoding/json"
-	"log"
 
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"gorm.io/gorm"
@@ -18,10 +17,8 @@ type Event struct {
 }
 
 func CreateEvent(oracleID uint, body []byte) *Event {
-	db, err := utils.DBConnection()
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := utils.DBConnection()
+
 	event := &Event{
 		OracleID: oracleID,
 		Success:  false,
@@ -33,10 +30,8 @@ func CreateEvent(oracleID uint, body []byte) *Event {
 
 func (e *Event) SetSuccess(success bool) {
 	e.Success = success
-	db, err := utils.DBConnection()
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := utils.DBConnection()
+
 	db.Save(e)
 }
 
