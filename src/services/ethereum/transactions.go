@@ -25,7 +25,8 @@ func ParseValues(event *models.Event) ([]interface{}, error) {
 	fmt.Println(event)
 
 	var parameters []interface{}
-	for _, eventValue := range event.EventValues {
+	fmt.Println(event.GetEventValues())
+	for _, eventValue := range event.GetEventValues() {
 		eventParameter := eventValue.GetEventParameter()
 		fmt.Println(eventValue, eventParameter)
 		v := bodyData[eventParameter.Name]
@@ -85,6 +86,9 @@ func CreateTransaction(inboundOracle *models.InboundOracle, user *models.User, e
 	}
 
 	parameters, err := ParseValues(event)
+	if err != nil {
+		return err
+	}
 
 	tx, err := instance.StoreTransactor.contract.Transact(auth, name, parameters...)
 	if err != nil {

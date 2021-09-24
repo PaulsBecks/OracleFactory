@@ -28,6 +28,13 @@ func CreateEvent(oracleID uint, body []byte) *Event {
 	return event
 }
 
+func (e *Event) GetEventValues() []EventValue {
+	db := utils.DBConnection()
+	var events []EventValue
+	db.Find(&events, "event_id = ?", e.ID)
+	return events
+}
+
 func (e *Event) SetSuccess(success bool) {
 	e.Success = success
 	db := utils.DBConnection()

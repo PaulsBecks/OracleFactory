@@ -23,10 +23,10 @@ oracle-blueprint:
 
 eth-testnet:
 	docker run --detach -p 8545:8545 -p 7545:7545 --network=$(network_name) --name eth-test-net trufflesuite/ganache-cli:latest --accounts 10 --seed OracleFramework
-	cd caseStudies/blindAuctionEthereum; truffle migrate; cd ../..
+	cd caseStudies/token; truffle migrate; cd ../..
 
 eth-testnet-stop:
-	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="truffelsuite/ganache-cli" --format="{{.ID}}"))
+	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="truffelsuite/ganache-cli:latest" --format="{{.ID}}"))
 
 install-eth-contract:
 	cd "caseStudies/${TEST_SMART_CONTRACT}"; truffle compile; truffle migrate

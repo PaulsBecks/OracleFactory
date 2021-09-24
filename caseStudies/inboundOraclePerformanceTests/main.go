@@ -129,4 +129,11 @@ func main() {
 		body:           `{"assetID":"1","color":"green", "size":"m", "owner":"me", "appraisedValue":"1k"}`,
 	}
 	hyperledgerCreateAssetTest.runAll(repetitions)
+
+	ethereumCreateAssetTest := &PerformanceTest{
+		outputFileName: "ethereumCreateAssetTest.csv",
+		oracleEndpoint: "http://localhost:8080/inboundOracles/2/events",
+		body:           `{"receiver":"0x40536521353F9f4120A589C9ddDEB6188EF61922","amount":100}`,
+	}
+	ethereumCreateAssetTest.runAll(repetitions)
 }
