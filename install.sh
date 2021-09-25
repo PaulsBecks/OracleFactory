@@ -7,4 +7,6 @@ sudo apt-get install \
     lsb-release
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 sudo apt install golang-go
+sudo apt install nodejs
+sudo apt install npm
 npm install -g truffle
