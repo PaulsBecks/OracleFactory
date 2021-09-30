@@ -1,4 +1,5 @@
 network_name=oracle-factory-network
+current_dir = $(shell pwd)
 
 TEST_SMART_CONTRACT=${smart_contract}
 
@@ -49,7 +50,7 @@ frontend-stop:
 frontend-update: frontend-stop frontend-build frontend-start
 
 n8n:
-	docker run --detach --rm --name n8n -p 5678:5678 -v ~/.n8n:/home/node/.n8n --network=$(network_name) n8nio/n8n
+	docker run --detach --rm --name n8n -p 5678:5678 -v ${current_dir}/.n8n:/home/node/.n8n --network=$(network_name) n8nio/n8n
 
 init-test-setup: docker-network eth-testnet hyperledger-testnet oracle-blueprint docker docker-test-start frontend-build frontend-start n8n
 
