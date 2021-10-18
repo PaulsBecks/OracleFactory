@@ -59,7 +59,7 @@ init-test-setup: docker-network eth-testnet docker docker-test-start
 init-visual-test-setup: init-test-setup frontend-build frontend-start n8n
 
 prune-test-setup:
-	docker stop $$(docker ps -aq) || true
+	docker stop $$(docker ps -aq) || $$(true)
 	docker network prune -f
 	docker container prune -f
 
@@ -95,7 +95,7 @@ test-setup: prune-test-setup init-test-setup
 
 performance-test:
 	sleep 3
-	cd ./caseStudies/inboundOraclePerformanceTests; go build; ./inboundOraclePerformanceTests; cd ../..
-	cd ./caseStudies/outboundOraclePerformanceTests; go build; ./outboundOraclePerformanceTests; cd ../..
+	cd caseStudies; sh ./executePerformanceTests.sh > /dev/null 2>&1 &
+	echo "Performance test started in background"
 
 setup-and-test: test-setup performance-test

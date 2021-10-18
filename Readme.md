@@ -2,20 +2,22 @@
 
 More to be added...
 
-# TODO
-[] Delete oracle
-
-
 
 # Prerequirements
 
-node 16.5
-golang
-npm
-Make
-Docker
+* node 16.5
+* golang
+* npm
+* Make
+* Docker
 
-## For use cases
+Install requirements on ubuntu by running
+
+```
+sudo sh ./install.sh
+```
+
+# Running the program
 npm install -g selenium-side-runner
 
 npm install -g chromedriver
