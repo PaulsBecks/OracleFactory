@@ -116,6 +116,7 @@ func (p *PerformanceTest) runAll(repetitions int) {
 		log.Fatalf("Unable to open %s", p.outputFileName)
 		return
 	}
+	writeToCSV([]string{"latency", "throughput", "parallel events"}, file)
 	defer file.Close()
 	for i := 0; i < repetitions; i++ {
 		for _, maxParallel := range []int{1, 2, 3, 4, 5, 10, 20} { //, 30, 40, 50, 100} {
