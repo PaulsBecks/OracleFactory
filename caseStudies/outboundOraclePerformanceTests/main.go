@@ -35,7 +35,7 @@ type PerformanceTestRun struct {
 }
 
 func NewPerformanceTestRun(performanceTest *PerformanceTest, maxEventsParallel int) *PerformanceTestRun {
-	return &PerformanceTestRun{guard: make(chan struct{}, 1), mu: &sync.Mutex{}, totalEvents: 10, test: *performanceTest, events: make(map[int]EventMeasurement)}
+	return &PerformanceTestRun{guard: make(chan struct{}, maxEventsParallel), mu: &sync.Mutex{}, totalEvents: 10, test: *performanceTest, events: make(map[int]EventMeasurement)}
 }
 
 type EventMeasurement struct {

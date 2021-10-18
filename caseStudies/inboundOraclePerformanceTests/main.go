@@ -29,7 +29,7 @@ type PerformanceTestRun struct {
 }
 
 func NewPerformanceTestRun(performanceTest *PerformanceTest, maxEventsParallel int) *PerformanceTestRun {
-	return &PerformanceTestRun{guard: make(chan struct{}, 1), mu: &sync.Mutex{}, totalEvents: 100, test: *performanceTest}
+	return &PerformanceTestRun{guard: make(chan struct{}, maxEventsParallel), mu: &sync.Mutex{}, totalEvents: 100, test: *performanceTest}
 }
 
 type EventMeasurement struct {
@@ -69,6 +69,7 @@ func (p *PerformanceTestRun) timeEvent(worker int) {
 	}
 	elapsed := time.Since(start)
 	measurement := EventMeasurement{latency: elapsed.Seconds(), success: true, workerID: worker}
+	fmt.Println(start.String(), worker)
 	p.mu.Lock()
 	p.latencies = append(p.latencies, measurement)
 	p.mu.Unlock()
@@ -77,7 +78,6 @@ func (p *PerformanceTestRun) timeEvent(worker int) {
 }
 
 func (p *PerformanceTestRun) start() (averageLatency, throughputPerSecond float64) {
-	defer p.waitGroup.Wait()
 	p.totalStart = time.Now()
 	for i := 0; i < p.totalEvents; i++ {
 		p.waitGroup.Add(1)
