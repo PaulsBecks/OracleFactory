@@ -48,6 +48,7 @@ func main() {
 
 	app.POST("/outboundOracles/:outboundOracleId/events", routes.PostOutboundOracleEvent)
 	app.POST("/inboundOracles/:inboundOracleID/events", routes.PostInboundOracleEvent)
+	app.POST("/webServiceListeners/:webServiceListenerID/events", routes.HandleWebServiceListenerEvent)
 
 	authorized := app.Group("/", auth)
 	{
@@ -57,24 +58,25 @@ func main() {
 		authorized.DELETE("/outboundOracles/:outboundOracleId", routes.DeleteOutboundOracle)
 		authorized.POST("/outboundOracles/:outboundOracleId/start", routes.StartOutboundOracle)
 		authorized.POST("/outboundOracles/:outboundOracleId/stop", routes.StopOutboundOracle)
+		authorized.POST("/outboundOracles", routes.PostOutboundOracle)
 
-		authorized.GET("/outboundOracleTemplates", routes.GetOutboundOracleTemplates)
-		authorized.POST("/outboundOracleTemplates", routes.PostOutboundOracleTemplate)
-		authorized.GET("/outboundOracleTemplates/:outboundOracleTemplateID", routes.GetOutboundOracleTemplate)
-		authorized.POST("/outboundOracleTemplates/:outboundOracleTemplateID/outboundOracles", routes.PostOutboundOracle)
-		authorized.POST("/outboundOracleTemplates/:outboundOracleTemplateID/eventParameters", routes.PostOutboundEventParameters)
+		authorized.GET("/smartContractListeners", routes.GetSmartContractListeners)
+		authorized.POST("/smartContractListeners", routes.PostSmartContractListener)
+		authorized.GET("/smartContractListeners/:smartContractListenerID", routes.GetSmartContractListener)
+		authorized.POST("/smartContractListeners/:smartContractListenerID/eventParameters", routes.PostOutboundEventParameters)
 
 		authorized.GET("/inboundOracles/:inboundOracleId", routes.GetInboundOracle)
 		authorized.PUT("/inboundOracles/:inboundOracleId", routes.UpdateInboundOracle)
-		authorized.GET("/inboundOracleTemplates/:inboundOracleTemplateID", routes.GetInboundOracleTemplate)
+		authorized.GET("/smartContractPublishers/:smartContractPublisherID", routes.GetSmartContractPublisher)
 		authorized.GET("/inboundOracles", routes.GetInboundOracles)
 		authorized.POST("/inboundOracles/:inboundOracleID/start", routes.StartInboundOracle)
 		authorized.POST("/inboundOracles/:inboundOracleID/stop", routes.StopInboundOracle)
+		authorized.POST("/inboundOracles", routes.PostInboundOracle)
 
-		authorized.POST("/inboundOracleTemplates/:inboundOracleTemplateID/inboundOracles", routes.PostInboundOracle)
-		authorized.POST("/inboundOracleTemplates/:inboundOracleTemplateID/eventParameters", routes.PostInboundEventParameters)
-		authorized.GET("/inboundOracleTemplates", routes.GetInboundOracleTemplates)
-		authorized.POST("/inboundOracleTemplates", routes.PostInboundOracleTemplate)
+		authorized.POST("/smartContractPublishers/:smartContractPublisherID/inboundOracles", routes.PostInboundOracle)
+		authorized.POST("/smartContractPublishers/:smartContractPublisherID/eventParameters", routes.PostInboundEventParameters)
+		authorized.GET("/smartContractPublishers", routes.GetSmartContractPublishers)
+		authorized.POST("/smartContractPublishers", routes.PostSmartContractPublisher)
 
 		authorized.GET("/filters", routes.GetFilters)
 
@@ -82,7 +84,15 @@ func main() {
 		authorized.POST("/oracles/:oracleID/parameterFilters", routes.PostOracleParameterFilters)
 		authorized.DELETE("/oracles/:oracleID/parameterFilters/:parameterFilterID", routes.DeleteOracleParameterFilter)
 
-		authorized.GET("/oracleTemplates/:oracleTemplateID/eventParameters", routes.GetOracleTemplateEventParameters)
+		authorized.GET("/webServiceListeners", routes.GetWebServiceListeners)
+		authorized.GET("/webServiceListeners/:webServiceListenerID", routes.GetWebServiceListener)
+		authorized.POST("/webServiceListeners", routes.PostWebServiceListener)
+
+		authorized.GET("/webServicePublishers", routes.GetWebServicePublishers)
+		authorized.GET("/webServicePublishers/:webServicePublisherID", routes.GetWebServicePublisher)
+		authorized.POST("/webServicePublishers", routes.PostWebServicePublisher)
+
+		authorized.GET("/listenerPublishers/:listenerPublisherID/eventParameters", routes.GetListenerPublisherEventParameters)
 
 		authorized.GET("/user", routes.GetCurrentUserDetail)
 		authorized.PUT("/user", routes.UpdateCurrentUser)

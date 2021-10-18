@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"gorm.io/gorm"
@@ -10,13 +11,13 @@ import (
 type Event struct {
 	gorm.Model
 	Success     bool
-	Oracle      Oracle
 	OracleID    uint
+	Oracle      Oracle
 	EventValues []EventValue
 	Body        []byte
 }
 
-func CreateEvent(oracleID uint, body []byte) *Event {
+func CreateEvent(body []byte, oracleID uint) *Event {
 	db := utils.DBConnection()
 
 	event := &Event{
@@ -45,8 +46,8 @@ func (e *Event) SetSuccess(success bool) {
 func (e *Event) ParseBody() ([]interface{}, error) {
 	var bodyData map[string]interface{}
 
-	if e := json.Unmarshal(e.Body, &bodyData); e != nil {
-		return nil, e
+	if err := json.Unmarshal(e.Body, &bodyData); err != nil {
+		return nil, err
 	}
 
 	var parameters []interface{}
@@ -59,4 +60,27 @@ func (e *Event) ParseBody() ([]interface{}, error) {
 		parameters = append(parameters, parameter)
 	}
 	return parameters, nil
+}
+
+func (e *Event) GetEventValueByParameterName(eventParameterID uint) string {
+	db := utils.DBConnection()
+	var eventValue EventValue
+	db.Find(&eventValue, "event_id = ? AND event_parameter_id", eventParameterID)
+	return eventValue.Value
+}
+
+func (e *Event) ParseEventValues(bodyData map[string]interface{}, listenerPublisherID uint) ([]EventValue, error) {
+	var eventParameters []EventParameter
+	db := utils.DBConnection()
+	db.Find(&eventParameters, "listener_publisher_id = ?", listenerPublisherID)
+	fmt.Println(eventParameters)
+	var eventValues []EventValue
+	for _, eventParameter := range eventParameters {
+		v := bodyData[eventParameter.Name]
+		eventValue := EventValue{EventID: e.ID, Event: *e, Value: fmt.Sprintf("%v", v), EventParameterID: eventParameter.ID, EventParameter: eventParameter}
+		db.Create(&eventValue)
+		fmt.Println(eventValue)
+		eventValues = append(eventValues, eventValue)
+	}
+	return eventValues, nil
 }

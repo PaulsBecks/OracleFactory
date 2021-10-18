@@ -7,10 +7,10 @@ import (
 
 type EventParameter struct {
 	gorm.Model
-	Name             string
-	Type             string
-	OracleTemplateID uint
-	OracleTemplate   OracleTemplate
+	Name                string
+	Type                string
+	ListenerPublisherID uint
+	ListenerPublisher   ListenerPublisher
 }
 
 func (e *EventParameter) String() string {

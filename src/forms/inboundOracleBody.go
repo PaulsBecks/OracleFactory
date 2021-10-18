@@ -6,7 +6,9 @@ import (
 )
 
 type InboundOracleBody struct {
-	Oracle OracleBody
+	Oracle                   OracleBody
+	SmartContractPublisherID uint
+	WebServiceListenerID     uint
 }
 
 // TODO: create real validation

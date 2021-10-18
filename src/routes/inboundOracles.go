@@ -1,15 +1,12 @@
 package routes
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/PaulsBecks/OracleFactory/src/forms"
 	"github.com/PaulsBecks/OracleFactory/src/models"
-	"github.com/PaulsBecks/OracleFactory/src/services/ethereum"
-	"github.com/PaulsBecks/OracleFactory/src/services/hyperledger"
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
@@ -24,46 +21,9 @@ func PostInboundOracleEvent(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No valid oracle id!"})
 		return
 	}
-
-	//user := models.UserFromContext(ctx)
-	user := inboundOracle.GetOracle().GetUser()
+	fmt.Printf("Event submitted for inbound oracle %s\n", inboundOracleID)
 	data, _ := ioutil.ReadAll(ctx.Request.Body)
-	var bodyData map[string]interface{}
-	if e := json.Unmarshal(data, &bodyData); e != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"msg": e.Error()})
-		return
-	}
-
-	inboundEvent := models.CreateEvent(inboundOracle.GetOracle().ID, data)
-
-	eventValues, err := models.ParseEventValues(bodyData, *inboundEvent, inboundOracle.InboundOracleTemplate.OracleTemplateID)
-	if err != nil {
-		fmt.Print(err)
-		ctx.JSON(http.StatusBadRequest, gin.H{"msg": "Parameters have wrong types!"})
-	}
-	inboundEvent.EventValues = eventValues
-
-	// Check if event should be filtered
-	if valid := inboundOracle.GetOracle().CheckInput(bodyData); !valid {
-		ctx.JSON(http.StatusAccepted, gin.H{"msg": "Event data is not passing filters!"})
-		return
-	}
-
-	if inboundOracle.InboundOracleTemplate.OracleTemplate.BlockchainName == "Ethereum" {
-		err = ethereum.CreateTransaction(inboundOracle, user, inboundEvent)
-	}
-	if inboundOracle.InboundOracleTemplate.OracleTemplate.BlockchainName == "Hyperledger" {
-		err = hyperledger.CreateTransaction(inboundOracle, user, inboundEvent)
-	}
-
-	if err != nil {
-		fmt.Println(err.Error())
-		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": "Unable to create transaction."})
-		inboundEvent.SetSuccess(false)
-		return
-	}
-
-	inboundEvent.SetSuccess(true)
+	inboundOracle.HandleEvent(data)
 	ctx.JSON(http.StatusOK, gin.H{})
 }
 
@@ -72,7 +32,7 @@ func GetInboundOracles(ctx *gin.Context) {
 	db := utils.DBConnection()
 
 	var inboundOracles []models.InboundOracle
-	db.Preload(clause.Associations).Preload("InboundOracleTemplate.OracleTemplate").Joins("Oracle").Find(&inboundOracles, "Oracle.user_id = ?", user.ID)
+	db.Preload(clause.Associations).Preload("SmartContractPublisher.SmartContract").Preload("SmartContractPublisher.ListenerPublisher").Preload("WebServiceListener.ListenerPublisher").Joins("Oracle").Find(&inboundOracles, "Oracle.user_id = ?", user.ID)
 
 	ctx.JSON(http.StatusOK, gin.H{"inboundOracles": inboundOracles})
 }
@@ -82,7 +42,7 @@ func GetInboundOracle(ctx *gin.Context) {
 	db := utils.DBConnection()
 
 	var inboundOracle models.InboundOracle
-	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("InboundOracleTemplate.OracleTemplate.EventParameters").Preload(clause.Associations).First(&inboundOracle, id)
+	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("SmartContractPublisher.ListenerPublisher.EventParameters").Preload(clause.Associations).First(&inboundOracle, id)
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No inbound Oracle with this ID available."})
 		return
@@ -135,4 +95,20 @@ func StopInboundOracle(ctx *gin.Context) {
 	}
 	inboundOracle.GetOracle().Stop()
 	ctx.JSON(http.StatusOK, gin.H{"msg": "Oracle got stopped successfully."})
+}
+
+func PostInboundOracle(ctx *gin.Context) {
+	var inboundOracleBody forms.InboundOracleBody
+	if err := ctx.ShouldBind(&inboundOracleBody); err != nil || !inboundOracleBody.Valid() {
+		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid body send!"})
+		return
+	}
+
+	user := models.UserFromContext(ctx)
+	inboundOracle := user.CreateInboundOracle(
+		inboundOracleBody.Oracle.Name,
+		inboundOracleBody.SmartContractPublisherID,
+		inboundOracleBody.WebServiceListenerID,
+	)
+	ctx.JSON(http.StatusOK, gin.H{"inboundOracle": inboundOracle})
 }

@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -10,7 +9,6 @@ import (
 
 	"github.com/PaulsBecks/OracleFactory/src/forms"
 	"github.com/PaulsBecks/OracleFactory/src/models"
-	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -27,7 +25,7 @@ func GetOutboundOracles(ctx *gin.Context) {
 	user, _ := userInterface.(models.User)
 
 	var oracles []models.OutboundOracle
-	db.Preload(clause.Associations).Preload("OutboundOracleTemplate.OracleTemplate").Joins("Oracle").Find(&oracles, "Oracle.user_id = ?", user.ID)
+	db.Preload(clause.Associations).Preload("SmartContractListener.SmartContract").Preload("SmartContractListener.ListenerPublisher").Preload("WebServicePublisher.ListenerPublisher").Joins("Oracle").Find(&oracles, "Oracle.user_id = ?", user.ID)
 	fmt.Println(oracles)
 
 	ctx.JSON(http.StatusOK, gin.H{"outboundOracles": oracles})
@@ -47,7 +45,7 @@ func GetOutboundOracle(ctx *gin.Context) {
 		panic(err)
 	}
 	var outboundOracle models.OutboundOracle
-	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("OutboundOracleTemplate.OracleTemplate.EventParameters").Preload("Oracle.ParameterFilters.Filter").Preload(clause.Associations).First(&outboundOracle, i)
+	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("SmartContractListener.ListenerPublisher.EventParameters").Preload("Oracle.ParameterFilters.Filter").Preload(clause.Associations).First(&outboundOracle, i)
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No outbound Oracle with this ID available."})
 		return
@@ -67,8 +65,6 @@ func UpdateOutboundOracle(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid body send!"})
 		return
 	}
-
-	outboundOracle.URI = outboundOraclePostBody.URI
 	outboundOracle.Save()
 
 	oracle := outboundOracle.Oracle
@@ -125,21 +121,7 @@ func PostOutboundOracleEvent(ctx *gin.Context) {
 		return
 	}
 
-	db := utils.DBConnection()
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Ups there was a mistake!"})
-		return
-	}
-
-	var outboundOracle models.OutboundOracle
-	db.First(&outboundOracle, i)
-
-	// TODO: Filter outbound oracle event.
-	outboundEvent := &models.Event{
-		Oracle:   *outboundOracle.GetOracle(),
-		OracleID: outboundOracle.GetOracle().ID,
-	}
-	db.Create(&outboundEvent)
+	outboundOracle, _ := models.GetOutboundOracleById(i)
 
 	data, _ := ioutil.ReadAll(ctx.Request.Body)
 	var bodyData map[string]interface{}
@@ -148,27 +130,10 @@ func PostOutboundOracleEvent(ctx *gin.Context) {
 		return
 	}
 
-	for key, value := range bodyData {
-		var eventParameter models.EventParameter
-		// Add .Where("OutboundOracleTemplateID = ?", outboundOracle.OutboundOracleTemplateID)
-		db.Where("name = ? AND oracle_template_id", key, outboundOracle.ID).First(&eventParameter)
-		sValue := fmt.Sprintf("%v", value)
-		fmt.Println(key, sValue)
-		eventValue := models.EventValue{
-			EventParameterID: eventParameter.ID,
-			Value:            sValue,
-			EventID:          outboundEvent.ID,
-		}
-		fmt.Println(eventValue)
-		db.Create(&eventValue)
-	}
+	event := models.CreateEvent(data, outboundOracle.GetOracle().ID)
+	event.ParseEventValues(bodyData, outboundOracle.GetSmartContractListener().ListenerPublisherID)
+	// TODO: Filter outbound oracle event.
 
-	output, err := json.Marshal(bodyData)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"msg": err.Error()})
-		return
-	}
-
-	fmt.Println("INFO: post data to: " + outboundOracle.URI)
-	http.Post(outboundOracle.URI, "application/json", bytes.NewBuffer(output))
+	webServicePublisher := outboundOracle.GetWebServicePublisher()
+	webServicePublisher.Publish(*event)
 }

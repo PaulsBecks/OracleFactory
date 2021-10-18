@@ -24,13 +24,6 @@ export default function OutboundOracleForm({
         }
         placeholder="A name to recognize the oracle"
       />
-      <Form.Input
-        label="Forward to"
-        name="URI"
-        value={outboundOracle.URI}
-        onChange={updateOutboundOracle}
-        placeholder="http://your.domain/here"
-      />
     </Form>
   );
 }

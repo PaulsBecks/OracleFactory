@@ -24,6 +24,7 @@ oracle-blueprint:
 
 eth-testnet:
 	docker run --detach -p 8545:8545 -p 7545:7545 --network=$(network_name) --name eth-test-net trufflesuite/ganache-cli:latest --accounts 10 --seed OracleFramework
+	sleep 20
 	cd caseStudies/token; truffle migrate; cd ../..
 
 eth-testnet-stop:
@@ -52,7 +53,10 @@ frontend-update: frontend-stop frontend-build frontend-start
 n8n:
 	docker run --detach --rm --name n8n -p 5678:5678 -v ${current_dir}/.n8n:/home/node/.n8n --network=$(network_name) n8nio/n8n
 
-init-test-setup: docker-network eth-testnet hyperledger-testnet oracle-blueprint docker docker-test-start frontend-build frontend-start n8n
+# TODO: add oracle-blueprint
+init-test-setup: docker-network eth-testnet docker docker-test-start
+
+init-visual-test-setup: init-test-setup frontend-build frontend-start n8n
 
 prune-test-setup:
 	docker stop $$(docker ps -aq) || true
@@ -63,7 +67,7 @@ register:
 	selenium-side-runner "caseStudies/${TEST_SMART_CONTRACT}/register.side"
 
 create-oracle-template:
-	selenium-side-runner "caseStudies/${TEST_SMART_CONTRACT}/create_oracle_template.side"
+	selenium-side-runner "caseStudies/${TEST_SMART_CONTRACT}/create_smart_contract.side"
 
 create-oracle:
 	echo "Not implemented yet"
@@ -90,6 +94,7 @@ hyperledger-testnet:
 test-setup: prune-test-setup init-test-setup
 
 performance-test:
+	sleep 3
 	cd ./caseStudies/inboundOraclePerformanceTests; go build; ./inboundOraclePerformanceTests; cd ../..
 	cd ./caseStudies/outboundOraclePerformanceTests; go build; ./outboundOraclePerformanceTests; cd ../..
 

@@ -82,7 +82,7 @@
         ["css=.primary", "css:finder"],
         ["xpath=//a[contains(text(),'Create Oracle')]", "xpath:link"],
         ["xpath=//div[@id='root']/div[2]/div/div/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/oracleTemplates')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/smartContracts')]", "xpath:href"],
         ["xpath=//div[2]/div/div/a", "xpath:position"],
         ["xpath=//a[contains(.,'Create Oracle')]", "xpath:innerText"]
       ],
@@ -97,7 +97,7 @@
         ["css=.primary", "css:finder"],
         ["xpath=//a[contains(text(),'Create Template')]", "xpath:link"],
         ["xpath=//div[@id='root']/div[2]/div/div/a", "xpath:idRelative"],
-        ["xpath=//a[contains(@href, '/oracleTemplates/create')]", "xpath:href"],
+        ["xpath=//a[contains(@href, '/smartContracts/create')]", "xpath:href"],
         ["xpath=//div[2]/div/div/a", "xpath:position"],
         ["xpath=//a[contains(.,'Create Template')]", "xpath:innerText"]
       ],
@@ -106,14 +106,14 @@
       "id": "b5332ecb-b3ac-40f6-ab3a-f8c0ba4ea47a",
       "comment": "",
       "command": "click",
-      "target": "linkText=Inbound Oracle",
+      "target": "linkText=Publisher",
       "targets": [
-        ["linkText=Inbound Oracle", "linkText"],
+        ["linkText=Publisher", "linkText"],
         ["css=.ui > .item:nth-child(2)", "css:finder"],
-        ["xpath=//a[contains(text(),'Inbound Oracle')]", "xpath:link"],
+        ["xpath=//a[contains(text(),'Publisher')]", "xpath:link"],
         ["xpath=//div[@id='root']/div[2]/div/div/div/a[2]", "xpath:idRelative"],
         ["xpath=//a[2]", "xpath:position"],
-        ["xpath=//a[contains(.,'Inbound Oracle')]", "xpath:innerText"]
+        ["xpath=//a[contains(.,'Publisher')]", "xpath:innerText"]
       ],
       "value": ""
     }, {

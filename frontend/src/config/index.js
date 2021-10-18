@@ -1,5 +1,5 @@
 const local = {
-  BASE_URL: "http://3.250.230.152:8080",
+  BASE_URL: "http://localhost:8080",
 };
 
 const prod = {

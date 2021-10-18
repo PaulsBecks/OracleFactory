@@ -16,7 +16,7 @@ function Home() {
           icon="plus"
           content="Create Oracle"
           as={Link}
-          to="/oracleTemplates"
+          to="/smartContracts"
         />
       </div>
       <br />

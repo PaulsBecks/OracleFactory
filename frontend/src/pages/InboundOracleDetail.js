@@ -17,7 +17,7 @@ import {
 } from "../components";
 import FilterForm from "../components/FilterForm";
 import { ORACLE_STATUS_STARTED } from "../config/constants";
-import InboundOracleTemplateCard from "../components/InboundOracleTemplateCard";
+import SmartContractPublisherCard from "../components/SmartContractPublisherCard";
 
 export default function InboundOracleDetail({}) {
   const { inboundOracleID } = useParams();
@@ -30,7 +30,6 @@ export default function InboundOracleDetail({}) {
   ] = useInboundOracle(inboundOracleID);
 
   const [localInboundOracle, setLocalInboundOracle] = useState();
-
   useEffect(() => {
     setLocalInboundOracle(inboundOracle);
   }, [inboundOracle]);
@@ -42,8 +41,6 @@ export default function InboundOracleDetail({}) {
   if (!inboundOracle) {
     return "Loading...";
   }
-
-  console.log(inboundOracle);
 
   return (
     <div>
@@ -97,14 +94,17 @@ export default function InboundOracleDetail({}) {
         <div style={{ marginLeft: "1em", marginTop: "1em" }}>
           <ExampleRequest
             eventParameters={
-              inboundOracle.InboundOracleTemplate.OracleTemplate.EventParameters
+              inboundOracle.SmartContractPublisher.ListenerPublisher
+                .EventParameters
             }
           />
         </div>
       </div>
       <br />
       <FilterForm
-        oracleTemplateID={inboundOracle.InboundOracleTemplate.OracleTemplate.ID}
+        listenerPublisherID={
+          inboundOracle.SmartContractPublisher.ListenerPublisher.ID
+        }
         oracleID={inboundOracle.Oracle.ID}
       />
       <br />

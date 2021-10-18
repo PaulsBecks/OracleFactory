@@ -40,7 +40,7 @@ type StoreCaller struct {
 
 // StoreTransactor is an auto generated write-only Go binding around an Ethereum contract.
 type StoreTransactor struct {
-	contract *bind.BoundContract // Generic contract wrapper for the low level calls
+	Contract *bind.BoundContract // Generic contract wrapper for the low level calls
 }
 
 // StoreFilterer is an auto generated log filtering Go binding around an Ethereum contract events.
@@ -91,7 +91,7 @@ func NewStore(address common.Address, backend bind.ContractBackend, abi string) 
 	if err != nil {
 		return nil, err
 	}
-	return &Store{StoreCaller: StoreCaller{contract: contract}, StoreTransactor: StoreTransactor{contract: contract}, StoreFilterer: StoreFilterer{contract: contract}}, nil
+	return &Store{StoreCaller: StoreCaller{contract: contract}, StoreTransactor: StoreTransactor{Contract: contract}, StoreFilterer: StoreFilterer{contract: contract}}, nil
 }
 
 // NewStoreCaller creates a new read-only instance of Store, bound to a specific deployed contract.
@@ -109,7 +109,7 @@ func NewStoreTransactor(address common.Address, transactor bind.ContractTransact
 	if err != nil {
 		return nil, err
 	}
-	return &StoreTransactor{contract: contract}, nil
+	return &StoreTransactor{Contract: contract}, nil
 }
 
 // NewStoreFilterer creates a new log filterer instance of Store, bound to a specific deployed contract.
@@ -141,12 +141,12 @@ func (_Store *StoreRaw) Call(opts *bind.CallOpts, result *[]interface{}, method 
 // Transfer initiates a plain transaction to move funds to the contract, calling
 // its default method if one is available.
 func (_Store *StoreRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Store.Contract.StoreTransactor.contract.Transfer(opts)
+	return _Store.Contract.StoreTransactor.Contract.Transfer(opts)
 }
 
 // Transact invokes the (paid) contract method with params as input values.
 func (_Store *StoreRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
-	return _Store.Contract.StoreTransactor.contract.Transact(opts, method, params...)
+	return _Store.Contract.StoreTransactor.Contract.Transact(opts, method, params...)
 }
 
 // Call invokes the (constant) contract method with params as input values and
@@ -160,10 +160,10 @@ func (_Store *StoreCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, m
 // Transfer initiates a plain transaction to move funds to the contract, calling
 // its default method if one is available.
 func (_Store *StoreTransactorRaw) Transfer(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _Store.Contract.contract.Transfer(opts)
+	return _Store.Contract.Contract.Transfer(opts)
 }
 
 // Transact invokes the (paid) contract method with params as input values.
 func (_Store *StoreTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
-	return _Store.Contract.contract.Transact(opts, method, params...)
+	return _Store.Contract.Contract.Transact(opts, method, params...)
 }

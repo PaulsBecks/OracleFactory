@@ -5,14 +5,18 @@ import { ORACLE_STATUS_STARTED } from "../config/constants";
 import OracleOnOffRibbon from "./OracleOnOffRibbon";
 
 export default function OutboundOracleTable({ outboundOracles }) {
+  console.log(outboundOracles);
+  if (!outboundOracles) {
+    return "";
+  }
   return (
     <Table color="orange">
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell collapsing></Table.HeaderCell>
-          <Table.HeaderCell collapsing></Table.HeaderCell>
           <Table.HeaderCell>Name</Table.HeaderCell>
-          <Table.HeaderCell>Forward To</Table.HeaderCell>
+          <Table.HeaderCell>Listener</Table.HeaderCell>
+          <Table.HeaderCell>Publisher</Table.HeaderCell>
           <Table.HeaderCell></Table.HeaderCell>
         </Table.Row>
       </Table.Header>
@@ -26,17 +30,48 @@ export default function OutboundOracleTable({ outboundOracles }) {
                 }
               />
             </Table.Cell>
-            <Table.Cell>
-              <Identicon
-                string={
-                  outboundOracle.OutboundOracleTemplate.OracleTemplate
-                    .ContractAddress
-                }
-                size={50}
-              />
-            </Table.Cell>
             <Table.Cell>{outboundOracle.Oracle.Name || ""}</Table.Cell>
-            <Table.Cell>{outboundOracle.URI}</Table.Cell>
+            <Table.Cell>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ marginRight: "1em" }}>
+                  <Identicon
+                    string={
+                      outboundOracle.SmartContractListener.SmartContract
+                        .ContractAddress
+                    }
+                    size={50}
+                  />
+                </div>
+                <label>
+                  {outboundOracle.SmartContractListener.ListenerPublisher.Name}
+                </label>
+              </div>
+            </Table.Cell>
+            <Table.Cell>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ marginRight: "1em" }}>
+                  <Identicon
+                    string={"Publisher" + outboundOracle.WebServicePublisher.ID}
+                    size={50}
+                  />
+                </div>
+                <label>
+                  {outboundOracle.WebServicePublisher.ListenerPublisher.Name}
+                </label>
+              </div>
+            </Table.Cell>
             <Table.Cell textAlign="right">
               <Button
                 as={Link}

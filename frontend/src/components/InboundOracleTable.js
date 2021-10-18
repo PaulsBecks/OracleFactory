@@ -10,9 +10,9 @@ export default function InboundOracleTable({ inboundOracles }) {
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell collapsing></Table.HeaderCell>
-          <Table.HeaderCell collapsing></Table.HeaderCell>
           <Table.HeaderCell>Name</Table.HeaderCell>
-          <Table.HeaderCell>Endpoint</Table.HeaderCell>
+          <Table.HeaderCell>Listener</Table.HeaderCell>
+          <Table.HeaderCell>Publisher</Table.HeaderCell>
           <Table.HeaderCell></Table.HeaderCell>
         </Table.Row>
       </Table.Header>
@@ -26,20 +26,47 @@ export default function InboundOracleTable({ inboundOracles }) {
                 }
               />
             </Table.Cell>
-            <Table.Cell>
-              <Identicon
-                string={
-                  inboundOracle.InboundOracleTemplate.OracleTemplate
-                    .ContractAddress
-                }
-                size={50}
-              />
-            </Table.Cell>
             <Table.Cell>{inboundOracle.Oracle.Name || ""}</Table.Cell>
             <Table.Cell>
-              {"http://localhost:8080/inboundOracles/" +
-                inboundOracle.ID +
-                "/events"}
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ marginRight: "1em" }}>
+                  <Identicon
+                    string={"Listener" + inboundOracle.WebServiceListener.ID}
+                    size={50}
+                  />
+                </div>
+                <label>
+                  {inboundOracle.WebServiceListener.ListenerPublisher.Name}
+                </label>
+              </div>
+            </Table.Cell>
+            <Table.Cell>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ marginRight: "1em" }}>
+                  <Identicon
+                    string={
+                      inboundOracle.SmartContractPublisher.SmartContract
+                        .ContractAddress
+                    }
+                    size={50}
+                  />
+                </div>
+                <label>
+                  {inboundOracle.SmartContractPublisher.ListenerPublisher.Name}
+                </label>
+              </div>
             </Table.Cell>
             <Table.Cell textAlign="right">
               <Button
@@ -59,8 +86,8 @@ export default function InboundOracleTable({ inboundOracles }) {
   /*return (
     <div>
       {inboundOracles.map((inboundOracle) => (
-        <OracleTemplateCard
-          inboundOracleTemplate={inboundOracle.InboundOracleTemplate}
+        <SmartContractCard
+          smartContractPublisher={inboundOracle.SmartContractPublisher}
         />
       ))}
     </div>

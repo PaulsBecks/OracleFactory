@@ -10,7 +10,7 @@ import {
 } from "../components";
 import FilterForm from "../components/FilterForm";
 import { ORACLE_STATUS_STARTED } from "../config/constants";
-import OutboundOracleTemplateCard from "../components/OutboundOracleTemplateCard";
+import SmartContractListenerCard from "../components/SmartContractListenerCard";
 
 export default function OutboundOracleDetail({}) {
   const { outboundOracleID } = useParams();
@@ -43,6 +43,11 @@ export default function OutboundOracleDetail({}) {
               outboundOracle={localOutboundOracles}
               setOutboundOracle={setLocalOutboundOracle}
             />
+            <br />
+            <label>
+              <b>Forward to:</b>
+            </label>
+            <p>{outboundOracle.WebServicePublisher.Url}</p>
             {JSON.stringify(localOutboundOracles) !==
               JSON.stringify(outboundOracle) && (
               <>
@@ -71,7 +76,7 @@ export default function OutboundOracleDetail({}) {
         <div style={{ marginLeft: "1em", marginTop: "1em" }}>
           <ExampleRequest
             eventParameters={
-              outboundOracle.OutboundOracleTemplate.OracleTemplate
+              outboundOracle.SmartContractListener.ListenerPublisher
                 .EventParameters
             }
           />
@@ -80,8 +85,8 @@ export default function OutboundOracleDetail({}) {
       <br />
       <FilterForm
         oracleID={outboundOracle.OracleID}
-        oracleTemplateID={
-          outboundOracle.OutboundOracleTemplate.OracleTemplateID
+        listenerPublisherID={
+          outboundOracle.SmartContractListener.ListenerPublisher.ID
         }
       />
       <br />

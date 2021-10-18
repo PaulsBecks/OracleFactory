@@ -16,6 +16,10 @@ const typeToExampleParameter = {
 };
 
 export default function ExampleRequest({ eventParameters }) {
+  console.log(eventParameters);
+  if (!eventParameters) {
+    return "";
+  }
   return (
     <p>
       <b>Example Request:</b>

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import getData from "../services/getData";
 
-export default function useEventParameters(OracleTemplateID) {
+export default function useEventParameters(listenerPublisherID) {
   const [parameters, setParameters] = useState([]);
+  console.log(listenerPublisherID);
 
   async function fetchParameters() {
     const data = await getData(
-      "/oracleTemplates/" + OracleTemplateID + "/eventParameters"
+      "/listenerPublishers/" + listenerPublisherID + "/eventParameters"
     );
     setParameters(data.eventParameters);
   }

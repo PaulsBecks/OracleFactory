@@ -20,12 +20,22 @@ type Oracle struct {
 	ParameterFilters []ParameterFilter
 }
 
-func (o *Oracle) CheckInput(input map[string]interface{}) bool {
+func GetOracleByID(ID uint) *Oracle {
+	db := utils.DBConnection()
+	var oracle Oracle
+	db.Find(&oracle, ID)
+	return &oracle
+}
+
+func (o *Oracle) CreateEvent(eventJson []byte) *Event {
+	return CreateEvent(eventJson, o.ID)
+}
+
+func (o *Oracle) CheckInput(event *Event) bool {
 	parameterFilters := o.GetParameterFilters()
 	for _, parameterFilter := range parameterFilters {
-		name := parameterFilter.GetEventParameter().Name
-		value := input[name]
-		if valid := parameterFilter.Check(value.(string)); !valid {
+		value := event.GetEventValueByParameterName(parameterFilter.ID)
+		if valid := parameterFilter.Check(value); !valid {
 			return false
 		}
 	}
@@ -34,7 +44,6 @@ func (o *Oracle) CheckInput(input map[string]interface{}) bool {
 
 func (o *Oracle) GetParameterFilters() []ParameterFilter {
 	db := utils.DBConnection()
-
 	var parameterFilters []ParameterFilter
 	db.Find(&parameterFilters, "oracle_id = ?", o.ID)
 	return parameterFilters

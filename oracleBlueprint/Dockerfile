@@ -15,4 +15,4 @@ RUN cd Blockchain-Logging-Framework && \
 RUN mkdir output
 
 
-CMD ["java", "-jar", "Blockchain-Logging-Framework/target/blf-cmd.jar", "extract", "Blockchain-Logging-Framework/src/main/resources/TemplateExample.bcql"]
+CMD ["java", "-jar", "Blockchain-Logging-Framework/target/blf-cmd.jar", "validate", "Blockchain-Logging-Framework/src/main/resources/TemplateExample.bcql"]

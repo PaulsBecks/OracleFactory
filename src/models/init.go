@@ -15,16 +15,18 @@ func InitDB() {
 
 	// Check if table exists - if not create it
 	db.AutoMigrate(&EventParameter{},
-		&OutboundOracleTemplate{},
+		&SmartContractListener{},
 		&EventValue{},
 		&OutboundOracle{},
 		&EventParameter{},
 		&Event{},
-		&InboundOracleTemplate{},
+		&SmartContractPublisher{},
 		&InboundOracle{},
 		&User{},
 		&Filter{},
 		&ParameterFilter{},
+		&WebServiceListener{},
+		&WebServicePublisher{},
 	)
 	InitFilter(db)
 	env := os.Getenv("ENV")
@@ -67,112 +69,94 @@ func initPerformanceTestSetup(db *gorm.DB) {
 
 }
 func initEthereumOracles(db *gorm.DB, user User) {
-	ethereumOracleTemplate := OracleTemplate{
-		BlockchainName:         "Ethereum",
-		EventName:              "mint",
-		ContractAddress:        "0xe4EFfB267484Cd790143484de3Bae7fDfbE31F00",
-		ContractAddressSynonym: "Token",
-	}
-	db.Create(&ethereumOracleTemplate)
-	ethereumInboundOracleTemplate := InboundOracleTemplate{OracleTemplate: ethereumOracleTemplate}
-	db.Create(&ethereumInboundOracleTemplate)
-	ethereumOracle := Oracle{
-		Name:   "Ethereum Test",
-		UserID: user.ID,
-	}
-	db.Create(&ethereumOracle)
-	inboundOracle := InboundOracle{
-		Oracle:                  ethereumOracle,
-		InboundOracleTemplateID: ethereumInboundOracleTemplate.ID,
-	}
-	db.Create(&inboundOracle)
-	eventParameter := EventParameter{
-		Name:             "receiver",
-		Type:             "address",
-		OracleTemplateID: ethereumOracleTemplate.ID,
-	}
-	db.Create(&eventParameter)
+	mintEthereumSmartContractPublisher := user.CreateSmartContractPublisher(
+		"Ethereum",
+		"mint",
+		"0xe4EFfB267484Cd790143484de3Bae7fDfbE31F00",
+		"Token",
+		"Ethereum Token Minting",
+		"Mint a specific amount of Ethereum tokens for a receiver.",
+		true,
+		map[string]string{
+			"receiver": "address",
+			"amount":   "uint256",
+		},
+	)
+	webServiceListener := user.CreateWebServiceListener(
+		"Token Give Away",
+		"Continuous stream of receivers and amount of tokens.",
+		true,
+	)
+	user.CreateInboundOracle("Mint tokens on request", mintEthereumSmartContractPublisher.ID, webServiceListener.ID)
 
-	eventParameter = EventParameter{
-		Name:             "amount",
-		Type:             "uint256",
-		OracleTemplateID: ethereumOracleTemplate.ID,
-	}
-	db.Create(&eventParameter)
-	/*outboundOracleTemplate := OutboundOracleTemplate{
-		OracleTemplate: oracleTemplate,
-	}
-	db.Create(&outboundOracleTemplate)
-	eventParameterOut := EventParameter{
-		Name:             "owner",
-		Type:             "string",
-		OracleTemplateID: oracle.ID,
-	}
-	db.Create(&eventParameterOut)*/
+	transferEthereumSmartContractPublisher := user.CreateSmartContractPublisher(
+		"Ethereum",
+		"transfer",
+		"0xe4EFfB267484Cd790143484de3Bae7fDfbE31F00",
+		"Token",
+		"Ethereum Token Transfer",
+		"Transfer a specific amount of Ethereum tokens to a receiver.",
+		true,
+		map[string]string{
+			"receiver": "address",
+			"amount":   "uint256",
+		},
+	)
+
+	transferWebServiceListener := user.CreateWebServiceListener(
+		"Token transferal",
+		"Continuous stream of receivers and amount of tokens.",
+		true,
+	)
+	user.CreateInboundOracle("Transfer tokens on request", transferEthereumSmartContractPublisher.ID, transferWebServiceListener.ID)
+
+	ethereumSmartContractListener := user.CreateSmartContractListener(
+		"Ethereum",
+		"Transfer",
+		"0xe4EFfB267484Cd790143484de3Bae7fDfbE31F00",
+		"Token",
+		"Ethereum Token Transfer",
+		"Listen to ethereum token transfers.",
+		true,
+		map[string]string{
+			"sender":   "address",
+			"receiver": "address",
+			"amount":   "uint256",
+		},
+	)
+	url := "http://host.docker.internal:7890"
+	webServicePublisher := user.CreateWebServicePublisher("Notify test setup", "Forward data to the test setup endpoint", url, true)
+	outboundOracle := user.CreateOutboundOracle("Outbound Oracle Test", ethereumSmartContractListener.ID, webServicePublisher.ID)
+	outboundOracle.StartOracle()
 }
 
 func initHyperledgerOracles(db *gorm.DB, user User) {
-	hyperledgerOracleTemplate := OracleTemplate{
-		BlockchainName:         "Hyperledger",
-		EventName:              "CreateAsset",
-		ContractAddress:        "events",
-		ContractAddressSynonym: "Events",
+	hyperledgerSmartContractPublisher := user.CreateSmartContractPublisher(
+		"Hyperledger",
+		"CreateAsset",
+		"events",
+		"Events",
+		"Create Asset On Hyperledger",
+		"This publisher creates an asset in the events smart contract.",
+		true,
+		map[string]string{
+			"assetID":        "string",
+			"color":          "string",
+			"size":           "string",
+			"owner":          "string",
+			"appraisedValue": "int",
+		},
+	)
+	webServiceListener := user.CreateWebServiceListener("New Assets Endpoint", "This listener receives newly created assets.", true)
+	user.CreateInboundOracle("Hyperledger Test", hyperledgerSmartContractPublisher.ID, webServiceListener.ID)
+	/*smartContractListener := SmartContractListener{
+		SmartContract: smartContract,
 	}
-	db.Create(&hyperledgerOracleTemplate)
-	hyperledgerInboundOracleTemplate := InboundOracleTemplate{OracleTemplate: hyperledgerOracleTemplate}
-	db.Create(&hyperledgerInboundOracleTemplate)
-	hyperledgerOracle := Oracle{
-		Name:   "Hyperledger Test",
-		UserID: user.ID,
-	}
-	db.Create(&hyperledgerOracle)
-	inboundOracle := InboundOracle{
-		Oracle:                  hyperledgerOracle,
-		InboundOracleTemplateID: hyperledgerInboundOracleTemplate.ID,
-	}
-	db.Create(&inboundOracle)
-	eventParameter := EventParameter{
-		Name:             "assetID",
-		Type:             "string",
-		OracleTemplateID: hyperledgerOracleTemplate.ID,
-	}
-	db.Create(&eventParameter)
-
-	eventParameter = EventParameter{
-		Name:             "color",
-		Type:             "string",
-		OracleTemplateID: hyperledgerOracleTemplate.ID,
-	}
-	db.Create(&eventParameter)
-
-	eventParameter = EventParameter{
-		Name:             "size",
-		Type:             "string",
-		OracleTemplateID: hyperledgerOracleTemplate.ID,
-	}
-	db.Create(&eventParameter)
-
-	eventParameter = EventParameter{
-		Name:             "owner",
-		Type:             "string",
-		OracleTemplateID: hyperledgerOracleTemplate.ID,
-	}
-	db.Create(&eventParameter)
-
-	eventParameter = EventParameter{
-		Name:             "appraisedValue",
-		Type:             "int",
-		OracleTemplateID: hyperledgerOracleTemplate.ID,
-	}
-	db.Create(&eventParameter)
-	/*outboundOracleTemplate := OutboundOracleTemplate{
-		OracleTemplate: oracleTemplate,
-	}
-	db.Create(&outboundOracleTemplate)
+	db.Create(&smartContractListener)
 	eventParameterOut := EventParameter{
 		Name:             "owner",
 		Type:             "string",
-		OracleTemplateID: oracle.ID,
+		SmartContractID: oracle.ID,
 	}
 	db.Create(&eventParameterOut)*/
 }

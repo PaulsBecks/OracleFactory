@@ -12,26 +12,34 @@ import (
 
 type OutboundOracle struct {
 	gorm.Model
-	URI                      string
-	OracleID                 uint
-	Oracle                   Oracle
-	OutboundOracleTemplateID uint
-	OutboundOracleTemplate   OutboundOracleTemplate
-	DockerContainer          string
+	URI                     string
+	OracleID                uint
+	Oracle                  Oracle
+	SmartContractListenerID uint
+	SmartContractListener   SmartContractListener
+	WebServicePublisherID   uint
+	WebServicePublisher     WebServicePublisher
+	DockerContainer         string
 }
 
-func (o *OutboundOracle) GetOutboundOracleTemplate() *OutboundOracleTemplate {
+func (o *OutboundOracle) GetWebServicePublisher() *WebServicePublisher {
 	db := utils.DBConnection()
+	var webServicePublisher *WebServicePublisher
+	db.Find(&webServicePublisher, o.WebServicePublisherID)
+	return webServicePublisher
+}
 
-	var outboundOracleTemplate *OutboundOracleTemplate
-	db.Find(&outboundOracleTemplate, o.OutboundOracleTemplateID)
-	return outboundOracleTemplate
+func (o *OutboundOracle) GetSmartContractListener() *SmartContractListener {
+	db := utils.DBConnection()
+	var smartContractListener *SmartContractListener
+	db.Find(&smartContractListener, o.SmartContractListenerID)
+	return smartContractListener
 }
 
 func (o *OutboundOracle) GetConnectionString() string {
 	// TODO: Describe how this can be extended to add additional blockchains
 	user := o.GetOracle().GetUser()
-	switch o.GetOutboundOracleTemplate().GetOracleTemplate().BlockchainName {
+	switch o.GetSmartContractListener().GetSmartContract().BlockchainName {
 	case HYPERLEDGER_BLOCKCHAIN:
 		return `{
 	\"connection.yaml\",
@@ -48,9 +56,9 @@ func (o *OutboundOracle) GetConnectionString() string {
 }
 
 func (o *OutboundOracle) createManifest() string {
-	outboundOracleTemplate := o.GetOutboundOracleTemplate()
-	oracleTemplate := outboundOracleTemplate.GetOracleTemplate()
-	return `SET BLOCKCHAIN \"` + oracleTemplate.BlockchainName + `\";
+	smartContractListener := o.GetSmartContractListener()
+	smartContract := smartContractListener.GetSmartContract()
+	return `SET BLOCKCHAIN \"` + smartContract.BlockchainName + `\";
 
 SET OUTPUT FOLDER \"./output\";
 SET EMISSION MODE \"streaming\";
@@ -59,8 +67,8 @@ SET CONNECTION ` + o.GetConnectionString() + `;
 
 
 BLOCKS (CURRENT) (CONTINUOUS) {
-	LOG ENTRIES (\"` + oracleTemplate.ContractAddress + `\") (` + oracleTemplate.EventName + `(` + outboundOracleTemplate.GetEventParametersString() + `)) {
-		EMIT HTTP REQUEST (\"` + o.oracleFactoryOutboundEventLink() + `\") (` + outboundOracleTemplate.GetEventParameterNamesString() + `);
+	LOG ENTRIES (\"` + smartContract.ContractAddress + `\") (` + smartContract.EventName + `(` + smartContractListener.GetEventParametersString() + `)) {
+		EMIT HTTP REQUEST (\"` + o.oracleFactoryOutboundEventLink() + `\") (` + smartContractListener.GetEventParameterNamesString() + `);
 	}
 }`
 }
@@ -76,7 +84,7 @@ func (o *OutboundOracle) StartOracle() error {
 	}
 	manifest := o.createManifest()
 	copyFilesToContainerCommand := echoStringToFile(manifest, "manifest.bloql")
-	if o.OutboundOracleTemplate.OracleTemplate.BlockchainName == "Hyperledger" {
+	if o.SmartContractListener.SmartContract.BlockchainName == "Hyperledger" {
 		copyFilesToContainerCommand += echoStringToFile(oracle.GetUser().HyperledgerCert, "server.crt")
 		copyFilesToContainerCommand += echoStringToFile(oracle.GetUser().HyperledgerConfig, "connection.yaml")
 		copyFilesToContainerCommand += echoStringToFile(oracle.GetUser().HyperledgerKey, "server.key")

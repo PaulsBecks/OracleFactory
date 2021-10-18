@@ -11,14 +11,20 @@ const createParameterFilterSceleton = (oracleID) => ({
   Scheme: "",
 });
 
-export default function FilterForm({ oracleTemplateID, oracleID }) {
+export default function FilterForm({ listenerPublisherID, oracleID }) {
   const [parameterFilters, createParameterFilter, deleteParameterFilter] =
     useParameterFilters(oracleID);
-  const [parameters] = useParameters(oracleTemplateID);
+  const [parameters] = useParameters(listenerPublisherID);
   const [filters] = useFilters();
   const [newParameterFilter, setNewParameterFilter] = useState(
     createParameterFilterSceleton(oracleID)
   );
+
+  console.log(parameters);
+
+  if (!parameters) {
+    return "";
+  }
 
   return (
     <div>
