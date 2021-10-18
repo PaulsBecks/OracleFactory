@@ -2,6 +2,7 @@ node_modules/
 OracleFactory
 OracleFactory.db
 fabric-samples/
+.DS_Store
 
 # hyperledger test files
 connection-org1.yaml
