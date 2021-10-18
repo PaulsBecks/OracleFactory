@@ -10,6 +10,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var testUrl = "http://host.docker.internal:7890"
+
 func InitDB() {
 	db := utils.DBConnection()
 
@@ -124,8 +126,7 @@ func initEthereumOracles(db *gorm.DB, user User) {
 			"amount":   "uint256",
 		},
 	)
-	url := "http://host.docker.internal:7890"
-	webServicePublisher := user.CreateWebServicePublisher("Notify test setup", "Forward data to the test setup endpoint", url, true)
+	webServicePublisher := user.CreateWebServicePublisher("Notify test setup", "Forward data to the test setup endpoint", testUrl, true)
 	outboundOracle := user.CreateOutboundOracle("Outbound Oracle Test", ethereumSmartContractListener.ID, webServicePublisher.ID)
 	outboundOracle.StartOracle()
 }
@@ -148,15 +149,24 @@ func initHyperledgerOracles(db *gorm.DB, user User) {
 		},
 	)
 	webServiceListener := user.CreateWebServiceListener("New Assets Endpoint", "This listener receives newly created assets.", true)
-	user.CreateInboundOracle("Hyperledger Test", hyperledgerSmartContractPublisher.ID, webServiceListener.ID)
-	/*smartContractListener := SmartContractListener{
-		SmartContract: smartContract,
-	}
-	db.Create(&smartContractListener)
-	eventParameterOut := EventParameter{
-		Name:             "owner",
-		Type:             "string",
-		SmartContractID: oracle.ID,
-	}
-	db.Create(&eventParameterOut)*/
+	user.CreateInboundOracle("Hyperledger Inbound Test", hyperledgerSmartContractPublisher.ID, webServiceListener.ID)
+
+	hyperledgerSmartContractListener := user.CreateSmartContractListener(
+		"Hyperledger",
+		"CreateAsset",
+		"events",
+		"Events",
+		"Receive newly created assets on Hyperledger",
+		"This listener waits for newly created assets.",
+		true,
+		map[string]string{
+			"assetID":        "string",
+			"color":          "string",
+			"size":           "string",
+			"owner":          "string",
+			"appraisedValue": "int",
+		},
+	)
+	webServicePublisher := user.CreateWebServicePublisher("New Assets Publisher", "This publisher forwards newly created assets.", testUrl, true)
+	user.CreateOutboundOracle("Hyperledger Oubound Test", hyperledgerSmartContractListener.ID, webServicePublisher.ID)
 }

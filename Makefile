@@ -9,7 +9,7 @@ docker:
 	docker build -t "oracle_factory" .
 
 docker-start:
-	docker run -p 8080:8080 -d --name oracle-factory --network=$(network_name) -v /var/run/docker.sock:/var/run/docker.sock oracle_factory
+	docker run -p 8080:8080 -d --name oracle-factory --network=$(network_name) --add-host=host.docker.internal:host-gateway -v /var/run/docker.sock:/var/run/docker.sock oracle_factory
 
 docker-test-start:
 	docker run -p 8080:8080 -d --name oracle-factory --network=$(network_name) --env ENV=PERFORMANCE_TEST -v /var/run/docker.sock:/var/run/docker.sock oracle_factory
@@ -53,8 +53,7 @@ frontend-update: frontend-stop frontend-build frontend-start
 n8n:
 	docker run --detach --rm --name n8n -p 5678:5678 -v ${current_dir}/.n8n:/home/node/.n8n --network=$(network_name) n8nio/n8n
 
-# TODO: add oracle-blueprint
-init-test-setup: docker-network eth-testnet docker docker-test-start
+init-test-setup: docker-network eth-testnet hyperledger-testnet oracle-blueprint docker docker-test-start
 
 init-visual-test-setup: init-test-setup frontend-build frontend-start n8n
 

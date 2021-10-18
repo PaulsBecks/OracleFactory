@@ -124,12 +124,12 @@ func computeAverageLatency(eventMeasurements []EventMeasurement) (float64, error
 
 func main() {
 	repetitions := 10
-	/*hyperledgerCreateAssetTest := &PerformanceTest{
+	hyperledgerCreateAssetTest := &PerformanceTest{
 		outputFileName: "hyperledgerCreateAssetTest.csv",
 		oracleEndpoint: "http://localhost:8080/webServiceListeners/1/events",
 		body:           `{"assetID":"1","color":"green", "size":"m", "owner":"me", "appraisedValue":"1k"}`,
 	}
-	hyperledgerCreateAssetTest.runAll(repetitions)*/
+	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	ethereumMintTokenTest := &PerformanceTest{
 		outputFileName: "ethereumMintTokenTest.csv",

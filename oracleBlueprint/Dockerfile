@@ -7,7 +7,7 @@ RUN dpkg --add-architecture i386 && \
 RUN apt-get install -y libssl-dev:i386
 RUN apt-get install git 
 
-RUN git clone --depth 1 https://github.com/TU-ADSP/Blockchain-Logging-Framework
+RUN git clone --depth 1 https://github.com/PaulsBecks/Blockchain-Logging-Framework
 
 RUN cd Blockchain-Logging-Framework && \
     mvn verify -DskipTests 

@@ -6,9 +6,11 @@ def main(file_path):
     df = pandas.read_csv(file_path)
     df.boxplot(column="throughput", by="parallel events")
     plt.xticks(rotation=45)
+    plt.title("Boxplot of the throughput by parallel events")
     plt.savefig(file_path[:-4]+"Throughput.png")
 
     df.boxplot(column="latency", by="ParallelWorkers")
+    plt.title("Boxplot of the latency by parallel events")
     plt.savefig(file_path[:-4]+"Latency.png")
 
 if __name__ == "__main__":
