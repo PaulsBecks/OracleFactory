@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 
 def main(file_path):
     df = pandas.read_csv(file_path)
-    df.boxplot(column="Throughput", by="ParallelWorkers")
+    df.boxplot(column="throughput", by="parallel events")
     plt.xticks(rotation=45)
     plt.savefig(file_path[:-4]+"Throughput.png")
 
-    df.boxplot(column="Latency", by="ParallelWorkers")
+    df.boxplot(column="latency", by="ParallelWorkers")
     plt.savefig(file_path[:-4]+"Latency.png")
 
 if __name__ == "__main__":
