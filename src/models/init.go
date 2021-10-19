@@ -168,5 +168,6 @@ func initHyperledgerOracles(db *gorm.DB, user User) {
 		},
 	)
 	webServicePublisher := user.CreateWebServicePublisher("New Assets Publisher", "This publisher forwards newly created assets.", testUrl, true)
-	user.CreateOutboundOracle("Hyperledger Oubound Test", hyperledgerSmartContractListener.ID, webServicePublisher.ID)
+	outboundOracle := user.CreateOutboundOracle("Hyperledger Oubound Test", hyperledgerSmartContractListener.ID, webServicePublisher.ID)
+	outboundOracle.StartOracle()
 }
