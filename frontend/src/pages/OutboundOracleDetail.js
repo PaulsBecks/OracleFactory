@@ -109,13 +109,16 @@ export default function OutboundOracleDetail({}) {
                     {new Date(outboundEvent.CreatedAt).toLocaleString()}
                   </Table.Cell>
                   <Table.Cell>
-                    {outboundEvent.EventValues.map((value) => (
-                      <>
-                        <b>{value.EventParameter.Name}:</b>
-                        {value.Value}
-                        <br />
-                      </>
-                    ))}
+                    {outboundEvent.EventValues.map((value) => {
+                      console.log(value);
+                      return (
+                        <>
+                          <b>{value.EventParameter.Name}:</b>
+                          {value.Value}
+                          <br />
+                        </>
+                      );
+                    })}
                   </Table.Cell>
                 </Table.Row>
               ))}

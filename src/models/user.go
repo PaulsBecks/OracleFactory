@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/PaulsBecks/OracleFactory/src/utils"
@@ -115,7 +116,7 @@ func (u *User) CreateOutboundOracle(name string, smartContractListenerID, webSer
 	return outboundOracle
 }
 
-func (u *User) CreateSmartContractPublisher(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, publisherName string, description string, private bool, eventParameters map[string]string) SmartContractPublisher {
+func (u *User) CreateSmartContractPublisher(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, publisherName string, description string, private bool, eventParameters []NameTypePair) SmartContractPublisher {
 	db := utils.DBConnection()
 	smartContract := SmartContract{
 		BlockchainName:         blockchainName,
@@ -137,17 +138,18 @@ func (u *User) CreateSmartContractPublisher(blockchainName string, eventName str
 		ListenerPublisher: listenerPublisher,
 	}
 	db.Create(&smartContractPublisher)
-	for parameterName, parameterType := range eventParameters {
+	for _, nameType := range eventParameters {
+		fmt.Println(nameType)
 		eventParameter := EventParameter{
-			Name:                parameterName,
-			Type:                parameterType,
+			Name:                nameType.Name,
+			Type:                nameType.Type,
 			ListenerPublisherID: listenerPublisher.ID,
 		}
 		db.Create(&eventParameter)
 	}
 	return smartContractPublisher
 }
-func (u *User) CreateSmartContractListener(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, listenerName string, description string, private bool, eventParameters map[string]string) SmartContractListener {
+func (u *User) CreateSmartContractListener(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, listenerName string, description string, private bool, eventParameters []NameTypePair) SmartContractListener {
 	db := utils.DBConnection()
 	smartContract := SmartContract{
 		BlockchainName:         blockchainName,
@@ -169,10 +171,10 @@ func (u *User) CreateSmartContractListener(blockchainName string, eventName stri
 		ListenerPublisher: listenerPublisher,
 	}
 	db.Create(&smartContractListener)
-	for parameterName, parameterType := range eventParameters {
+	for _, nameType := range eventParameters {
 		eventParameter := EventParameter{
-			Name:                parameterName,
-			Type:                parameterType,
+			Name:                nameType.Name,
+			Type:                nameType.Type,
 			ListenerPublisherID: listenerPublisher.ID,
 		}
 		db.Create(&eventParameter)

@@ -12,7 +12,7 @@ docker-start:
 	docker run -p 8080:8080 -d --name oracle-factory --network=$(network_name) --add-host=host.docker.internal:host-gateway -v /var/run/docker.sock:/var/run/docker.sock oracle_factory
 
 docker-test-start:
-	docker run -p 8080:8080 -d --name oracle-factory --network=$(network_name) --env ENV=PERFORMANCE_TEST -v /var/run/docker.sock:/var/run/docker.sock oracle_factory
+	docker run -p 8080:8080 -d --name oracle-factory --network=$(network_name) --add-host=host.docker.internal:host-gateway --env ENV=PERFORMANCE_TEST -v /var/run/docker.sock:/var/run/docker.sock oracle_factory
 
 docker-stop:
 	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="oracle_factory" --format="{{.ID}}"))

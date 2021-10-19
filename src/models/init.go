@@ -79,9 +79,9 @@ func initEthereumOracles(db *gorm.DB, user User) {
 		"Ethereum Token Minting",
 		"Mint a specific amount of Ethereum tokens for a receiver.",
 		true,
-		map[string]string{
-			"receiver": "address",
-			"amount":   "uint256",
+		[]NameTypePair{
+			{Name: "receiver", Type: "address"},
+			{Name: "amount", Type: "uint256"},
 		},
 	)
 	webServiceListener := user.CreateWebServiceListener(
@@ -99,9 +99,9 @@ func initEthereumOracles(db *gorm.DB, user User) {
 		"Ethereum Token Transfer",
 		"Transfer a specific amount of Ethereum tokens to a receiver.",
 		true,
-		map[string]string{
-			"receiver": "address",
-			"amount":   "uint256",
+		[]NameTypePair{
+			{Name: "receiver", Type: "address"},
+			{Name: "amount", Type: "uint256"},
 		},
 	)
 
@@ -120,10 +120,10 @@ func initEthereumOracles(db *gorm.DB, user User) {
 		"Ethereum Token Transfer",
 		"Listen to ethereum token transfers.",
 		true,
-		map[string]string{
-			"sender":   "address",
-			"receiver": "address",
-			"amount":   "uint256",
+		[]NameTypePair{
+			{Name: "sender", Type: "address"},
+			{Name: "receiver", Type: "address"},
+			{Name: "amount", Type: "uint256"},
 		},
 	)
 	webServicePublisher := user.CreateWebServicePublisher("Notify test setup", "Forward data to the test setup endpoint", testUrl, true)
@@ -140,12 +140,12 @@ func initHyperledgerOracles(db *gorm.DB, user User) {
 		"Create Asset On Hyperledger",
 		"This publisher creates an asset in the events smart contract.",
 		true,
-		map[string]string{
-			"ID":             "string",
-			"Color":          "string",
-			"Size":           "string",
-			"Owner":          "string",
-			"AppraisedValue": "int",
+		[]NameTypePair{
+			{Name: "ID", Type: "string"},
+			{Name: "Color", Type: "string"},
+			{Name: "Size", Type: "string"},
+			{Name: "Owner", Type: "string"},
+			{Name: "AppraisedValue", Type: "int"},
 		},
 	)
 	webServiceListener := user.CreateWebServiceListener("New Assets Endpoint", "This listener receives newly created assets.", true)
@@ -159,12 +159,12 @@ func initHyperledgerOracles(db *gorm.DB, user User) {
 		"Receive newly created assets on Hyperledger",
 		"This listener waits for newly created assets.",
 		true,
-		map[string]string{
-			"ID":             "string",
-			"Color":          "string",
-			"Size":           "string",
-			"Owner":          "string",
-			"AppraisedValue": "int",
+		[]NameTypePair{
+			{Name: "ID", Type: "string"},
+			{Name: "Color", Type: "string"},
+			{Name: "Size", Type: "string"},
+			{Name: "Owner", Type: "string"},
+			{Name: "AppraisedValue", Type: "int"},
 		},
 	)
 	webServicePublisher := user.CreateWebServicePublisher("New Assets Publisher", "This publisher forwards newly created assets.", testUrl, true)

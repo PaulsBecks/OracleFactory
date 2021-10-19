@@ -35,7 +35,7 @@ type PerformanceTestRun struct {
 }
 
 func NewPerformanceTestRun(performanceTest *PerformanceTest, maxEventsParallel int) *PerformanceTestRun {
-	return &PerformanceTestRun{guard: make(chan struct{}, maxEventsParallel), mu: &sync.Mutex{}, totalEvents: 10, test: *performanceTest, events: make(map[int]EventMeasurement)}
+	return &PerformanceTestRun{guard: make(chan struct{}, maxEventsParallel), mu: &sync.Mutex{}, totalEvents: 100, test: *performanceTest, events: make(map[int]EventMeasurement)}
 }
 
 type EventMeasurement struct {
@@ -187,14 +187,14 @@ func computeAverageLatency(eventMeasurements []EventMeasurement) (float64, error
 
 func main() {
 	repetitions := 10
+	startServer()
 	hyperledgerCreateAssetTest := &PerformanceTest{
 		outputFileName:  "hyperledgerCreateAssetTest.csv",
 		oracleEndpoint:  "http://localhost:8080/webServiceListeners/1/events",
-		body:            `{"assetID":"1","color":"green", "size":"m", "owner":"me", "appraisedValue":"1k"}`,
-		keyVariableName: "assetID",
+		body:            `{"ID":"1","Color":"green", "Size":"m", "Owner":"me", "AppraisedValue":1}`,
+		keyVariableName: "ID",
 	}
 	hyperledgerCreateAssetTest.runAll(repetitions)
-	startServer()
 
 	ethereumMintTokenTest := &PerformanceTest{
 		outputFileName:  "ethereumTransferTokenTest.csv",

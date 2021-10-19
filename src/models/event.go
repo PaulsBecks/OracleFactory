@@ -32,7 +32,7 @@ func CreateEvent(body []byte, oracleID uint) *Event {
 func (e *Event) GetEventValues() []EventValue {
 	db := utils.DBConnection()
 	var events []EventValue
-	db.Find(&events, "event_id = ?", e.ID)
+	db.Order("id").Find(&events, "event_id = ?", e.ID)
 	return events
 }
 

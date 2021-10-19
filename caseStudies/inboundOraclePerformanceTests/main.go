@@ -127,7 +127,7 @@ func main() {
 	hyperledgerCreateAssetTest := &PerformanceTest{
 		outputFileName: "hyperledgerCreateAssetTest.csv",
 		oracleEndpoint: "http://localhost:8080/webServiceListeners/1/events",
-		body:           `{"assetID":"1","color":"green", "size":"m", "owner":"me", "appraisedValue":"1k"}`,
+		body:           `{"ID":"1","Color":"green", "Size":"m", "Owner":"me", "AppraisedValue":1}`,
 	}
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
