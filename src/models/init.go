@@ -141,11 +141,11 @@ func initHyperledgerOracles(db *gorm.DB, user User) {
 		"This publisher creates an asset in the events smart contract.",
 		true,
 		map[string]string{
-			"assetID":        "string",
-			"color":          "string",
-			"size":           "string",
-			"owner":          "string",
-			"appraisedValue": "int",
+			"ID":             "string",
+			"Color":          "string",
+			"Size":           "string",
+			"Owner":          "string",
+			"AppraisedValue": "int",
 		},
 	)
 	webServiceListener := user.CreateWebServiceListener("New Assets Endpoint", "This listener receives newly created assets.", true)
@@ -160,11 +160,11 @@ func initHyperledgerOracles(db *gorm.DB, user User) {
 		"This listener waits for newly created assets.",
 		true,
 		map[string]string{
-			"assetID":        "string",
-			"color":          "string",
-			"size":           "string",
-			"owner":          "string",
-			"appraisedValue": "int",
+			"ID":             "string",
+			"Color":          "string",
+			"Size":           "string",
+			"Owner":          "string",
+			"AppraisedValue": "int",
 		},
 	)
 	webServicePublisher := user.CreateWebServicePublisher("New Assets Publisher", "This publisher forwards newly created assets.", testUrl, true)
