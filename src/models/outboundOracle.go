@@ -84,10 +84,11 @@ func (o *OutboundOracle) StartOracle() error {
 	}
 	manifest := o.createManifest()
 	copyFilesToContainerCommand := echoStringToFile(manifest, "manifest.bloql")
-	if o.SmartContractListener.SmartContract.BlockchainName == "Hyperledger" {
-		copyFilesToContainerCommand += echoStringToFile(oracle.GetUser().HyperledgerCert, "server.crt")
-		copyFilesToContainerCommand += echoStringToFile(oracle.GetUser().HyperledgerConfig, "connection.yaml")
-		copyFilesToContainerCommand += echoStringToFile(oracle.GetUser().HyperledgerKey, "server.key")
+	user := oracle.GetUser()
+	if o.GetSmartContractListener().GetSmartContract().BlockchainName == "Hyperledger" {
+		copyFilesToContainerCommand += echoStringToFile(user.HyperledgerCert, "server.crt")
+		copyFilesToContainerCommand += echoStringToFile(user.HyperledgerConfig, "connection.yaml")
+		copyFilesToContainerCommand += echoStringToFile(user.HyperledgerKey, "server.key")
 	}
 	cmd := exec.Command(
 		"docker",

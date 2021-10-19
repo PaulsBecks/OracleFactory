@@ -3,10 +3,10 @@ const local = {
 };
 
 const prod = {
-  BASE_URL: "http://3.250.230.152:8080",
+  BASE_URL: "http://34.245.60.212:8080",
 };
 
-let config = local;
+let config = prod;
 
 if (process.env.NODE_ENV === "PROD") {
   config = prod;

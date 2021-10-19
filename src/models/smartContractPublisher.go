@@ -158,8 +158,9 @@ func (s *SmartContractPublisher) CreateHyperledgerTransaction(user *User, event 
 	gatewayConfig := user.HyperledgerConfig
 	channel := user.HyperledgerChannel
 
-	contractAddress := s.SmartContract.ContractAddress
-	contractName := s.SmartContract.EventName
+	smartContract := s.GetSmartContract()
+	contractAddress := smartContract.ContractAddress
+	contractName := smartContract.EventName
 	parameters := []string{}
 	for _, eventValue := range event.EventValues {
 		parameters = append(parameters, eventValue.Value)
