@@ -108,8 +108,6 @@ type CreateTransaction func(user *User, event *Event) error
 
 func (s *SmartContractPublisher) CreateEthereumTransaction(user *User, event *Event) error {
 	// make sure every user is only creating one transaction at a time in order they arrive
-	unlock := keyedMutex.Lock(user.ID)
-	defer unlock()
 
 	client, err := ethclient.Dial(user.EthereumAddress)
 	if err != nil {
@@ -127,23 +125,6 @@ func (s *SmartContractPublisher) CreateEthereumTransaction(user *User, event *Ev
 		log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
 	}
 
-	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
-	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	gasPrice, err := client.SuggestGasPrice(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	auth := bind.NewKeyedTransactor(privateKey)
-	auth.Nonce = big.NewInt(int64(nonce))
-	auth.Value = big.NewInt(0)     // in wei
-	auth.GasLimit = uint64(300000) // in units
-	auth.GasPrice = gasPrice
-
 	smartContract := s.GetSmartContract()
 	address := common.HexToAddress(smartContract.ContractAddress)
 	inputs := s.GetEventParameterJSON()
@@ -159,6 +140,26 @@ func (s *SmartContractPublisher) CreateEthereumTransaction(user *User, event *Ev
 	if err != nil {
 		return err
 	}
+
+	gasPrice, err := client.SuggestGasPrice(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	auth := bind.NewKeyedTransactor(privateKey)
+	auth.Value = big.NewInt(0)     // in wei
+	auth.GasLimit = uint64(300000) // in units
+	auth.GasPrice = gasPrice
+
+	unlock := keyedMutex.Lock(user.ID)
+	defer unlock()
+
+	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
+	if err != nil {
+		log.Fatal(err)
+	}
+	auth.Nonce = big.NewInt(int64(nonce))
 
 	tx, err := instance.StoreTransactor.Contract.Transact(auth, name, parameters...)
 	if err != nil {

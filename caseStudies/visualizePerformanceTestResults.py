@@ -9,7 +9,7 @@ def main(file_path):
     plt.title("Boxplot of the throughput by parallel events")
     plt.savefig(file_path[:-4]+"Throughput.png")
 
-    df.boxplot(column="latency", by="ParallelWorkers")
+    df.boxplot(column="latency", by="parallel events")
     plt.title("Boxplot of the latency by parallel events")
     plt.savefig(file_path[:-4]+"Latency.png")
 
