@@ -127,7 +127,6 @@ func (p *PerformanceTest) runAll(repetitions int) {
 			writeToCSV([]string{fmt.Sprintf("%f", avgLatency), fmt.Sprintf("%f", throughput), fmt.Sprintf("%d", maxParallel)}, file)
 		}
 	}
-	stopServer()
 }
 
 func (p *PerformanceTestRun) handler(w http.ResponseWriter, r *http.Request) {
@@ -206,4 +205,6 @@ func main() {
 	sendRequestToInboundOracle("http://localhost:8080/webServiceListeners/2/events", []byte(`{"receiver":"0x40536521353F9f4120A589C9ddDEB6188EF61922","amount":100000}`))
 
 	ethereumMintTokenTest.runAll(repetitions)
+
+	stopServer()
 }

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	"sync"
 
 	"github.com/PaulsBecks/OracleFactory/src/services/ethereum"
 	"github.com/PaulsBecks/OracleFactory/src/utils"
@@ -18,6 +19,20 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/gateway"
 	"gorm.io/gorm"
 )
+
+type KeyedMutex struct {
+	mutexes sync.Map // Zero value is empty and ready for use
+}
+
+func (m *KeyedMutex) Lock(key uint) func() {
+	value, _ := m.mutexes.LoadOrStore(key, &sync.Mutex{})
+	mtx := value.(*sync.Mutex)
+	mtx.Lock()
+
+	return func() { mtx.Unlock() }
+}
+
+var keyedMutex = &KeyedMutex{}
 
 type SmartContractPublisher struct {
 	gorm.Model
@@ -92,6 +107,10 @@ func ParseValues(event *Event) ([]interface{}, error) {
 type CreateTransaction func(user *User, event *Event) error
 
 func (s *SmartContractPublisher) CreateEthereumTransaction(user *User, event *Event) error {
+	// make sure every user is only creating one transaction at a time in order they arrive
+	unlock := keyedMutex.Lock(user.ID)
+	defer unlock()
+
 	client, err := ethclient.Dial(user.EthereumAddress)
 	if err != nil {
 		log.Fatal(err)
