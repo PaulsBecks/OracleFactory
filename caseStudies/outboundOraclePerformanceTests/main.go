@@ -85,7 +85,6 @@ func (p *PerformanceTestRun) timeEvent(worker int) {
 
 	jsonStr, _ := json.Marshal(event)
 	sendRequestToInboundOracle(p.test.oracleEndpoint, jsonStr)
-
 	start := time.Now()
 	p.events[worker] = EventMeasurement{
 		start:    start,
@@ -131,7 +130,6 @@ func (p *PerformanceTest) runAll(repetitions int) {
 
 func (p *PerformanceTestRun) handler(w http.ResponseWriter, r *http.Request) {
 	stop := time.Now()
-
 	var event map[string]interface{}
 	err := json.NewDecoder(r.Body).Decode(&event)
 	if err != nil {
@@ -146,8 +144,8 @@ func (p *PerformanceTestRun) handler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println(workerID, event)
 	measurement := p.events[intWorkerID]
-	elapsed := stop.Sub(measurement.start)
-	measurement.latency = float64(elapsed)
+	measurement.latency = stop.Sub(measurement.start).Seconds()
+
 	p.mu.Lock()
 	p.latencies = append(p.latencies, measurement)
 	p.mu.Unlock()
@@ -189,7 +187,7 @@ func main() {
 	startServer()
 	hyperledgerCreateAssetTest := &PerformanceTest{
 		outputFileName:  "hyperledgerCreateAssetTest.csv",
-		oracleEndpoint:  "http://localhost:8080/webServiceListeners/1/events",
+		oracleEndpoint:  "http://localhost:8080/smartContractListener/1/events",
 		body:            `{"ID":"1","Color":"green", "Size":"m", "Owner":"me", "AppraisedValue":1}`,
 		keyVariableName: "ID",
 	}
@@ -197,7 +195,7 @@ func main() {
 
 	ethereumMintTokenTest := &PerformanceTest{
 		outputFileName:  "ethereumTransferTokenTest.csv",
-		oracleEndpoint:  "http://localhost:8080/webServiceListeners/3/events",
+		oracleEndpoint:  "http://localhost:8080/smartContractListener/3/events",
 		body:            `{"receiver":"0x40536521353F9f4120A589C9ddDEB6188EF61922","amount":0}`,
 		keyVariableName: "amount",
 	}

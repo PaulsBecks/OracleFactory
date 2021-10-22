@@ -23,7 +23,7 @@ oracle-blueprint:
 	docker build -t "oracle_blueprint" ./oracleBlueprint
 
 eth-testnet:
-	docker run --detach -p 8545:8545 -p 7545:7545 --network=$(network_name) --name eth-test-net trufflesuite/ganache-cli:latest --accounts 10 --seed OracleFramework
+	docker run --detach -p 8545:8545 -p 7545:7545 --network=$(network_name) --name eth-test-net trufflesuite/ganache-cli:latest --accounts 10  --blockTime 2 --seed OracleFramework
 	sleep 20
 	cd caseStudies/token; truffle migrate; cd ../..
 

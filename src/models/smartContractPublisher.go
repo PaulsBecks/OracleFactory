@@ -103,6 +103,13 @@ func ParseValues(event *Event) ([]interface{}, error) {
 }
 
 // Blockchain Smart Contract Creation
+func retry(callback func() error, retries int) error {
+	err := callback()
+	if retries <= 0 || err == nil {
+		return err
+	}
+	return retry(callback, retries-1)
+}
 
 type CreateTransaction func(user *User, event *Event) error
 
@@ -154,20 +161,25 @@ func (s *SmartContractPublisher) CreateEthereumTransaction(user *User, event *Ev
 	unlock := keyedMutex.Lock(user.ID)
 	defer unlock()
 
-	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
-	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
-	if err != nil {
-		log.Fatal(err)
-	}
-	auth.Nonce = big.NewInt(int64(nonce))
+	sendTransaction := func() error {
+		fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+		nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
+		if err != nil {
+			return err
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+		auth.Nonce = big.NewInt(int64(nonce))
 
-	tx, err := instance.StoreTransactor.Contract.Transact(auth, name, parameters...)
-	if err != nil {
-		return err
+		tx, err := instance.StoreTransactor.Contract.Transact(auth, name, parameters...)
+		if err != nil {
+			return err
+		}
+		fmt.Printf("INFO: tx sent %s\n", tx.Hash().Hex())
+		return nil
 	}
-
-	fmt.Printf("INFO: tx sent %s\n", tx.Hash().Hex())
-	return nil
+	return retry(sendTransaction, 3)
 }
 
 func (s *SmartContractPublisher) CreateHyperledgerTransaction(user *User, event *Event) error {
