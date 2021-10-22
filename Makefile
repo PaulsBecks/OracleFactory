@@ -94,7 +94,7 @@ test-setup: prune-test-setup init-test-setup
 
 performance-test:
 	sleep 3
-	cd caseStudies; sh ./executePerformanceTests.sh > /dev/null 2>&1 &
+	cd caseStudies; sh ./executePerformanceTests.sh
 	echo "Performance test started in background"
 
 setup-and-test: test-setup performance-test

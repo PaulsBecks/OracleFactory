@@ -187,22 +187,22 @@ func computeAverageLatency(eventMeasurements []EventMeasurement) (float64, error
 func main() {
 	repetitions := 10
 	startServer()
-	hyperledgerCreateAssetTest := &PerformanceTest{
+	/*hyperledgerCreateAssetTest := &PerformanceTest{
 		outputFileName:  "hyperledgerCreateAssetTest.csv",
-		oracleEndpoint:  "http://localhost:8080/smartContractListener/1/events",
+		oracleEndpoint:  "http://localhost:8080/webServiceListeners/1/events",
 		body:            `{"ID":"1","Color":"green", "Size":"m", "Owner":"me", "AppraisedValue":1}`,
 		keyVariableName: "ID",
 	}
 	hyperledgerCreateAssetTest.runAll(repetitions)
-
+	*/
 	ethereumMintTokenTest := &PerformanceTest{
 		outputFileName:  "ethereumTransferTokenTest.csv",
-		oracleEndpoint:  "http://localhost:8080/smartContractListener/3/events",
+		oracleEndpoint:  "http://localhost:8080/webServiceListeners/3/events",
 		body:            `{"receiver":"0x40536521353F9f4120A589C9ddDEB6188EF61922","amount":0}`,
 		keyVariableName: "amount",
 	}
 
-	sendRequestToInboundOracle("http://localhost:8080/webServiceListeners/2/events", []byte(`{"receiver":"0x40536521353F9f4120A589C9ddDEB6188EF61922","amount":100000}`))
+	//sendRequestToInboundOracle("http://localhost:8080/webServiceListeners/2/events", []byte(`{"receiver":"0x40536521353F9f4120A589C9ddDEB6188EF61922","amount":100000}`))
 
 	ethereumMintTokenTest.runAll(repetitions)
 

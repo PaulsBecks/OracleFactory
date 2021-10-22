@@ -8,6 +8,7 @@ import (
 	"log"
 	"math/big"
 	"sync"
+	"time"
 
 	"github.com/PaulsBecks/OracleFactory/src/services/ethereum"
 	"github.com/PaulsBecks/OracleFactory/src/utils"
@@ -33,6 +34,7 @@ func (m *KeyedMutex) Lock(key uint) func() {
 }
 
 var keyedMutex = &KeyedMutex{}
+var latestNonceByAddress = &sync.Map{}
 
 type SmartContractPublisher struct {
 	gorm.Model
@@ -108,6 +110,7 @@ func retry(callback func() error, retries int) error {
 	if retries <= 0 || err == nil {
 		return err
 	}
+	time.Sleep(200 * time.Millisecond)
 	return retry(callback, retries-1)
 }
 
@@ -167,6 +170,10 @@ func (s *SmartContractPublisher) CreateEthereumTransaction(user *User, event *Ev
 		if err != nil {
 			return err
 		}
+		cachedNonce, nonceFound := latestNonceByAddress.Load(user.ID)
+		if !nonceFound && cachedNonce != nil && nonce < cachedNonce.(uint64) {
+			nonce = cachedNonce.(uint64)
+		}
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -176,10 +183,11 @@ func (s *SmartContractPublisher) CreateEthereumTransaction(user *User, event *Ev
 		if err != nil {
 			return err
 		}
+		latestNonceByAddress.Store(user.ID, nonce+1)
 		fmt.Printf("INFO: tx sent %s\n", tx.Hash().Hex())
 		return nil
 	}
-	return retry(sendTransaction, 3)
+	return retry(sendTransaction, 10)
 }
 
 func (s *SmartContractPublisher) CreateHyperledgerTransaction(user *User, event *Event) error {
