@@ -84,12 +84,14 @@ func (p *PerformanceTestRun) timeEvent(worker int) {
 	event[p.test.keyVariableName] = worker
 
 	jsonStr, _ := json.Marshal(event)
-	sendRequestToInboundOracle(p.test.oracleEndpoint, jsonStr)
 	start := time.Now()
+	p.mu.Lock()
 	p.events[worker] = EventMeasurement{
 		start:    start,
 		workerID: worker,
 	}
+	p.mu.Unlock()
+	sendRequestToInboundOracle(p.test.oracleEndpoint, jsonStr)
 	fmt.Println(fmt.Sprintf("New event created %d", worker))
 }
 
@@ -129,6 +131,8 @@ func (p *PerformanceTest) runAll(repetitions int) {
 }
 
 func (p *PerformanceTestRun) handler(w http.ResponseWriter, r *http.Request) {
+	defer p.waitGroup.Done()
+	defer func() { <-p.guard }()
 	stop := time.Now()
 	var event map[string]interface{}
 	err := json.NewDecoder(r.Body).Decode(&event)
@@ -136,7 +140,7 @@ func (p *PerformanceTestRun) handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Error occured %v", err)
 		return
 	}
-	workerID := event[p.test.keyVariableName].(string)
+	workerID := fmt.Sprintf("%v", event[p.test.keyVariableName])
 	intWorkerID, err := strconv.Atoi(workerID)
 	if err != nil {
 		fmt.Printf("Error occured %v", err)
@@ -149,8 +153,6 @@ func (p *PerformanceTestRun) handler(w http.ResponseWriter, r *http.Request) {
 	p.mu.Lock()
 	p.latencies = append(p.latencies, measurement)
 	p.mu.Unlock()
-	p.waitGroup.Done()
-	<-p.guard
 }
 
 func startServer() {
