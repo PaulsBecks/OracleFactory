@@ -3,7 +3,7 @@ const local = {
 };
 
 const prod = {
-  BASE_URL: "http://3.249.80.172:8080",
+  BASE_URL: "http://54.194.28.109:8080",
 };
 
 let config = prod;
