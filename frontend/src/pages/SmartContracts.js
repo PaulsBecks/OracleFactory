@@ -1,19 +1,16 @@
-import useSmartContractListeners from "../hooks/useSmartContractListeners";
-import useSmartContractPublishers from "../hooks/useSmartContractPublishers";
+import useBlockchainEvents from "../hooks/useBlockchainEvents";
+import useConsumers from "../hooks/useConsumers";
 import { Link } from "react-router-dom";
 import { Button, Card } from "semantic-ui-react";
-import SmartContractListenerCard from "../components/SmartContractListenerCard";
-import SmartContractPublisherCard from "../components/SmartContractPublisherCard";
-import useWebServiceListeners from "../hooks/useWebServiceListeners";
-import WebServiceListenerCard from "../components/WebServiceListenerCard";
-import WebServicePublisherCard from "../components/WebServicePublisherCard";
-import useWebServicePublishers from "../hooks/useWebServicePublishers";
+import BlockchainEventCard from "../components/BlockchainEventCard";
+import ConsumerCard from "../components/ConsumerCard";
+import useProviders from "../hooks/useProviders";
+import ProviderCard from "../components/ProviderCard";
 
 function SmartContracts() {
-  const [smartContractListeners] = useSmartContractListeners();
-  const [smartContractPublishers] = useSmartContractPublishers();
-  const [webServiceListeners] = useWebServiceListeners();
-  const [webServicePublishers] = useWebServicePublishers();
+  const [blockchainEvents] = useBlockchainEvents();
+  const [consumers] = useConsumers();
+  const [providers] = useProviders();
   return (
     <div>
       <div>
@@ -28,32 +25,30 @@ function SmartContracts() {
       </div>
       <br />
       <div>
-        <h2>Listener</h2>
+        <h2>Subsribe/Unsubscribe Events</h2>
         <Card.Group>
-          {smartContractListeners.map((smartContractListener) => (
-            <SmartContractListenerCard
-              smartContractListener={smartContractListener}
-            />
-          ))}
-          {webServiceListeners.map((webServiceListener) => (
-            <WebServiceListenerCard webServiceListener={webServiceListener} />
+          {blockchainEvents.map((blockchainEvent) => (
+            <BlockchainEventCard blockchainEvent={blockchainEvent} />
           ))}
         </Card.Group>
       </div>
       <br />
       <br />
       <div>
-        <h2>Publisher</h2>
+        <h2>Provider</h2>
         <Card.Group>
-          {smartContractPublishers.map((smartContractPublisher) => (
-            <SmartContractPublisherCard
-              smartContractPublisher={smartContractPublisher}
-            />
+          {providers.map((provider) => (
+            <ProviderCard provider={provider} />
           ))}
-          {webServicePublishers.map((webServicePublisher) => (
-            <WebServicePublisherCard
-              webServicePublisher={webServicePublisher}
-            />
+        </Card.Group>
+      </div>
+      <br />
+      <br />
+      <div>
+        <h2>Smart Contract Consumer</h2>
+        <Card.Group>
+          {consumers.map((consumer) => (
+            <ConsumerCard consumer={consumer} />
           ))}
         </Card.Group>
       </div>

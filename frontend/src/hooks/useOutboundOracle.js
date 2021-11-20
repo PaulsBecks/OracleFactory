@@ -5,11 +5,13 @@ import putData from "../services/putData";
 
 export default function useOutboundOracle(id) {
   const [outboundOracle, setOutboundOracle] = useState();
+  const [pubSubOracle, setPubSubOracle] = useState();
   const [loading, setLoading] = useState(false);
 
   async function fetchOutboundOracle() {
     const _outboundOracle = await getData("/outboundOracles/" + id);
     setOutboundOracle(_outboundOracle.outboundOracle);
+    setPubSubOracle(_outboundOracle.pubSubOracle);
   }
 
   async function fetchWrapper(callback) {
@@ -47,5 +49,6 @@ export default function useOutboundOracle(id) {
     loading,
     startOutboundOracle,
     stopOutboundOracle,
+    pubSubOracle,
   ];
 }

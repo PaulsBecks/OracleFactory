@@ -1,4 +1,4 @@
-inboundOraclePerformanceTests
+pubSubOraclePerformanceTests
 outboundOraclePerformanceTests
 *.csv
 venv/

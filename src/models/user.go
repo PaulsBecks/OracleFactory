@@ -49,7 +49,7 @@ func UserFromContext(ctx *gin.Context) User {
 	return userInterface.(User)
 }
 
-func (u *User) CreateWebServicePublisher(name string, description string, url string, private bool) WebServicePublisher {
+func (u *User) CreateProvider(name string, description string, private bool) Provider {
 	db := utils.DBConnection()
 	listenerPublisher := ListenerPublisher{
 		Name:        name,
@@ -59,48 +59,32 @@ func (u *User) CreateWebServicePublisher(name string, description string, url st
 		User:        *u,
 	}
 	db.Create(&listenerPublisher)
-	webServicePublisher := WebServicePublisher{
-		ListenerPublisher: listenerPublisher,
-		Url:               url,
-	}
-	db.Create(&webServicePublisher)
-	return webServicePublisher
-}
-
-func (u *User) CreateWebServiceListener(name string, description string, private bool) WebServiceListener {
-	db := utils.DBConnection()
-	listenerPublisher := ListenerPublisher{
-		Name:        name,
-		Description: description,
-		Private:     private,
-		UserID:      u.ID,
-		User:        *u,
-	}
-	db.Create(&listenerPublisher)
-	webServiceListener := WebServiceListener{
+	provider := Provider{
 		ListenerPublisher: listenerPublisher,
 	}
-	db.Create(&webServiceListener)
-	return webServiceListener
+	db.Create(&provider)
+	return provider
 }
 
-func (u *User) CreateInboundOracle(name string, smartContractPublisherID, webServiceListenerID uint) InboundOracle {
+func (u *User) CreatePubSubOracle(name string, consumerID, providerID, subOracleID, unsubOracleID uint) PubSubOracle {
 	db := utils.DBConnection()
 	ethereumOracle := Oracle{
 		Name:   name,
 		UserID: u.ID,
 	}
 	db.Create(&ethereumOracle)
-	inboundOracle := InboundOracle{
-		Oracle:                   ethereumOracle,
-		SmartContractPublisherID: smartContractPublisherID,
-		WebServiceListenerID:     webServiceListenerID,
+	pubSubOracle := PubSubOracle{
+		Oracle:        ethereumOracle,
+		ConsumerID:    consumerID,
+		ProviderID:    providerID,
+		SubOracleID:   subOracleID,
+		UnsubOracleID: unsubOracleID,
 	}
-	db.Create(&inboundOracle)
-	return inboundOracle
+	db.Create(&pubSubOracle)
+	return pubSubOracle
 }
 
-func (u *User) CreateOutboundOracle(name string, smartContractListenerID, webServicePublisherID uint) *OutboundOracle {
+func (u *User) CreateOutboundOracle(name string, blockchainEventID uint) *OutboundOracle {
 	db := utils.DBConnection()
 	oracle := Oracle{
 		Name: name,
@@ -108,15 +92,14 @@ func (u *User) CreateOutboundOracle(name string, smartContractListenerID, webSer
 	}
 	db.Create(&oracle)
 	outboundOracle := &OutboundOracle{
-		SmartContractListenerID: smartContractListenerID,
-		WebServicePublisherID:   webServicePublisherID,
-		Oracle:                  oracle,
+		BlockchainEventID: blockchainEventID,
+		Oracle:            oracle,
 	}
 	db.Create(&outboundOracle)
 	return outboundOracle
 }
 
-func (u *User) CreateSmartContractPublisher(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, publisherName string, description string, private bool, eventParameters []NameTypePair) SmartContractPublisher {
+func (u *User) CreateConsumer(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, publisherName string, description string, private bool, eventParameters []NameTypePair) Consumer {
 	db := utils.DBConnection()
 	smartContract := SmartContract{
 		BlockchainName:         blockchainName,
@@ -133,11 +116,11 @@ func (u *User) CreateSmartContractPublisher(blockchainName string, eventName str
 		User:        *u,
 	}
 	db.Create(&listenerPublisher)
-	smartContractPublisher := SmartContractPublisher{
+	consumer := Consumer{
 		SmartContract:     smartContract,
 		ListenerPublisher: listenerPublisher,
 	}
-	db.Create(&smartContractPublisher)
+	db.Create(&consumer)
 	for _, nameType := range eventParameters {
 		fmt.Println(nameType)
 		eventParameter := EventParameter{
@@ -147,9 +130,9 @@ func (u *User) CreateSmartContractPublisher(blockchainName string, eventName str
 		}
 		db.Create(&eventParameter)
 	}
-	return smartContractPublisher
+	return consumer
 }
-func (u *User) CreateSmartContractListener(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, listenerName string, description string, private bool, eventParameters []NameTypePair) SmartContractListener {
+func (u *User) CreateBlockchainEvent(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, listenerName string, description string, private bool, eventParameters []NameTypePair) BlockchainEvent {
 	db := utils.DBConnection()
 	smartContract := SmartContract{
 		BlockchainName:         blockchainName,
@@ -166,11 +149,11 @@ func (u *User) CreateSmartContractListener(blockchainName string, eventName stri
 		User:        *u,
 	}
 	db.Create(&listenerPublisher)
-	smartContractListener := SmartContractListener{
+	blockchainEvent := BlockchainEvent{
 		SmartContract:     smartContract,
 		ListenerPublisher: listenerPublisher,
 	}
-	db.Create(&smartContractListener)
+	db.Create(&blockchainEvent)
 	for _, nameType := range eventParameters {
 		eventParameter := EventParameter{
 			Name:                nameType.Name,
@@ -179,19 +162,12 @@ func (u *User) CreateSmartContractListener(blockchainName string, eventName stri
 		}
 		db.Create(&eventParameter)
 	}
-	return smartContractListener
+	return blockchainEvent
 }
 
-func (u *User) GetWebServiceListeners() []WebServiceListener {
+func (u *User) GetProviders() []Provider {
 	db := utils.DBConnection()
-	var webServiceListener []WebServiceListener
-	db.Joins("ListenerPublisher").Find(&webServiceListener, "ListenerPublisher.private = 0 OR ListenerPublisher.user_id = ?", u.ID)
-	return webServiceListener
-}
-
-func (u *User) GetWebServicePublishers() []WebServicePublisher {
-	db := utils.DBConnection()
-	var webServicePublisher []WebServicePublisher
-	db.Joins("ListenerPublisher").Find(&webServicePublisher, "ListenerPublisher.private = 0 OR ListenerPublisher.user_id = ?", u.ID)
-	return webServicePublisher
+	var provider []Provider
+	db.Joins("ListenerPublisher").Find(&provider, "ListenerPublisher.private = 0 OR ListenerPublisher.user_id = ?", u.ID)
+	return provider
 }

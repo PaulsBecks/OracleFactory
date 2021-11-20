@@ -13,9 +13,17 @@ export function formToAbi(oracles) {
 export function parseAbi(abi) {
   let oracles = [];
   try {
-    JSON.parse(abi);
-    const parsedAbi = JSON.parse(
+    //JSON.parse(abi);
+    let parsedAbi = JSON.parse(
       abi.replace(/"name":/g, '"Name":').replace(/"type":/g, '"Type":')
+    );
+    console.log(parsedAbi);
+
+    parsedAbi = parsedAbi.filter(
+      (method) =>
+        (method.Type === "function" || method.Type === "event") &&
+        method.stateMutability !== "view" &&
+        method.stateMutability !== "pure"
     );
     oracles = parsedAbi.map((oracle) => {
       const _oracle = { ...oracle, ContractName: oracle.Name };

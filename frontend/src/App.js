@@ -1,23 +1,21 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import {
   Home,
-  SmartContractListenerDetail,
+  BlockchainEventDetail,
   OutboundOracleDetail,
-  OutboundOracleCreate,
-  InboundOracleDetail,
-  InboundOracleCreate,
-  SmartContractPublisherDetail,
+  PubSubOracleDetail,
+  PubSubOracleCreate,
+  ConsumerDetail,
   SmartContractCreate,
   SmartContracts,
-  SmartContractPublishers,
+  Consumers,
   Settings,
 } from "./pages";
 import { Footer, Navbar } from "./components";
 import { Container } from "semantic-ui-react";
 import getHeaders from "./services/utils/getHeaders.js";
 import Login from "./pages/Login";
-import WebServiceListenerDetail from "./pages/WebServiceListenerDetail";
-import WebServicePublisherDetail from "./pages/WebServicePublisherDetail";
+import ProviderDetail from "./pages/ProviderDetail";
 function App() {
   const loggedIn = getHeaders();
   if (!loggedIn) {
@@ -33,36 +31,28 @@ function App() {
             <Home />
           </Route>
 
-          <Route exact path="/outboundOracles/create">
-            <OutboundOracleCreate />
-          </Route>
-
           <Route exact path="/outboundOracles/:outboundOracleID">
             <OutboundOracleDetail />
           </Route>
 
-          <Route exact path="/smartContractListeners/:smartContractListenerID">
-            <SmartContractListenerDetail />
+          <Route exact path="/blockchainEvents/:blockchainEventID">
+            <BlockchainEventDetail />
           </Route>
 
-          <Route exact path="/webServiceListeners/:webServiceListenerID">
-            <WebServiceListenerDetail />
+          <Route exact path="/providers/:providerID">
+            <ProviderDetail />
           </Route>
 
-          <Route exact path="/webServicePublishers/:webServicePublisherID">
-            <WebServicePublisherDetail />
+          <Route exact path="/pubSubOracles/create">
+            <PubSubOracleCreate />
           </Route>
 
-          <Route exact path="/inboundOracles/create">
-            <InboundOracleCreate />
+          <Route exact path="/pubSubOracles/:pubSubOracleID">
+            <PubSubOracleDetail />
           </Route>
 
-          <Route exact path="/inboundOracles/:inboundOracleID">
-            <InboundOracleDetail />
-          </Route>
-
-          <Route exact path="/smartContractPublishers">
-            <SmartContractPublishers />
+          <Route exact path="/consumers">
+            <Consumers />
           </Route>
 
           <Route exact path="/smartContracts">
@@ -73,11 +63,8 @@ function App() {
             <SmartContractCreate />
           </Route>
 
-          <Route
-            exact
-            path="/smartContractPublishers/:smartContractPublisherID"
-          >
-            <SmartContractPublisherDetail />
+          <Route exact path="/consumers/:consumerID">
+            <ConsumerDetail />
           </Route>
 
           <Route exact path="/settings">

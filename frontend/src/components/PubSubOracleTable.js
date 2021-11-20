@@ -4,33 +4,29 @@ import Identicon from "react-identicons";
 import { ORACLE_STATUS_STARTED } from "../config/constants";
 import OracleOnOffRibbon from "./OracleOnOffRibbon";
 
-export default function OutboundOracleTable({ outboundOracles }) {
-  console.log(outboundOracles);
-  if (!outboundOracles) {
-    return "";
-  }
+export default function PubSubOracleTable({ pubSubOracles }) {
   return (
     <Table color="orange">
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell collapsing></Table.HeaderCell>
           <Table.HeaderCell>Name</Table.HeaderCell>
-          <Table.HeaderCell>Listener</Table.HeaderCell>
-          <Table.HeaderCell>Publisher</Table.HeaderCell>
+          <Table.HeaderCell>Provider</Table.HeaderCell>
+          <Table.HeaderCell>Consumer</Table.HeaderCell>
           <Table.HeaderCell></Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {outboundOracles.map((outboundOracle) => (
+        {pubSubOracles.map((pubSubOracle) => (
           <Table.Row>
             <Table.Cell>
               <OracleOnOffRibbon
                 oracleStarted={
-                  outboundOracle.Oracle.Status === ORACLE_STATUS_STARTED
+                  pubSubOracle.Oracle.Status === ORACLE_STATUS_STARTED
                 }
               />
             </Table.Cell>
-            <Table.Cell>{outboundOracle.Oracle.Name || ""}</Table.Cell>
+            <Table.Cell>{pubSubOracle.Oracle.Name || ""}</Table.Cell>
             <Table.Cell>
               <div
                 style={{
@@ -41,16 +37,11 @@ export default function OutboundOracleTable({ outboundOracles }) {
               >
                 <div style={{ marginRight: "1em" }}>
                   <Identicon
-                    string={
-                      outboundOracle.BlockchainEvent.SmartContract
-                        .ContractAddress
-                    }
+                    string={"Listener" + pubSubOracle.Provider.ID}
                     size={50}
                   />
                 </div>
-                <label>
-                  {outboundOracle.BlockchainEvent.ListenerPublisher.Name}
-                </label>
+                <label>{pubSubOracle.Provider.ListenerPublisher.Name}</label>
               </div>
             </Table.Cell>
             <Table.Cell>
@@ -63,17 +54,17 @@ export default function OutboundOracleTable({ outboundOracles }) {
               >
                 <div style={{ marginRight: "1em" }}>
                   <Identicon
-                    string={"Publisher" + outboundOracle.PubSubOracle.ID}
+                    string={pubSubOracle.Consumer.SmartContract.ContractAddress}
                     size={50}
                   />
                 </div>
-                <label>{outboundOracle.PubSubOracle.Name}</label>
+                <label>{pubSubOracle.Consumer.ListenerPublisher.Name}</label>
               </div>
             </Table.Cell>
             <Table.Cell textAlign="right">
               <Button
                 as={Link}
-                to={"/outboundOracles/" + outboundOracle.ID}
+                to={"/pubSubOracles/" + pubSubOracle.ID}
                 content="Detail"
                 icon="edit"
                 primary
@@ -85,4 +76,13 @@ export default function OutboundOracleTable({ outboundOracles }) {
       </Table.Body>
     </Table>
   );
+  /*return (
+    <div>
+      {pubSubOracles.map((pubSubOracle) => (
+        <SmartContractCard
+          consumer={pubSubOracle.Consumer}
+        />
+      ))}
+    </div>
+  );*/
 }

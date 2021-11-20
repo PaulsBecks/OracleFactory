@@ -47,36 +47,34 @@ func main() {
 	app.POST("/users/signup", routes.Register)
 
 	app.POST("/outboundOracles/:outboundOracleId/events", routes.PostOutboundOracleEvent)
-	app.POST("/inboundOracles/:inboundOracleID/events", routes.PostInboundOracleEvent)
-	app.POST("/webServiceListeners/:webServiceListenerID/events", routes.HandleWebServiceListenerEvent)
+	app.POST("/pubSubOracles/:pubSubOracleID/events", routes.PostPubSubOracleEvent)
+	app.POST("/providers/:providerID/events", routes.HandleProviderEvent)
 
 	authorized := app.Group("/", auth)
 	{
 		authorized.GET("/outboundOracles", routes.GetOutboundOracles)
 		authorized.GET("/outboundOracles/:outboundOracleId", routes.GetOutboundOracle)
-		authorized.PUT("/outboundOracles/:outboundOracleId", routes.UpdateOutboundOracle)
 		authorized.DELETE("/outboundOracles/:outboundOracleId", routes.DeleteOutboundOracle)
 		authorized.POST("/outboundOracles/:outboundOracleId/start", routes.StartOutboundOracle)
 		authorized.POST("/outboundOracles/:outboundOracleId/stop", routes.StopOutboundOracle)
-		authorized.POST("/outboundOracles", routes.PostOutboundOracle)
 
-		authorized.GET("/smartContractListeners", routes.GetSmartContractListeners)
-		authorized.POST("/smartContractListeners", routes.PostSmartContractListener)
-		authorized.GET("/smartContractListeners/:smartContractListenerID", routes.GetSmartContractListener)
-		authorized.POST("/smartContractListeners/:smartContractListenerID/eventParameters", routes.PostOutboundEventParameters)
+		authorized.GET("/blockchainEvents", routes.GetBlockchainEvents)
+		authorized.POST("/blockchainEvents", routes.PostBlockchainEvent)
+		authorized.GET("/blockchainEvents/:blockchainEventID", routes.GetBlockchainEvent)
+		authorized.POST("/blockchainEvents/:blockchainEventID/eventParameters", routes.PostOutboundEventParameters)
 
-		authorized.GET("/inboundOracles/:inboundOracleId", routes.GetInboundOracle)
-		authorized.PUT("/inboundOracles/:inboundOracleId", routes.UpdateInboundOracle)
-		authorized.GET("/smartContractPublishers/:smartContractPublisherID", routes.GetSmartContractPublisher)
-		authorized.GET("/inboundOracles", routes.GetInboundOracles)
-		authorized.POST("/inboundOracles/:inboundOracleID/start", routes.StartInboundOracle)
-		authorized.POST("/inboundOracles/:inboundOracleID/stop", routes.StopInboundOracle)
-		authorized.POST("/inboundOracles", routes.PostInboundOracle)
+		authorized.GET("/pubSubOracles/:pubSubOracleId", routes.GetPubSubOracle)
+		authorized.PUT("/pubSubOracles/:pubSubOracleId", routes.UpdatePubSubOracle)
+		authorized.GET("/consumers/:consumerID", routes.GetConsumer)
+		authorized.GET("/pubSubOracles", routes.GetPubSubOracles)
+		authorized.POST("/pubSubOracles/:pubSubOracleID/start", routes.StartPubSubOracle)
+		authorized.POST("/pubSubOracles/:pubSubOracleID/stop", routes.StopPubSubOracle)
+		authorized.POST("/pubSubOracles", routes.PostPubSubOracle)
 
-		authorized.POST("/smartContractPublishers/:smartContractPublisherID/inboundOracles", routes.PostInboundOracle)
-		authorized.POST("/smartContractPublishers/:smartContractPublisherID/eventParameters", routes.PostInboundEventParameters)
-		authorized.GET("/smartContractPublishers", routes.GetSmartContractPublishers)
-		authorized.POST("/smartContractPublishers", routes.PostSmartContractPublisher)
+		authorized.POST("/consumers/:consumerID/pubSubOracles", routes.PostPubSubOracle)
+		authorized.POST("/consumers/:consumerID/eventParameters", routes.PostInboundEventParameters)
+		authorized.GET("/consumers", routes.GetConsumers)
+		authorized.POST("/consumers", routes.PostConsumer)
 
 		authorized.GET("/filters", routes.GetFilters)
 
@@ -84,13 +82,9 @@ func main() {
 		authorized.POST("/oracles/:oracleID/parameterFilters", routes.PostOracleParameterFilters)
 		authorized.DELETE("/oracles/:oracleID/parameterFilters/:parameterFilterID", routes.DeleteOracleParameterFilter)
 
-		authorized.GET("/webServiceListeners", routes.GetWebServiceListeners)
-		authorized.GET("/webServiceListeners/:webServiceListenerID", routes.GetWebServiceListener)
-		authorized.POST("/webServiceListeners", routes.PostWebServiceListener)
-
-		authorized.GET("/webServicePublishers", routes.GetWebServicePublishers)
-		authorized.GET("/webServicePublishers/:webServicePublisherID", routes.GetWebServicePublisher)
-		authorized.POST("/webServicePublishers", routes.PostWebServicePublisher)
+		authorized.GET("/providers", routes.GetProviders)
+		authorized.GET("/providers/:providerID", routes.GetProvider)
+		authorized.POST("/providers", routes.PostProvider)
 
 		authorized.GET("/listenerPublishers/:listenerPublisherID/eventParameters", routes.GetListenerPublisherEventParameters)
 

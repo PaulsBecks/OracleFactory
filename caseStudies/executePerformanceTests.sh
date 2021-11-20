@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # run tests
-#cd ./inboundOraclePerformanceTests; go build; ./inboundOraclePerformanceTests; cd ..
+#cd ./pubSubOraclePerformanceTests; go build; ./pubSubOraclePerformanceTests; cd ..
 cd ./outboundOraclePerformanceTests; go build; ./outboundOraclePerformanceTests; cd ..
 # outbound oracle test visualization
-#python3 visualizePerformanceTestResults.py inboundOraclePerformanceTests/ethereumMintTokenTest.csv
-#python3 visualizePerformanceTestResults.py inboundOraclePerformanceTests/ethereumTransferTokenTest.csv
-#python3 visualizePerformanceTestResults.py inboundOraclePerformanceTests/hyperledgerCreateAssetTest.csv
+#python3 visualizePerformanceTestResults.py pubSubOraclePerformanceTests/ethereumMintTokenTest.csv
+#python3 visualizePerformanceTestResults.py pubSubOraclePerformanceTests/ethereumTransferTokenTest.csv
+#python3 visualizePerformanceTestResults.py pubSubOraclePerformanceTests/hyperledgerCreateAssetTest.csv
 # outbound oracle test visualization
 #python3 visualizePerformanceTestResults.py outboundOraclePerformanceTests/ethereumTransferTokenTest.csv
 #python3 visualizePerformanceTestResults.py outboundOraclePerformanceTests/hyperledgerCreateAssetTest.csv

@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/PaulsBecks/OracleFactory/src/forms"
 	"github.com/PaulsBecks/OracleFactory/src/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
@@ -25,7 +24,7 @@ func GetOutboundOracles(ctx *gin.Context) {
 	user, _ := userInterface.(models.User)
 
 	var oracles []models.OutboundOracle
-	db.Preload(clause.Associations).Preload("SmartContractListener.SmartContract").Preload("SmartContractListener.ListenerPublisher").Preload("WebServicePublisher.ListenerPublisher").Joins("Oracle").Find(&oracles, "Oracle.user_id = ?", user.ID)
+	db.Preload(clause.Associations).Preload("BlockchainEvent.SmartContract").Preload("BlockchainEvent.ListenerPublisher").Joins("Oracle").Find(&oracles, "Oracle.user_id = ?", user.ID)
 	fmt.Println(oracles)
 
 	ctx.JSON(http.StatusOK, gin.H{"outboundOracles": oracles})
@@ -45,33 +44,14 @@ func GetOutboundOracle(ctx *gin.Context) {
 		panic(err)
 	}
 	var outboundOracle models.OutboundOracle
-	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("SmartContractListener.ListenerPublisher.EventParameters").Preload("Oracle.ParameterFilters.Filter").Preload(clause.Associations).First(&outboundOracle, i)
+	result := db.Preload("Oracle.Events.EventValues.EventParameter").Preload("BlockchainEvent.ListenerPublisher.EventParameters").Preload("Oracle.ParameterFilters.Filter").Preload(clause.Associations).First(&outboundOracle, i)
 	if result.Error != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No outbound Oracle with this ID available."})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"outboundOracle": outboundOracle})
-}
+	pubSubOracle := outboundOracle.GetPubSubOracle()
 
-func UpdateOutboundOracle(ctx *gin.Context) {
-	id := ctx.Param("outboundOracleId")
-	outboundOracle, err := models.GetOutboundOracleById(id)
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No outbound Oracle with this ID available."})
-		return
-	}
-	var outboundOraclePostBody forms.OutboundOraclePostBody
-	if err = ctx.ShouldBind(&outboundOraclePostBody); err != nil || !outboundOraclePostBody.Valid() {
-		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid body send!"})
-		return
-	}
-	outboundOracle.Save()
-
-	oracle := outboundOracle.Oracle
-	oracle.Name = outboundOraclePostBody.Oracle.Name
-	oracle.Save()
-
-	ctx.JSON(http.StatusOK, gin.H{"outboundOracle": outboundOracle})
+	ctx.JSON(http.StatusOK, gin.H{"outboundOracle": outboundOracle, "pubSubOracle": pubSubOracle})
 }
 
 func DeleteOutboundOracle(ctx *gin.Context) {
@@ -131,9 +111,8 @@ func PostOutboundOracleEvent(ctx *gin.Context) {
 	}
 
 	event := models.CreateEvent(data, outboundOracle.GetOracle().ID)
-	event.ParseEventValues(bodyData, outboundOracle.GetSmartContractListener().ListenerPublisherID)
+	event.ParseEventValues(bodyData, outboundOracle.GetBlockchainEvent().ListenerPublisherID)
 	// TODO: Filter outbound oracle event.
 
-	webServicePublisher := outboundOracle.GetWebServicePublisher()
-	webServicePublisher.Publish(*event)
+	outboundOracle.NotifyPubSubOracles()
 }

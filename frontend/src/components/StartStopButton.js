@@ -11,7 +11,7 @@ export default function StartStopButton({
       basic
       fluid
       loading={loading}
-      content={oracleStarted ? "Stop Oracle" : "Start Oracle"}
+      content={oracleStarted ? "Unsubscribe" : "Subscribe"}
       color={oracleStarted ? "negative" : "positive"}
       onClick={oracleStarted ? stopOracle : startOracle}
     />

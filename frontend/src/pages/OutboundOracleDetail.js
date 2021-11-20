@@ -10,16 +10,19 @@ import {
 } from "../components";
 import FilterForm from "../components/FilterForm";
 import { ORACLE_STATUS_STARTED } from "../config/constants";
-import SmartContractListenerCard from "../components/SmartContractListenerCard";
+import BlockchainEventCard from "../components/BlockchainEventCard";
+import PubSubOracleCard from "../components/PubSubOracleCard";
 
-export default function OutboundOracleDetail({}) {
+export default function OutboundOracleDetail() {
   const { outboundOracleID } = useParams();
+  console.log(outboundOracleID);
   const [
     outboundOracle,
     updateOutboundOracle,
     loading,
     startOutboundOracle,
     stopOutboundOracle,
+    pubSubOracle,
   ] = useOutboundOracle(outboundOracleID);
 
   const [localOutboundOracles, setLocalOutboundOracle] = useState({});
@@ -44,10 +47,6 @@ export default function OutboundOracleDetail({}) {
               setOutboundOracle={setLocalOutboundOracle}
             />
             <br />
-            <label>
-              <b>Forward to:</b>
-            </label>
-            <p>{outboundOracle.WebServicePublisher.Url}</p>
             {JSON.stringify(localOutboundOracles) !==
               JSON.stringify(outboundOracle) && (
               <>
@@ -73,20 +72,22 @@ export default function OutboundOracleDetail({}) {
             />
           </Segment>
         </div>
-        <div style={{ marginLeft: "1em", marginTop: "1em" }}>
-          <ExampleRequest
-            eventParameters={
-              outboundOracle.SmartContractListener.ListenerPublisher
-                .EventParameters
-            }
-          />
-        </div>
+      </div>
+      <br />
+      <div style={{ marginLeft: "1em", marginTop: "1em" }}>
+        <PubSubOracleCard pubSubOracle={pubSubOracle} />
+        <BlockchainEventCard blockchainEvent={outboundOracle.BlockchainEvent} />
+        <ExampleRequest
+          eventParameters={
+            outboundOracle.BlockchainEvent.ListenerPublisher.EventParameters
+          }
+        />
       </div>
       <br />
       <FilterForm
         oracleID={outboundOracle.OracleID}
         listenerPublisherID={
-          outboundOracle.SmartContractListener.ListenerPublisher.ID
+          outboundOracle.BlockchainEvent.ListenerPublisher.ID
         }
       />
       <br />
@@ -110,7 +111,6 @@ export default function OutboundOracleDetail({}) {
                   </Table.Cell>
                   <Table.Cell>
                     {outboundEvent.EventValues.map((value) => {
-                      console.log(value);
                       return (
                         <>
                           <b>{value.EventParameter.Name}:</b>

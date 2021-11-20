@@ -12,34 +12,46 @@ import (
 
 type OutboundOracle struct {
 	gorm.Model
-	URI                     string
-	OracleID                uint
-	Oracle                  Oracle
-	SmartContractListenerID uint
-	SmartContractListener   SmartContractListener
-	WebServicePublisherID   uint
-	WebServicePublisher     WebServicePublisher
-	DockerContainer         string
+	URI               string
+	OracleID          uint
+	Oracle            Oracle
+	BlockchainEventID uint
+	BlockchainEvent   BlockchainEvent
+	DockerContainer   string
+	IsSubscribing     bool
 }
 
-func (o *OutboundOracle) GetWebServicePublisher() *WebServicePublisher {
-	db := utils.DBConnection()
-	var webServicePublisher *WebServicePublisher
-	db.Find(&webServicePublisher, o.WebServicePublisherID)
-	return webServicePublisher
+func (o *OutboundOracle) NotifyPubSubOracles() {
+	pubSubOracle := o.GetPubSubOracle()
+	if o.IsSubscribing {
+		pubSubOracle.Subscribe()
+	} else {
+		pubSubOracle.Unsubscribe()
+	}
 }
 
-func (o *OutboundOracle) GetSmartContractListener() *SmartContractListener {
+func (o *OutboundOracle) GetPubSubOracle() *PubSubOracle {
 	db := utils.DBConnection()
-	var smartContractListener *SmartContractListener
-	db.Find(&smartContractListener, o.SmartContractListenerID)
-	return smartContractListener
+	var pubSubOracle PubSubOracle
+	if o.IsSubscribing {
+		db.Preload(clause.Associations).Find(&pubSubOracle, "sub_oracle_id = ?", o.ID)
+	} else {
+		db.Preload(clause.Associations).Find(&pubSubOracle, "unsub_oracle_id = ?", o.ID)
+	}
+	return &pubSubOracle
+}
+
+func (o *OutboundOracle) GetBlockchainEvent() *BlockchainEvent {
+	db := utils.DBConnection()
+	var blockchainEvent *BlockchainEvent
+	db.Preload(clause.Associations).Find(&blockchainEvent, o.BlockchainEventID)
+	return blockchainEvent
 }
 
 func (o *OutboundOracle) GetConnectionString() string {
 	// TODO: Describe how this can be extended to add additional blockchains
 	user := o.GetOracle().GetUser()
-	switch o.GetSmartContractListener().GetSmartContract().BlockchainName {
+	switch o.GetBlockchainEvent().GetSmartContract().BlockchainName {
 	case HYPERLEDGER_BLOCKCHAIN:
 		return `{
 	\"connection.yaml\",
@@ -56,8 +68,8 @@ func (o *OutboundOracle) GetConnectionString() string {
 }
 
 func (o *OutboundOracle) createManifest() string {
-	smartContractListener := o.GetSmartContractListener()
-	smartContract := smartContractListener.GetSmartContract()
+	blockchainEvent := o.GetBlockchainEvent()
+	smartContract := blockchainEvent.GetSmartContract()
 	return `SET BLOCKCHAIN \"` + smartContract.BlockchainName + `\";
 
 SET OUTPUT FOLDER \"./output\";
@@ -67,8 +79,8 @@ SET CONNECTION ` + o.GetConnectionString() + `;
 
 
 BLOCKS (CURRENT) (CONTINUOUS) {
-	LOG ENTRIES (\"` + smartContract.ContractAddress + `\") (` + smartContract.EventName + `(` + smartContractListener.GetEventParametersString() + `)) {
-		EMIT HTTP REQUEST (\"` + o.oracleFactoryOutboundEventLink() + `\") (` + smartContractListener.GetEventParameterNamesString() + `);
+	LOG ENTRIES (\"` + smartContract.ContractAddress + `\") (` + smartContract.EventName + `(` + blockchainEvent.GetEventParametersString() + `)) {
+		EMIT HTTP REQUEST (\"` + o.oracleFactoryOutboundEventLink() + `\") (` + blockchainEvent.GetEventParameterNamesString() + `);
 	}
 }`
 }
@@ -85,7 +97,7 @@ func (o *OutboundOracle) StartOracle() error {
 	manifest := o.createManifest()
 	copyFilesToContainerCommand := echoStringToFile(manifest, "manifest.bloql")
 	user := oracle.GetUser()
-	if o.GetSmartContractListener().GetSmartContract().BlockchainName == "Hyperledger" {
+	if o.GetBlockchainEvent().GetSmartContract().BlockchainName == "Hyperledger" {
 		copyFilesToContainerCommand += echoStringToFile(user.HyperledgerCert, "server.crt")
 		copyFilesToContainerCommand += echoStringToFile(user.HyperledgerConfig, "connection.yaml")
 		copyFilesToContainerCommand += echoStringToFile(user.HyperledgerKey, "server.key")
@@ -141,7 +153,6 @@ func (o *OutboundOracle) GetOracle() *Oracle {
 
 func (o *OutboundOracle) Save() {
 	db := utils.DBConnection()
-
 	db.Save(o)
 }
 
@@ -150,6 +161,7 @@ func GetOutboundOracleById(id interface{}) (*OutboundOracle, error) {
 
 	var outboundOracle *OutboundOracle
 	result := db.Preload(clause.Associations).First(&outboundOracle, id)
+	outboundOracle.BlockchainEvent = *outboundOracle.GetBlockchainEvent()
 	if result.Error != nil {
 		return outboundOracle, result.Error
 	}

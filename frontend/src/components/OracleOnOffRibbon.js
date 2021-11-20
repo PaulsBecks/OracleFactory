@@ -4,7 +4,7 @@ export default function OracleOnOffRibbon({ oracleStarted }) {
   return (
     <Label
       ribbon
-      content={oracleStarted ? "ON" : "OFF"}
+      content={oracleStarted ? "Subscribed" : "Unsubscribed"}
       color={oracleStarted ? "green" : "red"}
     />
   );
