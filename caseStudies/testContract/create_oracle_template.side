@@ -172,11 +172,11 @@
       "id": "1ed93d09-071a-4d1c-9781-067c526589bf",
       "comment": "",
       "command": "click",
-      "target": "name=ContractName",
+      "target": "name=EventName",
       "targets": [
-        ["name=ContractName", "name"],
+        ["name=EventName", "name"],
         ["css=.equal:nth-child(1) input", "css:finder"],
-        ["xpath=//input[@name='ContractName']", "xpath:attributes"],
+        ["xpath=//input[@name='EventName']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/form/div[6]/div/div/div/input", "xpath:idRelative"],
         ["xpath=//div[6]/div/div/div/input", "xpath:position"]
       ],
@@ -185,11 +185,11 @@
       "id": "e7257c0f-c67e-49aa-880c-f94030fb75d2",
       "comment": "",
       "command": "type",
-      "target": "name=ContractName",
+      "target": "name=EventName",
       "targets": [
-        ["name=ContractName", "name"],
+        ["name=EventName", "name"],
         ["css=.equal:nth-child(1) input", "css:finder"],
-        ["xpath=//input[@name='ContractName']", "xpath:attributes"],
+        ["xpath=//input[@name='EventName']", "xpath:attributes"],
         ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/form/div[6]/div/div/div/input", "xpath:idRelative"],
         ["xpath=//div[6]/div/div/div/input", "xpath:position"]
       ],

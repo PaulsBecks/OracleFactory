@@ -58,7 +58,6 @@ export default function PubSubOracleCreate() {
     return (
       <BlockchainEventPicker
         onClick={(blockchainEventID) => {
-          console.log("lol");
           updatePubSubOracle("subBlockchainEventID", blockchainEventID);
         }}
       />

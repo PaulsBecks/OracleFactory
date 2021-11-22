@@ -15,7 +15,6 @@ import PubSubOracleCard from "../components/PubSubOracleCard";
 
 export default function OutboundOracleDetail() {
   const { outboundOracleID } = useParams();
-  console.log(outboundOracleID);
   const [
     outboundOracle,
     updateOutboundOracle,

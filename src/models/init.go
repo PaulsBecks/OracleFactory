@@ -125,7 +125,7 @@ func initEthereumOracles(db *gorm.DB, user User) {
 			{Name: "amount", Type: "uint256"},
 		},
 	)
-	outboundOracle := user.CreateOutboundOracle("Outbound Oracle Test", ethereumBlockchainEvent.ID)
+	outboundOracle := user.CreateOutboundOracle("Outbound Oracle Test", ethereumBlockchainEvent.ID, true)
 	outboundOracle.StartOracle()
 }
 
@@ -165,6 +165,6 @@ func initHyperledgerOracles(db *gorm.DB, user User) {
 			{Name: "AppraisedValue", Type: "int"},
 		},
 	)
-	outboundOracle := user.CreateOutboundOracle("Hyperledger Outbound Test", hyperledgerBlockchainEvent.ID)
+	outboundOracle := user.CreateOutboundOracle("Hyperledger Outbound Test", hyperledgerBlockchainEvent.ID, true)
 	outboundOracle.StartOracle()
 }

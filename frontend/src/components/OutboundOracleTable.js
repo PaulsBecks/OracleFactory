@@ -5,7 +5,6 @@ import { ORACLE_STATUS_STARTED } from "../config/constants";
 import OracleOnOffRibbon from "./OracleOnOffRibbon";
 
 export default function OutboundOracleTable({ outboundOracles }) {
-  console.log(outboundOracles);
   if (!outboundOracles) {
     return "";
   }
@@ -15,7 +14,7 @@ export default function OutboundOracleTable({ outboundOracles }) {
         <Table.Row>
           <Table.HeaderCell collapsing></Table.HeaderCell>
           <Table.HeaderCell>Name</Table.HeaderCell>
-          <Table.HeaderCell>Listener</Table.HeaderCell>
+          <Table.HeaderCell>Sub/Unsub In</Table.HeaderCell>
           <Table.HeaderCell>Publisher</Table.HeaderCell>
           <Table.HeaderCell></Table.HeaderCell>
         </Table.Row>

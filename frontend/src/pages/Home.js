@@ -5,7 +5,6 @@ import { PubSubOracleTable, OutboundOracleTable } from "../components";
 import { Button } from "semantic-ui-react";
 
 function Home() {
-  const [outboundOracles] = useOutboundOracles();
   const [pubSubOracles] = usePubSubOracles();
   return (
     <div>
@@ -17,6 +16,14 @@ function Home() {
           content="Create Oracle"
           as={Link}
           to="/pubSubOracles/create"
+        />
+        <Button
+          basic
+          secondary
+          icon="plus"
+          content="Create Provider/Consumer/Events"
+          as={Link}
+          to="/smartContracts/create"
         />
       </div>
       <br />

@@ -109,8 +109,8 @@ func PostPubSubOracle(ctx *gin.Context) {
 	}
 
 	user := models.UserFromContext(ctx)
-	subOracle := user.CreateOutboundOracle("Subscribe", pubSubOracleBody.SubBlockchainEventID)
-	unsubOracle := user.CreateOutboundOracle("Unsubscribe", pubSubOracleBody.UnsubBlockchainEventID)
+	subOracle := user.CreateOutboundOracle("Subscribe", pubSubOracleBody.SubBlockchainEventID, true)
+	unsubOracle := user.CreateOutboundOracle("Unsubscribe", pubSubOracleBody.UnsubBlockchainEventID, false)
 	pubSubOracle := user.CreatePubSubOracle(
 		pubSubOracleBody.Oracle.Name,
 		pubSubOracleBody.ConsumerID,

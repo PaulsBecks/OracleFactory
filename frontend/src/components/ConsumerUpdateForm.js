@@ -33,7 +33,7 @@ export default function ConsumerForm({ consumer, setConsumer }) {
       />
       <Form.Input
         label="Contract Name"
-        name="ContractName"
+        name="EventName"
         value={consumer.EventName}
         onChange={updateConsumer}
         placeholder="The name of the event"

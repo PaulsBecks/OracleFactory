@@ -38,6 +38,7 @@ func (o *OutboundOracle) GetPubSubOracle() *PubSubOracle {
 	} else {
 		db.Preload(clause.Associations).Find(&pubSubOracle, "unsub_oracle_id = ?", o.ID)
 	}
+	fmt.Println(pubSubOracle)
 	return &pubSubOracle
 }
 

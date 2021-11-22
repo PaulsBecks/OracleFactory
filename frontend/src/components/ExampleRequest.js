@@ -16,13 +16,12 @@ const typeToExampleParameter = {
 };
 
 export default function ExampleRequest({ eventParameters }) {
-  console.log(eventParameters);
   if (!eventParameters) {
     return "";
   }
   return (
     <p>
-      <b>Example Request:</b>
+      <b>Example Event:</b>
       <pre
         style={{
           background: "#232324",

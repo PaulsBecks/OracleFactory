@@ -20,8 +20,6 @@ export default function FilterForm({ listenerPublisherID, oracleID }) {
     createParameterFilterSceleton(oracleID)
   );
 
-  console.log(parameters);
-
   if (!parameters) {
     return "";
   }

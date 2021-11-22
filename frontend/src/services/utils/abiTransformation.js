@@ -1,11 +1,13 @@
 export function formToAbi(oracles) {
   return JSON.stringify(
     oracles.map((oracle) => {
-      delete oracle.ContractAddress;
+      const _oracle = { ...oracle };
+      oracle["readableName"] = oracle.Name;
+      delete _oracle.Name;
       return oracle;
     })
   )
-    .replace(/"ContractName":/g, '"name":')
+    .replace(/"EventName":/g, '"name":')
     .replace(/"Name":/g, '"name":')
     .replace(/"Type":/g, '"type":');
 }
@@ -13,11 +15,9 @@ export function formToAbi(oracles) {
 export function parseAbi(abi) {
   let oracles = [];
   try {
-    //JSON.parse(abi);
     let parsedAbi = JSON.parse(
       abi.replace(/"name":/g, '"Name":').replace(/"type":/g, '"Type":')
     );
-    console.log(parsedAbi);
 
     parsedAbi = parsedAbi.filter(
       (method) =>
@@ -25,14 +25,13 @@ export function parseAbi(abi) {
         method.stateMutability !== "view" &&
         method.stateMutability !== "pure"
     );
-    oracles = parsedAbi.map((oracle) => {
-      const _oracle = { ...oracle, ContractName: oracle.Name };
-      delete _oracle.Name;
-      return _oracle;
-    });
+    oracles = parsedAbi
+      .map((oracle) => ({
+        ...oracle,
+        EventName: oracle.Name,
+      }))
+      .map((oracle) => ({ ...oracle, Name: oracle.readableName }));
     return oracles;
-  } catch (err) {
-    console.log(err, "No valid abi");
-  }
+  } catch (err) {}
   return [];
 }

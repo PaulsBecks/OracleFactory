@@ -33,7 +33,7 @@ func PostConsumer(ctx *gin.Context) {
 		BlockchainName:         consumerBody.BlockchainName,
 		ContractAddress:        consumerBody.ContractAddress,
 		ContractAddressSynonym: consumerBody.ContractAddressSynonym,
-		EventName:              consumerBody.ContractName,
+		EventName:              consumerBody.EventName,
 	}
 
 	listenerPublisher := models.ListenerPublisher{
@@ -75,7 +75,7 @@ func GetConsumer(ctx *gin.Context) {
 	db.Joins("SmartContract").Joins("ListenerPublisher").Preload("ListenerPublisher.EventParameters").Find(&consumer, i)
 
 	var pubSubOracles []models.PubSubOracle
-	db.Joins("Oracle").Preload("Consumer.SmartContract").Preload("Consumer.ListenerPublisher").Preload("Provider.ListenerPublisher").Find(&pubSubOracles, "smart_contract_publisher_id = ? AND Oracle.user_id = ?", consumer.ID, user.ID)
+	db.Joins("Oracle").Preload("Consumer.SmartContract").Preload("Consumer.ListenerPublisher").Preload("Provider.ListenerPublisher").Find(&pubSubOracles, "consumer_id = ? AND Oracle.user_id = ?", consumer.ID, user.ID)
 
 	consumer.PubSubOracles = pubSubOracles
 	ctx.JSON(http.StatusOK, gin.H{"consumer": consumer, "pubSubOracles": pubSubOracles})

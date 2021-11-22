@@ -10,7 +10,7 @@ type ConsumerBody struct {
 	Description            string
 	BlockchainName         string
 	BlockchainAddress      string
-	ContractName           string
+	EventName              string
 	ContractAddress        string
 	ContractAddressSynonym string
 	Private                bool

@@ -36,10 +36,6 @@ export default function PubSubOracleDetail({}) {
     setLocalPubSubOracle(pubSubOracle);
   }, [pubSubOracle]);
 
-  const createFilter = () => {
-    console.log(createFilter);
-  };
-
   if (!pubSubOracle) {
     return "Loading...";
   }

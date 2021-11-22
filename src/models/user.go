@@ -84,7 +84,7 @@ func (u *User) CreatePubSubOracle(name string, consumerID, providerID, subOracle
 	return pubSubOracle
 }
 
-func (u *User) CreateOutboundOracle(name string, blockchainEventID uint) *OutboundOracle {
+func (u *User) CreateOutboundOracle(name string, blockchainEventID uint, isSubscribing bool) *OutboundOracle {
 	db := utils.DBConnection()
 	oracle := Oracle{
 		Name: name,
@@ -94,6 +94,7 @@ func (u *User) CreateOutboundOracle(name string, blockchainEventID uint) *Outbou
 	outboundOracle := &OutboundOracle{
 		BlockchainEventID: blockchainEventID,
 		Oracle:            oracle,
+		IsSubscribing:     isSubscribing,
 	}
 	db.Create(&outboundOracle)
 	return outboundOracle

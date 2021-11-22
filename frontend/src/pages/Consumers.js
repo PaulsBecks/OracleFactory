@@ -7,7 +7,7 @@ function Consumers() {
   const [consumers] = useConsumers();
   return (
     <div>
-      <h1>Smart Contract Publisher</h1>
+      <h1>Consumer</h1>
       <div>
         <Button
           basic
@@ -32,9 +32,7 @@ function Consumers() {
               }}
               onClick={() => history.push("/consumers/" + consumer.ID)}
             >
-              <h3 style={{ marginTop: "0" }}>
-                Method: {consumer.ContractName}
-              </h3>
+              <h3 style={{ marginTop: "0" }}>Method: {consumer.EventName}</h3>
               <div>
                 <b>At:</b> {consumer.ContractAddress}
               </div>

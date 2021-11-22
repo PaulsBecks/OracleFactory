@@ -39,10 +39,10 @@ export default function ConsumerForm({
               <Form.Input
                 label={
                   <label>
-                    {pubSub ? "Publisher" : "Listener"} Name
+                    {pubSub ? "Consumer" : "Sub/Unsub Event"} Display Name
                     <Popup
                       content={`The name is displayed in the list and cards to identify the ${
-                        pubSub ? "publisher" : "listener"
+                        pubSub ? "consumer" : "event"
                       }`}
                       trigger={<Icon name="info circle" />}
                     />
@@ -168,12 +168,13 @@ export default function ConsumerForm({
               label="ABI"
               value={abi}
               onChange={(_, { value }) => setAbi(value)}
-              onBlur={() =>
+              onBlur={() => {
+                const consumers = parseAbi(abi);
                 setConsumer({
                   ...consumer,
-                  consumers: parseAbi(abi),
-                })
-              }
+                  consumers,
+                });
+              }}
             />
           </>
         )}
@@ -181,7 +182,37 @@ export default function ConsumerForm({
           {consumer.consumers.map((oracle, oracleI) =>
             fromABI ? (
               <Segment color="green" style={{ margin: "1em 1em 0 0" }}>
-                <h3>{oracle.Type === "function" ? "Publisher" : "Listener"}</h3>
+                <h3>
+                  {oracle.Type === "function" ? "Consumer" : "Sub/Unsub Event"}
+                </h3>
+                <Form.Group widths="equal">
+                  <Form.Input
+                    label={
+                      <label>
+                        {oracle.Type === "function"
+                          ? "Consumer"
+                          : "Sub/Unsub Event"}{" "}
+                        Display Name
+                        <Popup
+                          content={`The name is displayed in the list and cards to identify the ${
+                            pubSub ? "consumer" : "event"
+                          }`}
+                          trigger={<Icon name="info circle" />}
+                        />
+                      </label>
+                    }
+                    name="Name"
+                    value={oracle.Name}
+                    onChange={(event, { value }) => {
+                      let _consumer = {
+                        ...consumer,
+                      };
+                      _consumer.consumers[oracleI]["Name"] = value;
+                      setConsumer(_consumer);
+                    }}
+                    placeholder="The name"
+                  />
+                </Form.Group>
                 <Form.Group widths="equal">
                   <Form.Input
                     label={
@@ -209,15 +240,17 @@ export default function ConsumerForm({
                 </Form.Group>
                 <Form.Group widths="equal">
                   <Form.Input
-                    label="Contract Name"
-                    name="ContractName"
-                    value={oracle.ContractName}
+                    label={
+                      oracle.Type === "function" ? "Method Name" : "Event Name"
+                    }
+                    name="EventName"
+                    value={oracle.EventName}
                     placeholder="The name of the event"
                     onChange={(event, { value }) => {
                       let _consumer = {
                         ...consumer,
                       };
-                      _consumer.consumers[oracleI]["ContractName"] = value;
+                      _consumer.consumers[oracleI]["EventName"] = value;
                       setConsumer(_consumer);
                     }}
                   />
@@ -264,14 +297,14 @@ export default function ConsumerForm({
                 <Form.Group widths="equal">
                   <Form.Input
                     label={pubSub ? "Contract Name" : "Event Name"}
-                    name="ContractName"
-                    value={oracle.ContractName}
+                    name="EventName"
+                    value={oracle.EventName}
                     placeholder="The name of the event"
                     onChange={(event, { value }) => {
                       let _consumer = {
                         ...consumer,
                       };
-                      _consumer.consumers[oracleI]["ContractName"] = value;
+                      _consumer.consumers[oracleI]["EventName"] = value;
                       setConsumer(_consumer);
                     }}
                   />

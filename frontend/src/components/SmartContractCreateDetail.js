@@ -17,7 +17,7 @@ export default function SmartContractCreate({ fromABI, pubSub, outbound }) {
       ? []
       : [
           {
-            ContractName: "",
+            EventName: "",
             Type: pubSub ? "function" : "event",
             inputs: [],
           },
@@ -56,18 +56,20 @@ export default function SmartContractCreate({ fromABI, pubSub, outbound }) {
                 BlockchainName: consumer.BlockchainName,
                 ContractAddress: consumer.ContractAddress,
                 ContractAddressSynonym: consumer.ContractAddressSynonym,
-                ContractName: element.ContractName,
+                EventName: element.EventName,
                 Private: consumer.Private,
               });
             } else {
               result = await postData(`/blockchainEvents`, {
-                Name: consumer.Name,
-                Description: consumer.Description,
+                Name: element.Name ? element.Name : consumer.Name,
+                Description: element.Description
+                  ? element.Description
+                  : consumer.Description,
                 BlockchainAddress: consumer.BlockchainAddress,
                 BlockchainName: consumer.BlockchainName,
                 ContractAddress: consumer.ContractAddress,
                 ContractAddressSynonym: consumer.ContractAddressSynonym,
-                EventName: element.ContractName,
+                EventName: element.EventName,
                 Private: consumer.Private,
               });
             }

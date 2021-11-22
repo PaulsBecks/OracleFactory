@@ -35,7 +35,7 @@ func GetBlockchainEvent(ctx *gin.Context) {
 	db.Joins("ListenerPublisher").Preload("ListenerPublisher.EventParameters").Preload("SmartContract").Find(&blockchainEvent, i)
 
 	var outboundOracles []models.OutboundOracle
-	db.Joins("Oracle").Preload("BlockchainEvent.SmartContract").Preload("BlockchainEvent.ListenerPublisher").Joins("JOIN pub_sub_oracles ON pub_sub_oracles.sub_oracle_id = outbound_oracles.id OR pub_sub_oracles.unsub_oracle_id = outbound_oracles.id").Find(&outboundOracles, "smart_contract_listener_id = ? AND Oracle.user_id = ?", blockchainEvent.ID, user.ID)
+	db.Joins("Oracle").Preload("BlockchainEvent.SmartContract").Preload("BlockchainEvent.ListenerPublisher").Joins("JOIN pub_sub_oracles ON pub_sub_oracles.sub_oracle_id = outbound_oracles.id OR pub_sub_oracles.unsub_oracle_id = outbound_oracles.id").Find(&outboundOracles, "blockchain_event_id = ? AND Oracle.user_id = ?", blockchainEvent.ID, user.ID)
 	blockchainEvent.OutboundOracles = outboundOracles
 
 	ctx.JSON(http.StatusOK, gin.H{"blockchainEvent": blockchainEvent})
