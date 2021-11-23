@@ -62,7 +62,19 @@ type BlockchainConnector interface {
 func ParseValues(eventData map[string]interface{}) []interface{} {
 	var parameters []interface{}
 	for _, eventValue := range eventData {
-		parameters = append(parameters, eventValue)
+		switch v := eventValue.(type) {
+		case float32:
+			parameters = append(parameters, int(float64(v)))
+			break
+		case float64:
+			parameters = append(parameters, int(float64(v)))
+			break
+		case string:
+			parameters = append(parameters, string(v))
+			break
+		default:
+			parameters = append(parameters, eventValue)
+		}
 	}
 	return parameters
 }
@@ -113,18 +125,22 @@ func (e EthereumConnector) CreateTransaction(contractAddress string, methodName 
 	fmt.Println(abi)
 	instance, err := ethereum.NewStore(address, client, abi)
 	if err != nil {
+		fmt.Printf("NewStore: %v", err.Error())
 		return err
 	}
+	fmt.Println(abi)
 
 	gasPrice, err := client.SuggestGasPrice(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("GasPrice Error: %v", err.Error())
 	}
+	fmt.Println(abi)
 
 	auth := bind.NewKeyedTransactor(privateKey)
 	auth.Value = big.NewInt(0)     // in wei
 	auth.GasLimit = uint64(300000) // in units
 	auth.GasPrice = gasPrice
+	fmt.Println(abi)
 
 	unlock := keyedMutex.Lock(e.ID)
 	defer unlock()
@@ -132,20 +148,20 @@ func (e EthereumConnector) CreateTransaction(contractAddress string, methodName 
 	sendTransaction := func() error {
 		fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
 		nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
+		fmt.Println(abi)
 		if err != nil {
+			fmt.Printf("Nonce: %v", err.Error())
 			return err
 		}
 		cachedNonce, nonceFound := latestNonceByAddress.Load(e.ID)
 		if nonceFound && cachedNonce != nil && nonce < cachedNonce.(uint64) {
 			nonce = cachedNonce.(uint64)
 		}
-		if err != nil {
-			log.Fatal(err)
-		}
 		auth.Nonce = big.NewInt(int64(nonce))
 
 		tx, err := instance.StoreTransactor.Contract.Transact(auth, name, ParseValues(eventData)...)
 		if err != nil {
+			fmt.Printf("TX Error: %v", err.Error())
 			return err
 		}
 		latestNonceByAddress.Store(e.ID, nonce+1)
@@ -157,14 +173,30 @@ func (e EthereumConnector) CreateTransaction(contractAddress string, methodName 
 
 func (e *EthereumConnector) GetEventParameterJSON(eventData map[string]interface{}) string {
 	json := "["
-	for key, _ := range eventData {
+	for key, value := range eventData {
 		// TODO: FIX THIS
-		//e.MapType(value.(type))
-		json += "{\"internalType\":\"" + "string" + "\",\"name\":\"" + key + "\",\"type\":\"" + "string" + "\"},"
+		ethereumType := MapType(value)
+		json += "{\"internalType\":\"" + ethereumType + "\",\"name\":\"" + key + "\",\"type\":\"" + ethereumType + "\"},"
 	}
 	json = strings.TrimRight(json, ",")
 	json += "]"
 	return json
+}
+
+func MapType(value interface{}) string {
+	switch value.(type) {
+	case int:
+		return "uint256"
+	case float64:
+		return "uint256"
+	case string:
+		return "string"
+	case bool:
+		return "bool"
+	default:
+		fmt.Println("Uff")
+	}
+	return "string"
 }
 
 func (e EthereumConnector) GetOutboundOracle() *OutboundOracle {
