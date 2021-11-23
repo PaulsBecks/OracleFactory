@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/big"
 	"strings"
+	"sync"
 
 	"github.com/PaulsBecks/OracleFactory/src/services/ethereum"
 	"github.com/PaulsBecks/OracleFactory/src/utils"
@@ -23,6 +24,21 @@ const (
 	HYPERLEDGER_BLOCKCHAIN = "Hyperledger"
 	ETHEREUM_BLOCKCHAIN    = "Ethereum"
 )
+
+type KeyedMutex struct {
+	mutexes sync.Map // Zero value is empty and ready for use
+}
+
+func (m *KeyedMutex) Lock(key uint) func() {
+	value, _ := m.mutexes.LoadOrStore(key, &sync.Mutex{})
+	mtx := value.(*sync.Mutex)
+	mtx.Lock()
+
+	return func() { mtx.Unlock() }
+}
+
+var keyedMutex = &KeyedMutex{}
+var latestNonceByAddress = &sync.Map{}
 
 type BlockchainConnector interface {
 	GetConnectionString() string
