@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/PaulsBecks/OracleFactory/src/models"
+	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -38,19 +39,9 @@ func GetSubscription(ctx *gin.Context) {
 }
 
 func GetSubscriptions(ctx *gin.Context) {
-	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"body": "Ups there was a mistake!"})
-		return
-	}
-
-	userInterface, _ := ctx.Get("user")
-	user, _ := userInterface.(models.User)
-
+	db := utils.DBConnection()
+	user := models.UserFromContext(ctx)
 	var subscriptions []models.Subscription
-	db.Preload(clause.Associations).Find(&subscriptions, "user_id = ?", user.ID)
-
-	fmt.Println(subscriptions)
-
+	db.Preload(clause.Associations).Joins("JOIN outbound_oracles ON outbound_oracles.id = subscriptions.outbound_oracle_id").Find(&subscriptions, "outbound_oracles.user_id = ?", user.ID)
 	ctx.JSON(http.StatusOK, gin.H{"subscriptions": subscriptions})
 }

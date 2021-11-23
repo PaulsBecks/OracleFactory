@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/PaulsBecks/OracleFactory/src/models"
 	"github.com/PaulsBecks/OracleFactory/src/routes"
@@ -19,6 +20,11 @@ func auth(ctx *gin.Context) {
 		panic(err)
 	}
 	authHeader := ctx.GetHeader("Authorization")
+
+	if !strings.HasPrefix(authHeader, "Bearer") {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"body": "No credentials provided."})
+		return
+	}
 	tokenString := authHeader[len("Bearer "):]
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
 		if _, isvalid := t.Method.(*jwt.SigningMethodHMAC); !isvalid {
@@ -46,7 +52,8 @@ func main() {
 	app.POST("/users/login", routes.Login)
 	app.POST("/users/signup", routes.Register)
 
-	app.POST("/blockchainOracles/:blockchainOracleID/events", routes.PostSubscription)
+	app.POST("/outboundOracles/:outboundOracleID/subscribe", routes.PostSubscription)
+	app.POST("/outboundOracles/:outboundOracleID/unsubscribe", routes.PostUnsbscription)
 	app.POST("/providers/:providerID/events", routes.HandleProviderEvent)
 
 	authorized := app.Group("/", auth)
@@ -58,6 +65,15 @@ func main() {
 		authorized.GET("/providers", routes.GetProviders)
 		authorized.GET("/providers/:providerID", routes.GetProvider)
 		authorized.POST("/providers", routes.PostProvider)
+
+		authorized.GET("/ethereumConnectors", routes.GetEthereumConnectors)
+		authorized.POST("/ethereumConnectors", routes.PostEthereumBlockchainConnector)
+
+		authorized.GET("/hyperledgerConnectors", routes.GetHyperledgerConnectors)
+		authorized.POST("/hyperledgerConnectors", routes.PostHyperledgerBlockchainConnector)
+
+		authorized.POST("/outboundOracles/:outboundOracleID/start", routes.StartOutboundOracle)
+		authorized.POST("/outboundOracles/:outboundOracleID/stop", routes.StopOutboundOracle)
 
 		authorized.GET("/user", routes.GetCurrentUserDetail)
 		authorized.PUT("/user", routes.UpdateCurrentUser)

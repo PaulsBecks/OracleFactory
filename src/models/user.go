@@ -7,6 +7,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type Claims struct {
@@ -63,6 +64,13 @@ func (u *User) CreateEthereumConnector(ethereumPrivateKey, ethereumAddress strin
 	return ethereumConnector
 }
 
+func (u *User) GetEthereumConnectors() []EthereumConnector {
+	db := utils.DBConnection()
+	var ethereumConnectors []EthereumConnector
+	db.Preload(clause.Associations).Joins("JOIN outbound_oracles ON outbound_oracles.id = ethereum_connectors.outbound_oracle_id").Where("outbound_oracles.user_id = ?", u.ID).Find(&ethereumConnectors)
+	return ethereumConnectors
+}
+
 func (u *User) CreateHyperledgerConnector(orgName, channel, config, cert, key string) *HyperledgerConnector {
 	db := utils.DBConnection()
 	hyperledgerConnector := &HyperledgerConnector{
@@ -76,6 +84,14 @@ func (u *User) CreateHyperledgerConnector(orgName, channel, config, cert, key st
 	db.Create(hyperledgerConnector)
 	return hyperledgerConnector
 
+}
+
+func (u *User) GetHyperledgerConnectors() []HyperledgerConnector {
+	db := utils.DBConnection()
+	var hyperledgerConnectors []HyperledgerConnector
+	//.Joins("JOIN outbound_oracles ON outbound_oracles.id = hyperledger_connectors.outbound_oracle_id").Where("outbound_oracles.user_id = ?", u.ID)
+	db.Preload(clause.Associations).Joins("JOIN outbound_oracles ON outbound_oracles.id = hyperledger_connectors.outbound_oracle_id").Where("outbound_oracles.user_id = ?", u.ID).Find(&hyperledgerConnectors)
+	return hyperledgerConnectors
 }
 
 func (u *User) CreateOutboundOracle() *OutboundOracle {

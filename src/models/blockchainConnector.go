@@ -8,6 +8,7 @@ import (
 	"math/big"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/PaulsBecks/OracleFactory/src/services/ethereum"
 	"github.com/PaulsBecks/OracleFactory/src/utils"
@@ -19,6 +20,16 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/gateway"
 	"gorm.io/gorm"
 )
+
+// Blockchain Smart Contract Creation
+func retry(callback func() error, retries int) error {
+	err := callback()
+	if retries <= 0 || err == nil {
+		return err
+	}
+	time.Sleep(200 * time.Millisecond)
+	return retry(callback, retries-1)
+}
 
 const (
 	HYPERLEDGER_BLOCKCHAIN = "Hyperledger"
@@ -56,12 +67,9 @@ func ParseValues(eventData map[string]interface{}) []interface{} {
 	return parameters
 }
 
-func StartConnector(connector BlockchainConnector) {
-	connector.GetOutboundOracle().StartOracle(connector)
-}
-
 type EthereumConnector struct {
 	gorm.Model
+	OutboundOracleID   uint
 	OutboundOracle     OutboundOracle
 	EthereumPrivateKey string
 	EthereumAddress    string
@@ -165,7 +173,8 @@ func (e EthereumConnector) GetOutboundOracle() *OutboundOracle {
 
 type HyperledgerConnector struct {
 	gorm.Model
-	OutboundOracle
+	OutboundOracleID            uint
+	OutboundOracle              OutboundOracle
 	HyperledgerConfig           string
 	HyperledgerCert             string
 	HyperledgerKey              string

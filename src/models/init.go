@@ -23,6 +23,7 @@ func InitDB() {
 		&OutboundOracle{},
 		&User{},
 		&Provider{},
+		&ProviderEvent{},
 	)
 	env := os.Getenv("ENV")
 	if env == "PERFORMANCE_TEST" {

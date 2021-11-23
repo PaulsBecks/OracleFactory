@@ -26,13 +26,14 @@ SET EMISSION MODE \"streaming\";
 
 SET CONNECTION ` + connection + `;
 
-string blockchain = \"` + blockchain + `\";
 BLOCKS (CURRENT) (CONTINUOUS) {
-	LOG ENTRIES (\"ANY\") (subscribe(string token, string topic, string filter, string callback)) {
-		EMIT HTTP REQUEST (\"http://oracle-factory:8080/outboundOracles/events\") (token, topic, filter, callback, blockchain);
-	}
-	LOG ENTRIES (\"ANY\") (unsubscribe(string token, string topic)) {
-		EMIT HTTP REQUEST (\"http://oracle-factory:8080/outboundOracles/events\") (token, topic, blockchain);
+	LOG ENTRIES (\"ANY\") (OracleFactory(string kind, string token, string topic, string filter, string callback, address smartContractAddress)) {
+		if (kind == \"subscribe\") {
+			EMIT HTTP REQUEST (\"http://oracle-factory:8080/outboundOracles/` + fmt.Sprint(o.ID) + `/subscribe\") (token, topic, filter, callback, smartContractAddress);
+		}
+		if (kind == \"unsubscribe\") {
+			EMIT HTTP REQUEST (\"http://oracle-factory:8080/outboundOracles/` + fmt.Sprint(o.ID) + `/unsubscribe\") (token, topic, filter, callback, smartContractAddress);
+		}
 	}
 }`
 }
@@ -41,7 +42,8 @@ func echoStringToFile(content, path string) string {
 	return fmt.Sprintf(" echo \"%s\" > %s; ", content, path)
 }
 
-func (o *OutboundOracle) StartOracle(connector BlockchainConnector) error {
+func (o *OutboundOracle) StartOracle() error {
+	connector := o.GetBlockchainConnector()
 	if o.IsActive {
 		return fmt.Errorf("Oracle is running already!")
 	}
@@ -102,6 +104,13 @@ func (o *OutboundOracle) CreateSubscription(topic, filter, callback, smartContra
 	}
 	db.Create(subscription)
 	return subscription
+}
+
+func (o *OutboundOracle) DeleteSubscription(topic string) {
+	db := utils.DBConnection()
+	var subscription Subscription
+	db.Find(&subscription, "outbound_oracle_id = ? AND topic = ?", o.ID, topic)
+	db.Delete(&subscription)
 }
 
 func (o *OutboundOracle) GetBlockchainConnector() BlockchainConnector {

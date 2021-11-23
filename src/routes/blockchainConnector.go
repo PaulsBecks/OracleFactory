@@ -16,7 +16,8 @@ func PostEthereumBlockchainConnector(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid body send!"})
 		return
 	}
-	user.CreateEthereumConnector(ethereumConnectorBody.EthereumPrivateKey, ethereumConnectorBody.EthereumAddress)
+	ethereumConnector := user.CreateEthereumConnector(ethereumConnectorBody.EthereumPrivateKey, ethereumConnectorBody.EthereumAddress)
+	ctx.JSON(http.StatusOK, gin.H{"ethereumConnector": ethereumConnector})
 }
 
 func PostHyperledgerBlockchainConnector(ctx *gin.Context) {
@@ -26,13 +27,27 @@ func PostHyperledgerBlockchainConnector(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid body send!"})
 		return
 	}
-	user.CreateHyperledgerConnector(
+	hyperledgerConnector := user.CreateHyperledgerConnector(
 		hyperledgerConnectorBody.HyperledgerOrganizationName,
 		hyperledgerConnectorBody.HyperledgerChannel,
 		hyperledgerConnectorBody.HyperledgerConfig,
 		hyperledgerConnectorBody.HyperledgerCert,
 		hyperledgerConnectorBody.HyperledgerKey,
 	)
+	ctx.JSON(http.StatusOK, gin.H{"hyperledgerConnector": hyperledgerConnector})
+
+}
+
+func GetEthereumConnectors(ctx *gin.Context) {
+	user := models.UserFromContext(ctx)
+	ethereumConnectors := user.GetEthereumConnectors()
+	ctx.JSON(http.StatusOK, gin.H{"ethereumConnectors": ethereumConnectors})
+}
+
+func GetHyperledgerConnectors(ctx *gin.Context) {
+	user := models.UserFromContext(ctx)
+	hyperledgerConnectors := user.GetHyperledgerConnectors()
+	ctx.JSON(http.StatusOK, gin.H{"hyperledgerConnectors": hyperledgerConnectors})
 }
 
 func DeleteEthereumBlockchainConnector(ctx *gin.Context) {

@@ -14,6 +14,7 @@ func GetJSONFromCtx(ctx *gin.Context) (bodyData map[string]interface{}, err erro
 }
 
 func GetMapInterfaceFromJson(data []byte) (bodyData map[string]interface{}, err error) {
+	// https://github.com/iancoleman/orderedmap
 	err = json.Unmarshal(data, &bodyData)
 	return bodyData, err
 }

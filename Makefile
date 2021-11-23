@@ -25,7 +25,7 @@ oracle-blueprint:
 eth-testnet:
 	docker run --detach -p 8545:8545 -p 7545:7545 --network=$(network_name) --name eth-test-net trufflesuite/ganache-cli:latest --accounts 10  --blockTime 2 --seed OracleFramework
 	sleep 20
-	cd caseStudies/token; truffle migrate; cd ../..
+	cd caseStudies/testContract; truffle migrate; cd ../..
 
 eth-testnet-stop:
 	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="truffelsuite/ganache-cli:latest" --format="{{.ID}}"))

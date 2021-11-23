@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/cloudflare/cfssl/log"
+
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -24,7 +26,7 @@ type Subscription struct {
 func GetSubsriptionsMatchingTopic(topic string) []Subscription {
 	db := utils.DBConnection()
 	var subscriptions []Subscription
-	db.Preload(clause.Associations).Find(subscriptions, fmt.Sprintf("%s LIKE CONCAT(topic, '%') ", topic))
+	db.Preload(clause.Associations).Find(&subscriptions, fmt.Sprintf("'%s' LIKE topic || '%%' ", topic))
 	return subscriptions
 }
 
@@ -35,15 +37,25 @@ func (s *Subscription) GetOutboundOracle() *OutboundOracle {
 	return &outboundOracle
 }
 
-func (s *Subscription) Publish(eventData map[string]interface{}) {
-	if !s.FilterRulesApply(eventData) {
-		s.GetOutboundOracle().GetBlockchainConnector().CreateTransaction(s.SmartContractAddress, s.Callback, eventData)
+func (s *Subscription) Publish(eventData []byte) {
+	//https://github.com/iancoleman/orderedmap
+	parseData, err := utils.GetMapInterfaceFromJson(eventData)
+	if err != nil {
+		log.Fatalf(err.Error())
+		return
+	}
+	if !s.FilterRulesApply(parseData) {
+		s.GetOutboundOracle().GetBlockchainConnector().CreateTransaction(s.SmartContractAddress, s.Callback, parseData)
 	}
 }
 
 func (s *Subscription) FilterRulesApply(event map[string]interface{}) bool {
 	for _, filter := range strings.Split(s.Filter, ";") {
 		nameOperatorValue := strings.Split(filter, " ")
+		if len(nameOperatorValue) < 3 {
+			log.Info(fmt.Sprintf("Subsriber %d has bad filter %s set", s.ID, s.Filter))
+			return true
+		}
 		name := nameOperatorValue[0]
 		operator := nameOperatorValue[1]
 		value := nameOperatorValue[2]

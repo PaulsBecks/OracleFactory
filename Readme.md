@@ -17,7 +17,6 @@ Install requirements on ubuntu by running
 sudo sh ./install.sh
 ```
 
-# Running the program
-npm install -g selenium-side-runner
+# Todo
 
-npm install -g chromedriver
+Test it out on smart contract.

@@ -23,8 +23,7 @@ func HandleProviderEvent(ctx *gin.Context) {
 
 func GetProviders(ctx *gin.Context) {
 	user := models.UserFromContext(ctx)
-	providers := user.GetProviders()
-	ctx.JSON(http.StatusOK, gin.H{"providers": providers})
+	ctx.JSON(http.StatusOK, gin.H{"providers": user.GetProviders()})
 }
 
 func GetProvider(ctx *gin.Context) {
@@ -34,7 +33,7 @@ func GetProvider(ctx *gin.Context) {
 	provider, err := models.GetProviderByID(providerID)
 	if err != nil {
 		fmt.Printf(err.Error())
-		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No web service listener with ID " + providerID})
+		ctx.JSON(http.StatusNotFound, gin.H{"msg": "No provider with ID " + providerID})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"provider": provider})
