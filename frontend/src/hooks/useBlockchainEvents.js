@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import getData from "../services/getData";
 
-export default function useBlockchainEvents() {
-  const [blockchainEvents, setBlockchainEvents] = useState([]);
-  async function fetchBlockchainEvents() {
-    const _blockchainEvents = await getData("/blockchainEvents");
-    setBlockchainEvents(_blockchainEvents.blockchainEvents);
+export default function useSubscriptions() {
+  const [subscriptions, setSubscriptions] = useState([]);
+  async function fetchSubscriptions() {
+    const _subscriptions = await getData("/subscriptions");
+    setSubscriptions(_subscriptions.subscriptions);
   }
   useEffect(() => {
-    fetchBlockchainEvents();
+    fetchSubscriptions();
   }, []);
-  return [blockchainEvents];
+  return [subscriptions];
 }

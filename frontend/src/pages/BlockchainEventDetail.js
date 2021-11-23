@@ -1,24 +1,24 @@
 import React from "react";
 import { useHistory, useParams, Link } from "react-router-dom";
-import useBlockchainEvent from "../hooks/useBlockchainEvent";
+import useSubscription from "../hooks/useSubscription";
 import { Button } from "semantic-ui-react";
 import { ExampleRequest, OutboundOracleTable } from "../components";
-import BlockchainEventCard from "../components/BlockchainEventCard";
-export default function BlockchainEventDetail({}) {
-  const { blockchainEventID } = useParams();
+import SubscriptionCard from "../components/SubscriptionCard";
+export default function SubscriptionDetail({}) {
+  const { subscriptionID } = useParams();
   const history = useHistory();
-  const [blockchainEvent] = useBlockchainEvent(blockchainEventID);
+  const [subscription] = useSubscription(subscriptionID);
 
-  if (!blockchainEvent) {
+  if (!subscription) {
     return "Loading...";
   }
 
   return (
     <div>
       <h1>Blockchain Event</h1>
-      <BlockchainEventCard blockchainEvent={blockchainEvent} />
+      <SubscriptionCard subscription={subscription} />
       <ExampleRequest
-        eventParameters={blockchainEvent.ListenerPublisher.EventParameters}
+        eventParameters={subscription.ListenerPublisher.EventParameters}
       />
       {/*<div>
         <h2>Active Oracles</h2>
@@ -28,11 +28,11 @@ export default function BlockchainEventDetail({}) {
           content="Create Oracle"
           icon="plus"
           as={Link}
-          to={"/outboundOracles/create?blockchainEventID=" + blockchainEventID}
+          to={"/outboundOracles/create?subscriptionID=" + subscriptionID}
         />
-        {/*blockchainEvent.OutboundOracles.length > 0 ? (
+        {/*subscription.OutboundOracles.length > 0 ? (
           <OutboundOracleTable
-            outboundOracles={blockchainEvent.OutboundOracles}
+            outboundOracles={subscription.OutboundOracles}
           />
         ) : (
           <div>No oracles created yet.</div>

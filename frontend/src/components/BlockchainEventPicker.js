@@ -1,18 +1,18 @@
 import { Card, Message } from "semantic-ui-react";
-import useBlockchainEvents from "../hooks/useBlockchainEvents";
-import BlockchainEventCard from "./BlockchainEventCard";
+import useSubscriptions from "../hooks/useSubscriptions";
+import SubscriptionCard from "./SubscriptionCard";
 
-export function BlockchainEventPicker({ onClick }) {
-  const [blockchainEvents] = useBlockchainEvents();
+export function SubscriptionPicker({ onClick }) {
+  const [subscriptions] = useSubscriptions();
   return (
     <div>
       <h1>Create a pub-sub oracle</h1>
       <Message>Choose an event</Message>
       <Card.Group>
-        {blockchainEvents.map((blockchainEvent) => (
-          <BlockchainEventCard
-            blockchainEvent={blockchainEvent}
-            onClick={() => onClick(blockchainEvent.ID)}
+        {subscriptions.map((subscription) => (
+          <SubscriptionCard
+            subscription={subscription}
+            onClick={() => onClick(subscription.ID)}
           />
         ))}
       </Card.Group>

@@ -6,11 +6,11 @@ import (
 )
 
 type PubSubOracleBody struct {
-	Oracle                 OracleBody
-	ConsumerID             uint
-	ProviderID             uint
-	SubBlockchainEventID   uint
-	UnsubBlockchainEventID uint
+	Oracle              OracleBody
+	ConsumerID          uint
+	ProviderID          uint
+	SubSubscriptionID   uint
+	UnsubSubscriptionID uint
 }
 
 // TODO: create real validation

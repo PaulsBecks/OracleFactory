@@ -8,10 +8,10 @@ import useProviders from "../hooks/useProviders";
 import ProviderCard from "../components/ProviderCard";
 import ConsumerCard from "../components/ConsumerCard";
 import useConsumers from "../hooks/useConsumers";
-import useBlockchainEvents from "../hooks/useBlockchainEvents";
+import useSubscriptions from "../hooks/useSubscriptions";
 import { ProviderPicker } from "../components/ProviderPicker";
 import { ConsumerPicker } from "../components/ConsumerPicker";
-import { BlockchainEventPicker } from "../components/BlockchainEventPicker";
+import { SubscriptionPicker } from "../components/SubscriptionPicker";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -25,8 +25,8 @@ export default function PubSubOracleCreate() {
     URI: "",
     consumerID: parseInt(query.get("consumerID")),
     providerID: parseInt(query.get("providerID")),
-    subBlockchainEventID: null,
-    unsubBlockchainEventID: null,
+    subSubscriptionID: null,
+    unsubSubscriptionID: null,
   });
   const [loading, setLoading] = useState(false);
   const updatePubSubOracle = (name, value) => {
@@ -54,21 +54,21 @@ export default function PubSubOracleCreate() {
     );
   }
 
-  if (!pubSubOracle.subBlockchainEventID) {
+  if (!pubSubOracle.subSubscriptionID) {
     return (
-      <BlockchainEventPicker
-        onClick={(blockchainEventID) => {
-          updatePubSubOracle("subBlockchainEventID", blockchainEventID);
+      <SubscriptionPicker
+        onClick={(subscriptionID) => {
+          updatePubSubOracle("subSubscriptionID", subscriptionID);
         }}
       />
     );
   }
 
-  if (!pubSubOracle.unsubBlockchainEventID) {
+  if (!pubSubOracle.unsubSubscriptionID) {
     return (
-      <BlockchainEventPicker
-        onClick={(blockchainEventID) =>
-          updatePubSubOracle("unsubBlockchainEventID", blockchainEventID)
+      <SubscriptionPicker
+        onClick={(subscriptionID) =>
+          updatePubSubOracle("unsubSubscriptionID", subscriptionID)
         }
       />
     );

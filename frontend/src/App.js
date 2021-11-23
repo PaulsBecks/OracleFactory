@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import {
   Home,
-  BlockchainEventDetail,
+  SubscriptionDetail,
   OutboundOracleDetail,
   PubSubOracleDetail,
   PubSubOracleCreate,
@@ -35,8 +35,8 @@ function App() {
             <OutboundOracleDetail />
           </Route>
 
-          <Route exact path="/blockchainEvents/:blockchainEventID">
-            <BlockchainEventDetail />
+          <Route exact path="/subscriptions/:subscriptionID">
+            <SubscriptionDetail />
           </Route>
 
           <Route exact path="/providers/:providerID">

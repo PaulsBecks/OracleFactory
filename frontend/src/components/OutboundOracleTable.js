@@ -41,14 +41,13 @@ export default function OutboundOracleTable({ outboundOracles }) {
                 <div style={{ marginRight: "1em" }}>
                   <Identicon
                     string={
-                      outboundOracle.BlockchainEvent.SmartContract
-                        .ContractAddress
+                      outboundOracle.Subscription.SmartContract.ContractAddress
                     }
                     size={50}
                   />
                 </div>
                 <label>
-                  {outboundOracle.BlockchainEvent.ListenerPublisher.Name}
+                  {outboundOracle.Subscription.ListenerPublisher.Name}
                 </label>
               </div>
             </Table.Cell>

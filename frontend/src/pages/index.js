@@ -1,6 +1,6 @@
 export { default as Home } from "./Home";
 export { default as OutboundOracleDetail } from "./OutboundOracleDetail";
-export { default as BlockchainEventDetail } from "./BlockchainEventDetail";
+export { default as SubscriptionDetail } from "./SubscriptionDetail";
 export { default as PubSubOracleDetail } from "./PubSubOracleDetail";
 export { default as PubSubOracleCreate } from "./PubSubOracleCreate";
 export { default as Consumers } from "./Consumers";

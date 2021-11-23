@@ -1,14 +1,14 @@
-import useBlockchainEvents from "../hooks/useBlockchainEvents";
+import useSubscriptions from "../hooks/useSubscriptions";
 import useConsumers from "../hooks/useConsumers";
 import { Link } from "react-router-dom";
 import { Button, Card } from "semantic-ui-react";
-import BlockchainEventCard from "../components/BlockchainEventCard";
+import SubscriptionCard from "../components/SubscriptionCard";
 import ConsumerCard from "../components/ConsumerCard";
 import useProviders from "../hooks/useProviders";
 import ProviderCard from "../components/ProviderCard";
 
 function SmartContracts() {
-  const [blockchainEvents] = useBlockchainEvents();
+  const [subscriptions] = useSubscriptions();
   const [consumers] = useConsumers();
   const [providers] = useProviders();
   return (
@@ -27,8 +27,8 @@ function SmartContracts() {
       <div>
         <h2>Subsribe/Unsubscribe Events</h2>
         <Card.Group>
-          {blockchainEvents.map((blockchainEvent) => (
-            <BlockchainEventCard blockchainEvent={blockchainEvent} />
+          {subscriptions.map((subscription) => (
+            <SubscriptionCard subscription={subscription} />
           ))}
         </Card.Group>
       </div>

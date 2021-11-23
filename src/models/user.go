@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/PaulsBecks/OracleFactory/src/utils"
@@ -17,16 +16,8 @@ type Claims struct {
 
 type User struct {
 	gorm.Model
-	Email                       string
-	Password                    string
-	EthereumPrivateKey          string
-	EthereumPublicKey           string
-	EthereumAddress             string
-	HyperledgerConfig           string
-	HyperledgerCert             string
-	HyperledgerKey              string
-	HyperledgerOrganizationName string
-	HyperledgerChannel          string
+	Email    string
+	Password string
 }
 
 func (user *User) GetJWT() string {
@@ -49,126 +40,54 @@ func UserFromContext(ctx *gin.Context) User {
 	return userInterface.(User)
 }
 
-func (u *User) CreateProvider(name string, description string, private bool) Provider {
+func (u *User) CreateProvider(name string, topic string, description string, private bool) Provider {
 	db := utils.DBConnection()
-	listenerPublisher := ListenerPublisher{
+	provider := Provider{
 		Name:        name,
+		Topic:       topic,
 		Description: description,
 		Private:     private,
-		UserID:      u.ID,
-		User:        *u,
-	}
-	db.Create(&listenerPublisher)
-	provider := Provider{
-		ListenerPublisher: listenerPublisher,
 	}
 	db.Create(&provider)
 	return provider
 }
 
-func (u *User) CreatePubSubOracle(name string, consumerID, providerID, subOracleID, unsubOracleID uint) PubSubOracle {
+func (u *User) CreateEthereumConnector(ethereumPrivateKey, ethereumAddress string) *EthereumConnector {
 	db := utils.DBConnection()
-	ethereumOracle := Oracle{
-		Name:   name,
+	ethereumConnector := &EthereumConnector{
+		OutboundOracle:     *u.CreateOutboundOracle(),
+		EthereumPrivateKey: ethereumPrivateKey,
+		EthereumAddress:    ethereumAddress,
+	}
+	db.Create(ethereumConnector)
+	return ethereumConnector
+}
+
+func (u *User) CreateHyperledgerConnector(orgName, channel, config, cert, key string) *HyperledgerConnector {
+	db := utils.DBConnection()
+	hyperledgerConnector := &HyperledgerConnector{
+		OutboundOracle:              *u.CreateOutboundOracle(),
+		HyperledgerOrganizationName: orgName,
+		HyperledgerChannel:          channel,
+		HyperledgerConfig:           config,
+		HyperledgerCert:             cert,
+		HyperledgerKey:              key,
+	}
+	db.Create(hyperledgerConnector)
+	return hyperledgerConnector
+
+}
+
+func (u *User) CreateOutboundOracle() *OutboundOracle {
+	outboundOracle := &OutboundOracle{
 		UserID: u.ID,
 	}
-	db.Create(&ethereumOracle)
-	pubSubOracle := PubSubOracle{
-		Oracle:        ethereumOracle,
-		ConsumerID:    consumerID,
-		ProviderID:    providerID,
-		SubOracleID:   subOracleID,
-		UnsubOracleID: unsubOracleID,
-	}
-	db.Create(&pubSubOracle)
-	return pubSubOracle
-}
-
-func (u *User) CreateOutboundOracle(name string, blockchainEventID uint, isSubscribing bool) *OutboundOracle {
-	db := utils.DBConnection()
-	oracle := Oracle{
-		Name: name,
-		User: *u,
-	}
-	db.Create(&oracle)
-	outboundOracle := &OutboundOracle{
-		BlockchainEventID: blockchainEventID,
-		Oracle:            oracle,
-		IsSubscribing:     isSubscribing,
-	}
-	db.Create(&outboundOracle)
 	return outboundOracle
-}
-
-func (u *User) CreateConsumer(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, publisherName string, description string, private bool, eventParameters []NameTypePair) Consumer {
-	db := utils.DBConnection()
-	smartContract := SmartContract{
-		BlockchainName:         blockchainName,
-		EventName:              eventName,
-		ContractAddress:        contractAddress,
-		ContractAddressSynonym: contractAddressSynonym,
-	}
-	db.Create(&smartContract)
-	listenerPublisher := ListenerPublisher{
-		Name:        publisherName,
-		Description: description,
-		Private:     private,
-		UserID:      u.ID,
-		User:        *u,
-	}
-	db.Create(&listenerPublisher)
-	consumer := Consumer{
-		SmartContract:     smartContract,
-		ListenerPublisher: listenerPublisher,
-	}
-	db.Create(&consumer)
-	for _, nameType := range eventParameters {
-		fmt.Println(nameType)
-		eventParameter := EventParameter{
-			Name:                nameType.Name,
-			Type:                nameType.Type,
-			ListenerPublisherID: listenerPublisher.ID,
-		}
-		db.Create(&eventParameter)
-	}
-	return consumer
-}
-func (u *User) CreateBlockchainEvent(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, listenerName string, description string, private bool, eventParameters []NameTypePair) BlockchainEvent {
-	db := utils.DBConnection()
-	smartContract := SmartContract{
-		BlockchainName:         blockchainName,
-		EventName:              eventName,
-		ContractAddress:        contractAddress,
-		ContractAddressSynonym: contractAddressSynonym,
-	}
-	db.Create(&smartContract)
-	listenerPublisher := ListenerPublisher{
-		Name:        listenerName,
-		Description: description,
-		Private:     private,
-		UserID:      u.ID,
-		User:        *u,
-	}
-	db.Create(&listenerPublisher)
-	blockchainEvent := BlockchainEvent{
-		SmartContract:     smartContract,
-		ListenerPublisher: listenerPublisher,
-	}
-	db.Create(&blockchainEvent)
-	for _, nameType := range eventParameters {
-		eventParameter := EventParameter{
-			Name:                nameType.Name,
-			Type:                nameType.Type,
-			ListenerPublisherID: listenerPublisher.ID,
-		}
-		db.Create(&eventParameter)
-	}
-	return blockchainEvent
 }
 
 func (u *User) GetProviders() []Provider {
 	db := utils.DBConnection()
 	var provider []Provider
-	db.Joins("ListenerPublisher").Find(&provider, "ListenerPublisher.private = 0 OR ListenerPublisher.user_id = ?", u.ID)
+	db.Find(&provider, "private = 0 OR user_id = ?", u.ID)
 	return provider
 }

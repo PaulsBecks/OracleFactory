@@ -10,7 +10,7 @@ import {
 } from "../components";
 import FilterForm from "../components/FilterForm";
 import { ORACLE_STATUS_STARTED } from "../config/constants";
-import BlockchainEventCard from "../components/BlockchainEventCard";
+import SubscriptionCard from "../components/SubscriptionCard";
 import PubSubOracleCard from "../components/PubSubOracleCard";
 
 export default function OutboundOracleDetail() {
@@ -75,19 +75,17 @@ export default function OutboundOracleDetail() {
       <br />
       <div style={{ marginLeft: "1em", marginTop: "1em" }}>
         <PubSubOracleCard pubSubOracle={pubSubOracle} />
-        <BlockchainEventCard blockchainEvent={outboundOracle.BlockchainEvent} />
+        <SubscriptionCard subscription={outboundOracle.Subscription} />
         <ExampleRequest
           eventParameters={
-            outboundOracle.BlockchainEvent.ListenerPublisher.EventParameters
+            outboundOracle.Subscription.ListenerPublisher.EventParameters
           }
         />
       </div>
       <br />
       <FilterForm
         oracleID={outboundOracle.OracleID}
-        listenerPublisherID={
-          outboundOracle.BlockchainEvent.ListenerPublisher.ID
-        }
+        listenerPublisherID={outboundOracle.Subscription.ListenerPublisher.ID}
       />
       <br />
       <div>

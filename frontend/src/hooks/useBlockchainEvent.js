@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import getData from "../services/getData";
 
-export default function useBlockchainEvent(id) {
-  const [blockchainEvent, setBlockchainEvent] = useState();
+export default function useSubscription(id) {
+  const [subscription, setSubscription] = useState();
 
-  async function fetchBlockchainEvent() {
-    const data = await getData("/blockchainEvents/" + id);
-    const _blockchainEvent = data.blockchainEvent;
-    setBlockchainEvent(_blockchainEvent);
+  async function fetchSubscription() {
+    const data = await getData("/subscriptions/" + id);
+    const _subscription = data.subscription;
+    setSubscription(_subscription);
   }
 
   useEffect(() => {
-    fetchBlockchainEvent();
+    fetchSubscription();
   }, []); // eslint-disable-line
 
-  return [blockchainEvent];
+  return [subscription];
 }

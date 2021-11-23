@@ -60,7 +60,7 @@ export default function SmartContractCreate({ fromABI, pubSub, outbound }) {
                 Private: consumer.Private,
               });
             } else {
-              result = await postData(`/blockchainEvents`, {
+              result = await postData(`/subscriptions`, {
                 Name: element.Name ? element.Name : consumer.Name,
                 Description: element.Description
                   ? element.Description
@@ -76,7 +76,7 @@ export default function SmartContractCreate({ fromABI, pubSub, outbound }) {
             const smartContract =
               element.Type === "function"
                 ? result.consumer
-                : result.blockchainEvent;
+                : result.subscription;
             for (const input of element.inputs) {
               if (element.Type === "function") {
                 await postData(
@@ -85,7 +85,7 @@ export default function SmartContractCreate({ fromABI, pubSub, outbound }) {
                 );
               } else {
                 await postData(
-                  `/blockchainEvents/${smartContract.ID}/eventParameters`,
+                  `/subscriptions/${smartContract.ID}/eventParameters`,
                   input
                 );
               }

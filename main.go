@@ -46,47 +46,18 @@ func main() {
 	app.POST("/users/login", routes.Login)
 	app.POST("/users/signup", routes.Register)
 
-	app.POST("/outboundOracles/:outboundOracleId/events", routes.PostOutboundOracleEvent)
-	app.POST("/pubSubOracles/:pubSubOracleID/events", routes.PostPubSubOracleEvent)
+	app.POST("/blockchainOracles/:blockchainOracleID/events", routes.PostSubscription)
 	app.POST("/providers/:providerID/events", routes.HandleProviderEvent)
 
 	authorized := app.Group("/", auth)
 	{
-		authorized.GET("/outboundOracles", routes.GetOutboundOracles)
-		authorized.GET("/outboundOracles/:outboundOracleId", routes.GetOutboundOracle)
-		authorized.DELETE("/outboundOracles/:outboundOracleId", routes.DeleteOutboundOracle)
-		authorized.POST("/outboundOracles/:outboundOracleId/start", routes.StartOutboundOracle)
-		authorized.POST("/outboundOracles/:outboundOracleId/stop", routes.StopOutboundOracle)
-
-		authorized.GET("/blockchainEvents", routes.GetBlockchainEvents)
-		authorized.POST("/blockchainEvents", routes.PostBlockchainEvent)
-		authorized.GET("/blockchainEvents/:blockchainEventID", routes.GetBlockchainEvent)
-		authorized.POST("/blockchainEvents/:blockchainEventID/eventParameters", routes.PostOutboundEventParameters)
-
-		authorized.GET("/pubSubOracles/:pubSubOracleId", routes.GetPubSubOracle)
-		authorized.PUT("/pubSubOracles/:pubSubOracleId", routes.UpdatePubSubOracle)
-		authorized.GET("/consumers/:consumerID", routes.GetConsumer)
-		authorized.GET("/pubSubOracles", routes.GetPubSubOracles)
-		authorized.POST("/pubSubOracles/:pubSubOracleID/start", routes.StartPubSubOracle)
-		authorized.POST("/pubSubOracles/:pubSubOracleID/stop", routes.StopPubSubOracle)
-		authorized.POST("/pubSubOracles", routes.PostPubSubOracle)
-
-		authorized.POST("/consumers/:consumerID/pubSubOracles", routes.PostPubSubOracle)
-		authorized.POST("/consumers/:consumerID/eventParameters", routes.PostInboundEventParameters)
-		authorized.GET("/consumers", routes.GetConsumers)
-		authorized.POST("/consumers", routes.PostConsumer)
-
-		authorized.GET("/filters", routes.GetFilters)
-
-		authorized.GET("/oracles/:oracleID/parameterFilters", routes.GetOracleParameterFilters)
-		authorized.POST("/oracles/:oracleID/parameterFilters", routes.PostOracleParameterFilters)
-		authorized.DELETE("/oracles/:oracleID/parameterFilters/:parameterFilterID", routes.DeleteOracleParameterFilter)
+		authorized.GET("/subscriptions", routes.GetSubscriptions)
+		authorized.POST("/subscriptions", routes.PostSubscription)
+		authorized.GET("/subscriptions/:subscriptionID", routes.GetSubscription)
 
 		authorized.GET("/providers", routes.GetProviders)
 		authorized.GET("/providers/:providerID", routes.GetProvider)
 		authorized.POST("/providers", routes.PostProvider)
-
-		authorized.GET("/listenerPublishers/:listenerPublisherID/eventParameters", routes.GetListenerPublisherEventParameters)
 
 		authorized.GET("/user", routes.GetCurrentUserDetail)
 		authorized.PUT("/user", routes.UpdateCurrentUser)

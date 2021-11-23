@@ -8,6 +8,7 @@ import (
 type ProviderBody struct {
 	Name        string
 	Description string
+	Topic       string
 	Private     bool
 }
 

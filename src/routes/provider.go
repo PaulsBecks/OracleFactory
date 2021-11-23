@@ -42,11 +42,11 @@ func GetProvider(ctx *gin.Context) {
 
 func PostProvider(ctx *gin.Context) {
 	user := models.UserFromContext(ctx)
-	var eventParameterBody forms.ProviderBody
-	if err := ctx.ShouldBind(&eventParameterBody); err != nil || !eventParameterBody.Valid() {
+	var providerBody forms.ProviderBody
+	if err := ctx.ShouldBind(&providerBody); err != nil || !providerBody.Valid() {
 		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid body send!"})
 		return
 	}
-	provider := user.CreateProvider(eventParameterBody.Name, eventParameterBody.Description, eventParameterBody.Private)
+	provider := user.CreateProvider(providerBody.Name, providerBody.Topic, providerBody.Description, providerBody.Private)
 	ctx.JSON(http.StatusOK, gin.H{"provider": provider})
 }

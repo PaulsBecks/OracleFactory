@@ -35,18 +35,18 @@ func UpdateCurrentUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid body send!"})
 		return
 	}
+	/*
+		user.EthereumAddress = userBody.EthereumAddress
+		user.EthereumPublicKey = userBody.EthereumPublicKey
+		user.EthereumPrivateKey = userBody.EthereumPrivateKey
+		user.HyperledgerCert = userBody.HyperledgerCert
+		user.HyperledgerChannel = userBody.HyperledgerChannel
+		user.HyperledgerConfig = userBody.HyperledgerConfig
+		user.HyperledgerOrganizationName = userBody.HyperledgerOrganizationName
+		user.HyperledgerKey = userBody.HyperledgerKey
 
-	user.EthereumAddress = userBody.EthereumAddress
-	user.EthereumPublicKey = userBody.EthereumPublicKey
-	user.EthereumPrivateKey = userBody.EthereumPrivateKey
-	user.HyperledgerCert = userBody.HyperledgerCert
-	user.HyperledgerChannel = userBody.HyperledgerChannel
-	user.HyperledgerConfig = userBody.HyperledgerConfig
-	user.HyperledgerOrganizationName = userBody.HyperledgerOrganizationName
-	user.HyperledgerKey = userBody.HyperledgerKey
-
-	fmt.Println(user)
-
+		fmt.Println(user)
+	*/
 	db.Save(&user)
 }
 
