@@ -130,6 +130,8 @@ func (e EthereumConnector) CreateTransaction(contractAddress string, methodName 
 	}
 	fmt.Println(abi)
 
+	parameters := ParseValues(eventData)
+
 	gasPrice, err := client.SuggestGasPrice(context.Background())
 	if err != nil {
 		fmt.Printf("GasPrice Error: %v", err.Error())
@@ -159,7 +161,7 @@ func (e EthereumConnector) CreateTransaction(contractAddress string, methodName 
 		}
 		auth.Nonce = big.NewInt(int64(nonce))
 
-		tx, err := instance.StoreTransactor.Contract.Transact(auth, name, ParseValues(eventData)...)
+		tx, err := instance.StoreTransactor.Contract.Transact(auth, name, parameters...)
 		if err != nil {
 			fmt.Printf("TX Error: %v", err.Error())
 			return err
