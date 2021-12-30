@@ -4,14 +4,16 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"fmt"
-	"log"
 	"math/big"
+	"os/exec"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/PaulsBecks/OracleFactory/src/services/ethereum"
 	"github.com/PaulsBecks/OracleFactory/src/utils"
+	"github.com/cloudflare/cfssl/log"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -19,6 +21,7 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	"github.com/hyperledger/fabric-sdk-go/pkg/gateway"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // Blockchain Smart Contract Creation
@@ -57,6 +60,8 @@ type BlockchainConnector interface {
 	GetBlockchainName() string
 	CreateTransaction(contractAddress string, methodName string, eventData map[string]interface{}) error
 	GetOutboundOracle() *OutboundOracle
+	StartOnChainOracle() (string, error)
+	CreateOnChainTransaction(address string, topic string, eventData map[string]interface{}) error
 }
 
 func ParseValues(eventData map[string]interface{}) []interface{} {
@@ -64,10 +69,10 @@ func ParseValues(eventData map[string]interface{}) []interface{} {
 	for _, eventValue := range eventData {
 		switch v := eventValue.(type) {
 		case float32:
-			parameters = append(parameters, int(float64(v)))
+			parameters = append(parameters, big.NewInt(int64(float64(v))))
 			break
 		case float64:
-			parameters = append(parameters, int(float64(v)))
+			parameters = append(parameters, big.NewInt(int64(float64(v))))
 			break
 		case string:
 			parameters = append(parameters, string(v))
@@ -85,6 +90,13 @@ type EthereumConnector struct {
 	OutboundOracle     OutboundOracle
 	EthereumPrivateKey string
 	EthereumAddress    string
+}
+
+func GetEthereumConnectorByID(ID interface{}) EthereumConnector {
+	db := utils.DBConnection()
+	var ethereumConnector EthereumConnector
+	db.Preload(clause.Associations).Find(&ethereumConnector, ID)
+	return ethereumConnector
 }
 
 func (e EthereumConnector) GetConnectionString() string {
@@ -173,6 +185,51 @@ func (e EthereumConnector) CreateTransaction(contractAddress string, methodName 
 	return retry(sendTransaction, 10)
 }
 
+func (e EthereumConnector) CreateOnChainTransaction(address string, topic string, eventData map[string]interface{}) error {
+	log.Info(address, topic, eventData)
+	onChainOracleCallData := map[string]interface{}{
+		"topic": topic,
+	}
+	methodName := ""
+	var value interface{}
+	for _, v := range eventData {
+		value = v
+		onChainOracleCallData["value"] = value
+		break
+	}
+	switch value.(type) {
+	case int:
+		methodName = "publishInteger"
+	case float64:
+		methodName = "publishInteger"
+	case string:
+		methodName = "publishString"
+	case bool:
+		methodName = "publishBool"
+	default:
+		fmt.Println("Uff")
+	}
+	return e.CreateTransaction(address, methodName, onChainOracleCallData)
+}
+
+func (e EthereumConnector) StartOnChainOracle() (string, error) {
+	cmd := exec.Command("/bin/sh",
+		"-c", "cd ethereumOnChainOracle && sh deploy_prod.sh "+e.EthereumPrivateKey+" "+e.EthereumAddress,
+	)
+	cmd.Wait()
+	out, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+	r, _ := regexp.Compile("0x([0-9a-fA-F]+)")
+	address := r.FindString(string(out))
+	log.Info(address)
+	if address == "" {
+		return "", fmt.Errorf("No address found")
+	}
+	return strings.Trim(address, "\n"), nil
+}
+
 func (e *EthereumConnector) GetEventParameterJSON(eventData map[string]interface{}) string {
 	json := "["
 	for key, value := range eventData {
@@ -214,6 +271,13 @@ type HyperledgerConnector struct {
 	HyperledgerKey              string
 	HyperledgerOrganizationName string
 	HyperledgerChannel          string
+}
+
+func GetHyperledgerConnectorByID(ID interface{}) HyperledgerConnector {
+	db := utils.DBConnection()
+	var hyperledgerConnector HyperledgerConnector
+	db.Preload(clause.Associations).Find(&hyperledgerConnector, ID)
+	return hyperledgerConnector
 }
 
 func (h HyperledgerConnector) GetConnectionString() string {
@@ -294,4 +358,25 @@ func GetBlockchainConnectorByOutboundOracleID(outboundOracleID interface{}) Bloc
 	var hyperledgerConnector HyperledgerConnector
 	result = db.Find(&hyperledgerConnector, "outbound_oracle_id = ?", outboundOracleID)
 	return hyperledgerConnector
+}
+
+func (h HyperledgerConnector) StartOnChainOracle() (string, error) {
+	/*cmd := exec.Command("cd", "ethereumOnChainOracle", "&&", "sh",
+		"run",
+		"-d",
+		"--network=pub-sub-oracle-network",
+		"ethereum_onchain_oracle",
+		"/bin/bash",
+		"-c",
+	)
+	out, err := cmd.Output()
+	if err != nil {
+		return ""
+	}*/
+	log.Info("Not implemented yet.")
+	return "", nil
+}
+
+func (h HyperledgerConnector) CreateOnChainTransaction(address string, topic string, eventData map[string]interface{}) error {
+	return nil
 }

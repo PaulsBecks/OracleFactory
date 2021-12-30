@@ -63,20 +63,19 @@ func main() {
 		authorized.GET("/subscriptions/:subscriptionID", routes.GetSubscription)
 
 		authorized.GET("/providers", routes.GetProviders)
-		authorized.GET("/providers/:providerID", routes.GetProvider)
 		authorized.POST("/providers", routes.PostProvider)
+		authorized.GET("/providers/:providerID", routes.GetProvider)
 
 		authorized.GET("/ethereumConnectors", routes.GetEthereumConnectors)
+		authorized.GET("/ethereumConnectors/:ethereumConnectorID", routes.GetEthereumConnector)
 		authorized.POST("/ethereumConnectors", routes.PostEthereumBlockchainConnector)
 
 		authorized.GET("/hyperledgerConnectors", routes.GetHyperledgerConnectors)
+		authorized.GET("/hyperledgerConnectors/:hyperledgerConnectorID", routes.GetHyperledgerConnector)
 		authorized.POST("/hyperledgerConnectors", routes.PostHyperledgerBlockchainConnector)
 
 		authorized.POST("/outboundOracles/:outboundOracleID/start", routes.StartOutboundOracle)
 		authorized.POST("/outboundOracles/:outboundOracleID/stop", routes.StopOutboundOracle)
-
-		authorized.GET("/user", routes.GetCurrentUserDetail)
-		authorized.PUT("/user", routes.UpdateCurrentUser)
 	}
 	app.Run()
 }

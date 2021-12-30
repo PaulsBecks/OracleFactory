@@ -1,11 +1,20 @@
-import useOutboundOracles from "../hooks/useOutboundOracles";
-import usePubSubOracles from "../hooks/usePubSubOracles";
 import { Link } from "react-router-dom";
-import { PubSubOracleTable, OutboundOracleTable } from "../components";
 import { Button } from "semantic-ui-react";
+import EthereumBlockchainConnectorsTable from "../components/EthereumBlockchainConnectorsTable";
+import HyperledgerBlockchainConnectorsTable from "../components/HyperledgerBlockchainConnectorsTable";
+import ProvidersTable from "../components/ProvidersTable";
+import SubscriptionsTable from "../components/SubscriptionsTable";
+import useEthereumBlockchainConnectors from "../hooks/useEthereumBlockchainConnectors";
+import useHyperledgerBlockchainConnectors from "../hooks/useHyperledgerBlockchainConnectors";
+import useProviders from "../hooks/useProviders";
+import useSubscriptions from "../hooks/useSubscriptions";
 
 function Home() {
-  const [pubSubOracles] = usePubSubOracles();
+  const [ethereumBlockchainConnectors] = useEthereumBlockchainConnectors();
+  const [hyperledgerBlockchainConnectors] =
+    useHyperledgerBlockchainConnectors();
+  const [providers] = useProviders();
+  const [subscriptions] = useSubscriptions();
   return (
     <div>
       <div style={{ display: "flex" }}>
@@ -13,26 +22,52 @@ function Home() {
           basic
           primary
           icon="plus"
-          content="Create Oracle"
+          content="Create Ethereum Connector"
           as={Link}
-          to="/pubSubOracles/create"
+          to="/blockchainConnectors/ethereum/create"
         />
         <Button
           basic
-          secondary
+          primary
           icon="plus"
-          content="Create Provider/Consumer/Events"
+          content="Create Hyperledger Connector"
           as={Link}
-          to="/smartContracts/create"
+          to="/blockchainConnectors/hyperledger/create"
+        />
+        <Button
+          basic
+          primary
+          icon="plus"
+          content="Create Provider"
+          as={Link}
+          to="/providers/create"
         />
       </div>
       <br />
-      {pubSubOracles && pubSubOracles.length > 0 && (
-        <div>
-          <h2>Pub-Sub Oracles</h2>
-          <PubSubOracleTable pubSubOracles={pubSubOracles} />
-        </div>
-      )}
+      <div>
+        <h2>Ethereum Connectors</h2>
+        <EthereumBlockchainConnectorsTable
+          ethereumBlockchainConnectors={ethereumBlockchainConnectors}
+        />
+      </div>
+      <br />
+      <div>
+        <h2>Hyperledger Connectors</h2>
+        <HyperledgerBlockchainConnectorsTable
+          hyperledgerBlockchainConnectors={hyperledgerBlockchainConnectors}
+        />
+      </div>
+      <br />
+
+      <div>
+        <h2>Providers</h2>
+        <ProvidersTable providers={providers} />
+      </div>
+      <br />
+      <div>
+        <h2>Off-Chain Subscriptions</h2>
+        <SubscriptionsTable subscriptions={subscriptions} />
+      </div>
     </div>
   );
 }

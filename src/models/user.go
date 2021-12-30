@@ -48,15 +48,17 @@ func (u *User) CreateProvider(name string, topic string, description string, pri
 		Topic:       topic,
 		Description: description,
 		Private:     private,
+		UserID:      u.ID,
+		User:        *u,
 	}
 	db.Create(&provider)
 	return provider
 }
 
-func (u *User) CreateEthereumConnector(ethereumPrivateKey, ethereumAddress string) *EthereumConnector {
+func (u *User) CreateEthereumConnector(isOnChain bool, ethereumPrivateKey, ethereumAddress string) *EthereumConnector {
 	db := utils.DBConnection()
 	ethereumConnector := &EthereumConnector{
-		OutboundOracle:     *u.CreateOutboundOracle(),
+		OutboundOracle:     *u.CreateOutboundOracle(isOnChain),
 		EthereumPrivateKey: ethereumPrivateKey,
 		EthereumAddress:    ethereumAddress,
 	}
@@ -71,10 +73,10 @@ func (u *User) GetEthereumConnectors() []EthereumConnector {
 	return ethereumConnectors
 }
 
-func (u *User) CreateHyperledgerConnector(orgName, channel, config, cert, key string) *HyperledgerConnector {
+func (u *User) CreateHyperledgerConnector(isOnChain bool, orgName, channel, config, cert, key string) *HyperledgerConnector {
 	db := utils.DBConnection()
 	hyperledgerConnector := &HyperledgerConnector{
-		OutboundOracle:              *u.CreateOutboundOracle(),
+		OutboundOracle:              *u.CreateOutboundOracle(isOnChain),
 		HyperledgerOrganizationName: orgName,
 		HyperledgerChannel:          channel,
 		HyperledgerConfig:           config,
@@ -94,9 +96,10 @@ func (u *User) GetHyperledgerConnectors() []HyperledgerConnector {
 	return hyperledgerConnectors
 }
 
-func (u *User) CreateOutboundOracle() *OutboundOracle {
+func (u *User) CreateOutboundOracle(isOnChain bool) *OutboundOracle {
 	outboundOracle := &OutboundOracle{
-		UserID: u.ID,
+		UserID:    u.ID,
+		IsOnChain: isOnChain,
 	}
 	return outboundOracle
 }

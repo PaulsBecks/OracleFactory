@@ -8,6 +8,7 @@ export default function WebServiceCreate() {
   const [provider, setProvider] = useState({
     Name: "",
     Description: "",
+    Topic: "",
     Private: true,
   });
   const updateProvider = (_, { value, name }) =>
@@ -33,6 +34,13 @@ export default function WebServiceCreate() {
           value={provider.Description}
           onChange={updateProvider}
           placeholder="A name to recognize the oracle"
+        />
+        <Form.Input
+          label="Topic"
+          name="Topic"
+          value={provider.Topic}
+          onChange={updateProvider}
+          placeholder="/this/is/a/topic"
         />
         <Form.Field>
           <label>
@@ -63,7 +71,7 @@ export default function WebServiceCreate() {
           setLoading(true);
           await postData(`/providers`, provider);
           setLoading(false);
-          history.push("/smartContracts");
+          history.push("/");
         }}
       />
       <br />

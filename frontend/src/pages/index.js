@@ -1,10 +1,1 @@
 export { default as Home } from "./Home";
-export { default as OutboundOracleDetail } from "./OutboundOracleDetail";
-export { default as SubscriptionDetail } from "./SubscriptionDetail";
-export { default as PubSubOracleDetail } from "./PubSubOracleDetail";
-export { default as PubSubOracleCreate } from "./PubSubOracleCreate";
-export { default as Consumers } from "./Consumers";
-export { default as ConsumerDetail } from "./ConsumerDetail";
-export { default as SmartContractCreate } from "./SmartContractCreate";
-export { default as SmartContracts } from "./SmartContracts";
-export { default as Settings } from "./Settings";

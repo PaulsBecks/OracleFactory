@@ -37,15 +37,9 @@ func (s *Subscription) GetOutboundOracle() *OutboundOracle {
 	return &outboundOracle
 }
 
-func (s *Subscription) Publish(eventData []byte) {
-	//https://github.com/iancoleman/orderedmap
-	parseData, err := utils.GetMapInterfaceFromJson(eventData)
-	if err != nil {
-		log.Fatalf(err.Error())
-		return
-	}
-	if !s.FilterRulesApply(parseData) {
-		s.GetOutboundOracle().GetBlockchainConnector().CreateTransaction(s.SmartContractAddress, s.Callback, parseData)
+func (s *Subscription) Publish(eventData map[string]interface{}) {
+	if !s.FilterRulesApply(eventData) {
+		s.GetOutboundOracle().GetBlockchainConnector().CreateTransaction(s.SmartContractAddress, s.Callback, eventData)
 	}
 }
 

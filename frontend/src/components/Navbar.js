@@ -29,13 +29,6 @@ export default function Navbar() {
         </Link>
         <div>
           <Button
-            basic
-            icon="settings"
-            content="Settings"
-            as={Link}
-            to="/settings"
-          />
-          <Button
             content="Logout"
             negative
             basic

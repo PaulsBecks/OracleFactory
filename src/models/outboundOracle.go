@@ -11,11 +11,13 @@ import (
 
 type OutboundOracle struct {
 	gorm.Model
-	UserID          uint
-	User            User
-	DockerContainer string
-	IsActive        bool
-	Subscriptions   []Subscription
+	UserID              uint
+	User                User
+	DockerContainer     string
+	IsActive            bool
+	Subscriptions       []Subscription
+	IsOnChain           bool
+	PubSubOracleAddress string
 }
 
 func (o *OutboundOracle) createManifest(blockchain, connection string) string {
@@ -29,10 +31,10 @@ SET CONNECTION ` + connection + `;
 BLOCKS (CURRENT) (CONTINUOUS) {
 	LOG ENTRIES (\"ANY\") (OracleFactory(string kind, string token, string topic, string filter, string callback, address smartContractAddress)) {
 		if (kind == \"subscribe\") {
-			EMIT HTTP REQUEST (\"http://oracle-factory:8080/outboundOracles/` + fmt.Sprint(o.ID) + `/subscribe\") (token, topic, filter, callback, smartContractAddress);
+			EMIT HTTP REQUEST (\"http://pub-sub-oracle:8080/outboundOracles/` + fmt.Sprint(o.ID) + `/subscribe\") (token, topic, filter, callback, smartContractAddress);
 		}
 		if (kind == \"unsubscribe\") {
-			EMIT HTTP REQUEST (\"http://oracle-factory:8080/outboundOracles/` + fmt.Sprint(o.ID) + `/unsubscribe\") (token, topic, filter, callback, smartContractAddress);
+			EMIT HTTP REQUEST (\"http://pub-sub-oracle:8080/outboundOracles/` + fmt.Sprint(o.ID) + `/unsubscribe\") (token, topic, filter, callback, smartContractAddress);
 		}
 	}
 }`
@@ -47,24 +49,37 @@ func (o *OutboundOracle) StartOracle() error {
 	if o.IsActive {
 		return fmt.Errorf("Oracle is running already!")
 	}
-	manifest := o.createManifest(connector.GetBlockchainName(), connector.GetConnectionString())
-	copyFilesToContainerCommand := echoStringToFile(manifest, "manifest.bloql")
-	copyFilesToContainerCommand += connector.GetCopyFilesString()
-	cmd := exec.Command(
-		"docker",
-		"run",
-		"-d",
-		"--network=oracle-factory-network",
-		"oracle_blueprint",
-		"/bin/bash",
-		"-c",
-		copyFilesToContainerCommand+"cat manifest.bloql; java -jar Blockchain-Logging-Framework/target/blf-cmd.jar extract manifest.bloql")
-	out, err := cmd.Output()
-	if err != nil {
-		return err
+	if o.IsOnChain {
+		// start onchain oracle
+		if o.PubSubOracleAddress == "" {
+			oracleAddress, err := connector.StartOnChainOracle()
+			if err == nil {
+				o.PubSubOracleAddress = oracleAddress
+				o.IsActive = true
+				o.Save()
+			}
+		}
+	} else {
+		manifest := o.createManifest(connector.GetBlockchainName(), connector.GetConnectionString())
+		copyFilesToContainerCommand := echoStringToFile(manifest, "manifest.bloql")
+		copyFilesToContainerCommand += connector.GetCopyFilesString()
+		cmd := exec.Command(
+			"docker",
+			"run",
+			"-d",
+			"--network=pub-sub-oracle-network",
+			"paulsbecks/blf-outbound-oracle",
+			"/bin/bash",
+			"-c",
+			copyFilesToContainerCommand+"cat manifest.bloql; java -jar Blockchain-Logging-Framework/target/blf-cmd.jar extract manifest.bloql")
+		out, err := cmd.Output()
+		if err != nil {
+			return err
+		}
+		o.DockerContainer = strings.Trim(string(out), "\n")
+		o.IsActive = true
+		o.Save()
 	}
-	o.DockerContainer = strings.Trim(string(out), "\n")
-	o.Save()
 	return nil
 }
 
@@ -72,13 +87,22 @@ func (o *OutboundOracle) StopOracle() error {
 	if !o.IsActive {
 		return fmt.Errorf("Oracle is stopped already!")
 	}
-	cmd := exec.Command(
-		"docker",
-		"stop",
-		o.DockerContainer)
-	out, err := cmd.Output()
-	fmt.Println("INFO: " + string(out))
-	return err
+	if !o.IsOnChain {
+		cmd := exec.Command(
+			"docker",
+			"stop",
+			o.DockerContainer)
+		out, err := cmd.Output()
+		if err != nil {
+			return err
+		}
+		fmt.Println("INFO: " + string(out))
+	}
+
+	o.IsActive = false
+	o.Save()
+
+	return nil
 }
 
 func (o *OutboundOracle) Save() {
@@ -115,4 +139,11 @@ func (o *OutboundOracle) DeleteSubscription(topic string) {
 
 func (o *OutboundOracle) GetBlockchainConnector() BlockchainConnector {
 	return GetBlockchainConnectorByOutboundOracleID(o.ID)
+}
+
+func GetOnChainOracleConnections() []OutboundOracle {
+	db := utils.DBConnection()
+	var outboundOracles []OutboundOracle
+	db.Find(&outboundOracles, "is_on_chain = 1")
+	return outboundOracles
 }

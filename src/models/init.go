@@ -4,7 +4,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"strings"
 
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"gorm.io/gorm"
@@ -41,28 +40,30 @@ func fromFile(path string) string {
 
 func initPerformanceTestSetup(db *gorm.DB) {
 	// create user
-	config := strings.Replace(fromFile("connection-org1.yaml"), "localhost", "peer0.org1.example.com", -1)
+	/*config := strings.Replace(fromFile("connection-org1.yaml"), "localhost", "peer0.org1.example.com", -1)
 	cert := fromFile("hyperledger_cert")
-	key := fromFile("hyperledger_key")
+	key := fromFile("hyperledger_key")*/
 	user := User{
 		Email:    "test@example.com",
 		Password: utils.HashAndSalt([]byte("test")),
 	}
 	user.CreateEthereumConnector(
+		false,
 		"b28c350293dcf09cc5b5a9e5922e2f73e48983fe8d325855f04f749b1a82e0e6",
 		"ws://eth-test-net:8545/",
 	)
-	user.CreateHyperledgerConnector(
+	/*user.CreateHyperledgerConnector(
+		false,
 		"Org1MSP",
 		"mychannel",
 		config,
 		cert,
 		key,
-	)
+	)*/
 	db.Create(&user)
 
 	// create hyperledger performance test oracles
-	initHyperledgerOracles(db, user)
+	//initHyperledgerOracles(db, user)
 
 	// create ethereum performance test oracle
 	initEthereumOracles(db, user)

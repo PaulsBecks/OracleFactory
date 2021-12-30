@@ -18,7 +18,7 @@ sudo apt install golang-go -y
 sudo apt install nodejs -y
 sudo apt install npm -y
 npm install -g truffle
-
+npm install -g @truffle/hdwallet-provider
 # install python dependencies
 sudo apt install python3-pip
 pip3 install pandas

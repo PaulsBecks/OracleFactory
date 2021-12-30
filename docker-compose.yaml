@@ -5,14 +5,14 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - oracle-factory-network
+      - pub-sub-oracle-network
   server:
     build: .
     ports:
       - "8080:8080"
     networks: 
-      - oracle-factory-network
+      - pub-sub-oracle-network
 
 networks:
-    oracle-factory-network:
-        name: oracle-factory-network
+    pub-sub-oracle-network:
+        name: pub-sub-oracle-network

@@ -1,12 +1,5 @@
 export { default as Footer } from "./Footer";
 export { default as Navbar } from "./Navbar";
-export { default as OutboundOracleForm } from "./OutboundOracleForm";
-export { default as PubSubOracleForm } from "./PubSubOracleForm";
-export { default as ConsumerForm } from "./ConsumerCreateForm";
-export { default as PubSubOracleTable } from "./PubSubOracleTable";
-export { default as OutboundOracleTable } from "./OutboundOracleTable";
-export { default as UserForm } from "./UserForm";
 export { default as StartStopButton } from "./StartStopButton";
-export { default as SmartContractCreateDetail } from "./SmartContractCreateDetail";
 export { default as OracleOnOffRibbon } from "./OracleOnOffRibbon";
 export { default as ExampleRequest } from "./ExampleRequest";

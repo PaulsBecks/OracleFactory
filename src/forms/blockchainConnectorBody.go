@@ -1,6 +1,7 @@
 package forms
 
 type EthereumConnectorBody struct {
+	IsOnChain          bool
 	EthereumPrivateKey string
 	EthereumAddress    string
 }
@@ -11,6 +12,7 @@ func (o *EthereumConnectorBody) Valid() bool {
 }
 
 type HyperledgerConnectorBody struct {
+	IsOnChain                   bool
 	HyperledgerConfig           string
 	HyperledgerCert             string
 	HyperledgerKey              string

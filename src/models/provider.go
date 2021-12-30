@@ -34,9 +34,21 @@ func GetProviderByID(ID interface{}) (Provider, error) {
 func (w *Provider) HandleEvent(body []byte) {
 	log.Info(fmt.Sprintf("Provider %d is handling event %s", w.ID, string(body)))
 	w.CreateProviderEvent(body)
+	//https://github.com/iancoleman/orderedmap
+	eventData, err := utils.GetMapInterfaceFromJson(body)
+	if err != nil {
+		log.Fatalf(err.Error())
+		return
+	}
 	for _, oracle := range GetSubsriptionsMatchingTopic(w.Topic) {
 		log.Info(fmt.Sprintf("Topic %s: found oracle %d interested with topic %s", w.Topic, oracle.ID, oracle.Topic))
-		oracle.Publish(body)
+		oracle.Publish(eventData)
+	}
+
+	for _, blockchainConnectionOutboundOracle := range GetOnChainOracleConnections() {
+		blockchainConnectionOutboundOracle.
+			GetBlockchainConnector().
+			CreateOnChainTransaction(blockchainConnectionOutboundOracle.PubSubOracleAddress, w.Topic, eventData)
 	}
 }
 
