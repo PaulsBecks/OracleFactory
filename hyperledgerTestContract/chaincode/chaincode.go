@@ -16,7 +16,7 @@ type SmartContract struct {
 
 // StartOnChainSubscription subscribes to a topic "test-topic" at the local on-chain oracle.
 func (s *SmartContract) StartOnChainSubscription(ctx contractapi.TransactionContextInterface) {
-	params := [][]byte{[]byte(contractName)}
+	params := [][]byte{[]byte("Subscribe"), []byte(topic), []byte(contractName)}
 	stub := ctx.GetStub()
 	stub.InvokeChaincode(oracleName, params, stub.GetChannelID())
 }
