@@ -1,7 +1,7 @@
 node_modules/
 OracleFactory
 OracleFactory.db
-#fabric-samples/
+fabric-samples/
 .DS_Store
 
 # hyperledger test files
