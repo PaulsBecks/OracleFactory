@@ -351,12 +351,12 @@ func (e HyperledgerConnector) GetOutboundOracle() *OutboundOracle {
 func GetBlockchainConnectorByOutboundOracleID(outboundOracleID interface{}) BlockchainConnector {
 	db := utils.DBConnection()
 	var ethereumConnector EthereumConnector
-	result := db.Find(&ethereumConnector, "outbound_oracle_id = ?", outboundOracleID)
+	result := db.First(&ethereumConnector, "outbound_oracle_id = ?", outboundOracleID)
 	if result.Error == nil {
 		return ethereumConnector
 	}
 	var hyperledgerConnector HyperledgerConnector
-	result = db.Find(&hyperledgerConnector, "outbound_oracle_id = ?", outboundOracleID)
+	result = db.First(&hyperledgerConnector, "outbound_oracle_id = ?", outboundOracleID)
 	return hyperledgerConnector
 }
 
