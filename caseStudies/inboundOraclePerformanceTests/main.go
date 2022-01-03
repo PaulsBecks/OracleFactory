@@ -102,7 +102,7 @@ func (p *PerformanceTest) runAll(repetitions int) {
 	writeToCSV([]string{"latency", "throughput", "parallel events"}, file)
 	defer file.Close()
 	for i := 0; i < repetitions; i++ {
-		for _, maxParallel := range []int{1, 2, 3, 4, 5, 10, 20} { //, 30, 40, 50, 100} {
+		for _, maxParallel := range []int{1, 2, 3, 4} { //, 30, 40, 50, 100} {
 			log.Printf("Maximum of events created in parallel %d", maxParallel)
 			performanceTestRun := NewPerformanceTestRun(p, maxParallel)
 			avgLatency, throughput := performanceTestRun.start()
@@ -134,7 +134,7 @@ func subscribe(providerID int, smartContractAddress string) {
 		"SmartContractAddress": smartContractAddress,
 	}
 	json, _ := json.Marshal(params)
-	http.NewRequest("POST", fmt.Sprintf("%soutboundOracles/%d/subscribe", BASE_URL, providerID), json)
+	http.NewRequest("POST", fmt.Sprintf("%soutboundOracles/%d/subscribe", BASE_URL, providerID), bytes.NewBuffer(json))
 }
 
 func unsubscribe(providerID int, smartContractAddress string) {
@@ -143,18 +143,18 @@ func unsubscribe(providerID int, smartContractAddress string) {
 		"Topic": "test-topic",
 	}
 	json, _ := json.Marshal(params)
-	http.NewRequest("POST", fmt.Sprintf("%soutboundOracles/%d/subscribe", BASE_URL, providerID), json)
+	http.NewRequest("POST", fmt.Sprintf("%soutboundOracles/%d/subscribe", BASE_URL, providerID), bytes.NewBuffer(json))
 }
 
 func main() {
-	repetitions := 10
+	repetitions := 2
 
 	// subscribe smart contract to hyperledger provider
 	subscribe(1, "test-contract")
 	hyperledgerCreateAssetTest := &PerformanceTest{
 		outputFileName: "hyperledger1Subscription.csv",
-		oracleEndpoint: BASE_URL + "providers/1/events",
-		body:           `{"ID":"1","Color":"green", "Size":"m", "Owner":"me", "AppraisedValue":1}`,
+		oracleEndpoint: BASE_URL + "providers/2/events",
+		body:           `{"number":1}`,
 	}
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
