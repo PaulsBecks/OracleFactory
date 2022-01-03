@@ -1,9 +1,11 @@
 package models
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"gorm.io/gorm"
@@ -12,6 +14,7 @@ import (
 var testUrl = "http://host.docker.internal:7890"
 
 func InitDB() {
+	fmt.Println("Init Database")
 	db := utils.DBConnection()
 
 	// Check if table exists - if not create it
@@ -26,6 +29,7 @@ func InitDB() {
 	)
 	env := os.Getenv("ENV")
 	if env == "PERFORMANCE_TEST" {
+		fmt.Println("Init Performance Tests")
 		initPerformanceTestSetup(db)
 	}
 }
@@ -40,50 +44,35 @@ func fromFile(path string) string {
 
 func initPerformanceTestSetup(db *gorm.DB) {
 	// create user
-	/*config := strings.Replace(fromFile("connection-org1.yaml"), "localhost", "peer0.org1.example.com", -1)
+	config := strings.Replace(fromFile("connection-org1.yaml"), "localhost", "peer0.org1.example.com", -1)
 	cert := fromFile("hyperledger_cert")
-	key := fromFile("hyperledger_key")*/
+	key := fromFile("hyperledger_key")
 	user := User{
 		Email:    "test@example.com",
 		Password: utils.HashAndSalt([]byte("test")),
 	}
-	user.CreateEthereumConnector(
+	db.Create(&user)
+
+	offChainEthereumConnector := user.CreateEthereumConnector(
 		false,
 		"b28c350293dcf09cc5b5a9e5922e2f73e48983fe8d325855f04f749b1a82e0e6",
 		"ws://eth-test-net:8545/",
 	)
-	/*user.CreateHyperledgerConnector(
+	offChainEthereumConnector.OutboundOracle.StartOracle()
+	offChainHyperledgerConnector := user.CreateHyperledgerConnector(
 		false,
 		"Org1MSP",
 		"mychannel",
 		config,
 		cert,
 		key,
-	)*/
-	db.Create(&user)
+	)
+	offChainHyperledgerConnector.OutboundOracle.StartOracle()
 
-	// create hyperledger performance test oracles
-	//initHyperledgerOracles(db, user)
-
-	// create ethereum performance test oracle
-	initEthereumOracles(db, user)
-
-}
-func initEthereumOracles(db *gorm.DB, user User) {
 	user.CreateProvider(
-		"Token Give Away",
-		"/token/giveaway",
-		"Continuous stream of receivers and amount of tokens.",
+		"Test Endpoint",
+		"test-topic",
+		"Endpoint to test the oracles",
 		true,
 	)
-	user.CreateProvider(
-		"Token transferal",
-		"Continuous stream of receivers and amount of tokens.",
-		"/token/transfers",
-		true,
-	)
-}
-
-func initHyperledgerOracles(db *gorm.DB, user User) {
-	user.CreateProvider("New Assets Endpoint", "assets/create", "This listener receives newly created assets.", true)
 }

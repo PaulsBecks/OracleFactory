@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -122,13 +123,49 @@ func computeAverageLatency(eventMeasurements []EventMeasurement) (float64, error
 	return total / float64(amount), nil
 }
 
+const BASE_URL = "http://localhost:8080/"
+
+func subscribe(providerID int, smartContractAddress string) {
+	params := map[string]interface{}{
+		"Token":                "",
+		"Topic":                "test-topic",
+		"Filter":               "",
+		"Callback":             "Callback",
+		"SmartContractAddress": smartContractAddress,
+	}
+	json, _ := json.Marshal(params)
+	http.NewRequest("POST", fmt.Sprintf("%soutboundOracles/%d/subscribe", BASE_URL, providerID), json)
+}
+
+func unsubscribe(providerID int, smartContractAddress string) {
+	params := map[string]interface{}{
+		"Token": "",
+		"Topic": "test-topic",
+	}
+	json, _ := json.Marshal(params)
+	http.NewRequest("POST", fmt.Sprintf("%soutboundOracles/%d/subscribe", BASE_URL, providerID), json)
+}
+
 func main() {
 	repetitions := 10
+
+	// subscribe smart contract to hyperledger provider
+	subscribe(1, "test-contract")
 	hyperledgerCreateAssetTest := &PerformanceTest{
-		outputFileName: "hyperledgerCreateAssetTest.csv",
-		oracleEndpoint: "http://localhost:8080/providers/1/events",
+		outputFileName: "hyperledger1Subscription.csv",
+		oracleEndpoint: BASE_URL + "providers/1/events",
 		body:           `{"ID":"1","Color":"green", "Size":"m", "Owner":"me", "AppraisedValue":1}`,
 	}
+	hyperledgerCreateAssetTest.runAll(repetitions)
+
+	// subscribe smart contract to hyperledger provider
+	subscribe(1, "test-contract2")
+	hyperledgerCreateAssetTest.outputFileName = "hyperledger2Subscription.csv"
+	hyperledgerCreateAssetTest.runAll(repetitions)
+
+	// subscribe smart contract to hyperledger provider
+	subscribe(1, "test-contract3")
+	hyperledgerCreateAssetTest.outputFileName = "hyperledger2Subscription.csv"
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	ethereumMintTokenTest := &PerformanceTest{

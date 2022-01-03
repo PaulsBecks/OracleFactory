@@ -79,7 +79,7 @@ case-study: init-test-setup install-eth-contract use-case evaluation prune-test-
 
 hyperledger-testnet:
 	curl -sSL https://bit.ly/2ysbOFE | bash -s
-	cd fabric-samples/test-network; ./network.sh down; COMPOSE_PROJECT_NAME=docker ./network.sh up createChannel -c mychannel -ca; ./network.sh deployCC -ccs 1  -ccv 1 -ccep "OR('Org1MSP.peer','Org2MSP.peer')" -ccl go -ccp ../../hyperledgerTestContract -ccn test-contract; ./network.sh deployCC -ccs 1  -ccv 1 -ccep "OR('Org1MSP.peer','Org2MSP.peer')" -ccl go -ccp ../../hyperledgerOnChainOracle -ccn on-chain-oracle; cd ../..
+	cd fabric-samples/test-network; ./network.sh down; COMPOSE_PROJECT_NAME=docker ./network.sh up createChannel -c mychannel -ca; ./network.sh deployCC -ccs 1  -ccv 1 -ccep "OR('Org1MSP.peer','Org2MSP.peer')" -ccl go -ccp ../../hyperledgerTestContract -ccn test-contract; ./network.sh deployCC -ccs 1  -ccv 1 -ccep "OR('Org1MSP.peer','Org2MSP.peer')" -ccl go -ccp ../../hyperledgerTestContract -ccn test-contract2; ./network.sh deployCC -ccs 1  -ccv 1 -ccep "OR('Org1MSP.peer','Org2MSP.peer')" -ccl go -ccp ../../hyperledgerTestContract -ccn test-contract3; ./network.sh deployCC -ccs 1  -ccv 1 -ccep "OR('Org1MSP.peer','Org2MSP.peer')" -ccl go -ccp ../../hyperledgerOnChainOracle -ccn on-chain-oracle; cd ../..
 	cp fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/connection-org1.yaml . 
 	cp fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/* hyperledger_key
 	cp fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/cert.pem hyperledger_cert
