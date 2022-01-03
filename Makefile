@@ -98,7 +98,7 @@ performance-test:
 
 setup-and-test: test-setup performance-test
 
-hyperledger-oracle-test: prune-test-setup docker-network hyperledger-testnet 
+hyperledger-oracle-test: docker-network hyperledger-testnet 
 	
 hyperledger-install-contracts:
 	sh ./install-oracle-on-hyperledger.sh

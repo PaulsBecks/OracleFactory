@@ -102,7 +102,7 @@ func (p *PerformanceTest) runAll(repetitions int) {
 	writeToCSV([]string{"latency", "throughput", "parallel events"}, file)
 	defer file.Close()
 	for i := 0; i < repetitions; i++ {
-		for _, maxParallel := range []int{1, 2, 3, 4, 5, 10, 20} { //, 30, 40, 50, 100} {
+		for _, maxParallel := range []int{1, 2, 3, 4} { //, 30, 40, 50, 100} {
 			log.Printf("Maximum of events created in parallel %d", maxParallel)
 			performanceTestRun := NewPerformanceTestRun(p, maxParallel)
 			avgLatency, throughput := performanceTestRun.start()
@@ -125,7 +125,7 @@ func computeAverageLatency(eventMeasurements []EventMeasurement) (float64, error
 
 const BASE_URL = "http://localhost:8080/"
 
-func subscribe(providerID int, smartContractAddress string) {
+func subscribe(outboundOracleID int, smartContractAddress string) {
 	params := map[string]interface{}{
 		"Token":                "",
 		"Topic":                "test-topic",
@@ -134,41 +134,50 @@ func subscribe(providerID int, smartContractAddress string) {
 		"SmartContractAddress": smartContractAddress,
 	}
 	json, _ := json.Marshal(params)
-	http.NewRequest("POST", fmt.Sprintf("%soutboundOracles/%d/subscribe", BASE_URL, providerID), json)
+	req, err := http.NewRequest("POST", fmt.Sprintf("%soutboundOracles/%d/subscribe", BASE_URL, outboundOracleID), bytes.NewBuffer(json))
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	fmt.Println(resp)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer resp.Body.Close()
 }
 
-func unsubscribe(providerID int, smartContractAddress string) {
+func unsubscribe(outboundOracleID int, smartContractAddress string) {
 	params := map[string]interface{}{
 		"Token": "",
 		"Topic": "test-topic",
 	}
 	json, _ := json.Marshal(params)
-	http.NewRequest("POST", fmt.Sprintf("%soutboundOracles/%d/subscribe", BASE_URL, providerID), json)
+	http.NewRequest("POST", fmt.Sprintf("%soutboundOracles/%d/subscribe", BASE_URL, outboundOracleID), bytes.NewBuffer(json))
 }
 
 func main() {
-	repetitions := 10
+	repetitions := 2
 
 	// subscribe smart contract to hyperledger provider
-	subscribe(1, "test-contract")
+	subscribe(2, "test-contract")
 	hyperledgerCreateAssetTest := &PerformanceTest{
 		outputFileName: "hyperledger1Subscription.csv",
 		oracleEndpoint: BASE_URL + "providers/1/events",
-		body:           `{"ID":"1","Color":"green", "Size":"m", "Owner":"me", "AppraisedValue":1}`,
+		body:           `{"number":1}`,
 	}
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
-	subscribe(1, "test-contract2")
+	subscribe(2, "test-contract2")
 	hyperledgerCreateAssetTest.outputFileName = "hyperledger2Subscription.csv"
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
-	subscribe(1, "test-contract3")
+	subscribe(2, "test-contract3")
 	hyperledgerCreateAssetTest.outputFileName = "hyperledger2Subscription.csv"
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
-	ethereumMintTokenTest := &PerformanceTest{
+	/*ethereumMintTokenTest := &PerformanceTest{
 		outputFileName: "ethereumMintTokenTest.csv",
 		oracleEndpoint: "http://localhost:8080/providers/2/events",
 		body:           `{"receiver":"0x40536521353F9f4120A589C9ddDEB6188EF61922","amount":100}`,
@@ -180,5 +189,5 @@ func main() {
 		oracleEndpoint: "http://localhost:8080/providers/3/events",
 		body:           `{"receiver":"0x40536521353F9f4120A589C9ddDEB6188EF61922","amount":1}`,
 	}
-	ethereumTransferTokenTest.runAll(repetitions)
+	ethereumTransferTokenTest.runAll(repetitions)*/
 }
