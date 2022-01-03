@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"github.com/cloudflare/cfssl/log"
@@ -23,7 +24,7 @@ type Provider struct {
 func GetProviderByID(ID interface{}) (Provider, error) {
 	db := utils.DBConnection()
 	var provider Provider
-	tx := db.Preload(clause.Associations).Find(&provider, ID)
+	tx := db.Preload(clause.Associations).First(&provider, ID)
 	if tx.Error != nil {
 		fmt.Printf(tx.Error.Error())
 		return provider, fmt.Errorf("Unable to find Provider with ID %d", ID)
@@ -40,16 +41,29 @@ func (w *Provider) HandleEvent(body []byte) {
 		log.Fatalf(err.Error())
 		return
 	}
+	var wg sync.WaitGroup
+	// only one event at a time to keep the order this is important yes?
 	for _, oracle := range GetSubsriptionsMatchingTopic(w.Topic) {
 		log.Info(fmt.Sprintf("Topic %s: found oracle %d interested with topic %s", w.Topic, oracle.ID, oracle.Topic))
-		oracle.Publish(eventData)
+		wg.Add(1)
+		go func(oracle Subscription) {
+			defer wg.Done()
+			oracle.Publish(eventData)
+		}(oracle)
 	}
 
 	for _, blockchainConnectionOutboundOracle := range GetOnChainOracleConnections() {
-		blockchainConnectionOutboundOracle.
-			GetBlockchainConnector().
-			CreateOnChainTransaction(blockchainConnectionOutboundOracle.PubSubOracleAddress, w.Topic, eventData)
+		log.Info(fmt.Sprintf("Oracle %d interested in topic %s", blockchainConnectionOutboundOracle.ID, w.Topic))
+		wg.Add(1)
+		go func(blockchainConnectionOutboundOracle OutboundOracle) {
+			defer wg.Done()
+			blockchainConnectionOutboundOracle.
+				GetBlockchainConnector().
+				CreateOnChainTransaction(blockchainConnectionOutboundOracle.PubSubOracleAddress, w.Topic, eventData)
+
+		}(blockchainConnectionOutboundOracle)
 	}
+	wg.Wait()
 }
 
 type ProviderEvent struct {

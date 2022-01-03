@@ -4,13 +4,20 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"sync"
 
 	"github.com/PaulsBecks/OracleFactory/src/forms"
 	"github.com/PaulsBecks/OracleFactory/src/models"
 	"github.com/gin-gonic/gin"
 )
 
+var mutex sync.RWMutex
+
 func HandleProviderEvent(ctx *gin.Context) {
+	// only allow one event at a time, to prevent
+	mutex.Lock()
+	defer mutex.Unlock()
+
 	providerID := ctx.Param("providerID")
 	provider, err := models.GetProviderByID(providerID)
 	if err != nil {
