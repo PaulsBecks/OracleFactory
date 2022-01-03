@@ -23,7 +23,7 @@ type Provider struct {
 func GetProviderByID(ID interface{}) (Provider, error) {
 	db := utils.DBConnection()
 	var provider Provider
-	tx := db.Preload(clause.Associations).Find(&provider, ID)
+	tx := db.Preload(clause.Associations).First(&provider, ID)
 	if tx.Error != nil {
 		fmt.Printf(tx.Error.Error())
 		return provider, fmt.Errorf("Unable to find Provider with ID %d", ID)

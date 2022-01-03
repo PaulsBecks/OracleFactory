@@ -44,6 +44,9 @@ func (s *Subscription) Publish(eventData map[string]interface{}) {
 }
 
 func (s *Subscription) FilterRulesApply(event map[string]interface{}) bool {
+	if s.Filter == "" {
+		return false
+	}
 	for _, filter := range strings.Split(s.Filter, ";") {
 		nameOperatorValue := strings.Split(filter, " ")
 		if len(nameOperatorValue) < 3 {
