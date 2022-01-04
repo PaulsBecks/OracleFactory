@@ -27,6 +27,188 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/outboundOracle/{outboundOracleID}/start": {
+            "post": {
+                "description": "Start the specified outbound oracle.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "outboundOracles"
+                ],
+                "summary": "Start an Outbound Oracle",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the outbound oracle you want to start.",
+                        "name": "outboundOracleID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/outboundOracle/{outboundOracleID}/stop": {
+            "post": {
+                "description": "Unsubscribe your smart contract from a topic.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "outboundOracles"
+                ],
+                "summary": "Unsubscribe from Topic",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the outbound oracle you want to stop.",
+                        "name": "outboundOracleID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/outboundOracle/{outboundOracleID}/subscribe": {
+            "post": {
+                "description": "Subscribe your Smart Contract to a topic. This endpoint should usually only be called by blockchain listeners.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subscriptions"
+                ],
+                "summary": "Create Event",
+                "parameters": [
+                    {
+                        "description": "The content of the subscription",
+                        "name": "subscription",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.SubscriptionBody"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "the ID of the outboundOracle you want to send the subscription to.",
+                        "name": "outboundOracleID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Subscription"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/outboundOracle/{outboundOracleID}/unsubscribe": {
+            "post": {
+                "description": "Unsubscribe your smart contract from a topic. This endpoint should usually only be called by blockchain listeners.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subscriptions"
+                ],
+                "summary": "Unsubscribe from Topic",
+                "parameters": [
+                    {
+                        "description": "The information to identify the unsubscription",
+                        "name": "unsubscription",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.UnsubscriptionBody"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "the ID of the outbound oracle you want to receive the unsubscription.",
+                        "name": "outboundOracleID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/provider/{providerID}": {
             "get": {
                 "description": "Get a provider for registered user.",
@@ -342,6 +524,37 @@ var doc = `{
                 },
                 "private": {
                     "type": "boolean"
+                },
+                "topic": {
+                    "type": "string"
+                }
+            }
+        },
+        "forms.SubscriptionBody": {
+            "type": "object",
+            "properties": {
+                "callback": {
+                    "type": "string"
+                },
+                "filter": {
+                    "type": "string"
+                },
+                "smartContractAddress": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "topic": {
+                    "type": "string"
+                }
+            }
+        },
+        "forms.UnsubscriptionBody": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
                 },
                 "topic": {
                     "type": "string"

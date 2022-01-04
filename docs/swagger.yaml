@@ -18,6 +18,26 @@ definitions:
       topic:
         type: string
     type: object
+  forms.SubscriptionBody:
+    properties:
+      callback:
+        type: string
+      filter:
+        type: string
+      smartContractAddress:
+        type: string
+      token:
+        type: string
+      topic:
+        type: string
+    type: object
+  forms.UnsubscriptionBody:
+    properties:
+      token:
+        type: string
+      topic:
+        type: string
+    type: object
   gorm.DeletedAt:
     properties:
       time:
@@ -176,6 +196,129 @@ info:
   title: Oracle Factory API
   version: "2.0"
 paths:
+  /outboundOracle/{outboundOracleID}/start:
+    post:
+      description: Start the specified outbound oracle.
+      parameters:
+      - description: the ID of the outbound oracle you want to start.
+        in: path
+        name: outboundOracleID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Start an Outbound Oracle
+      tags:
+      - outboundOracles
+  /outboundOracle/{outboundOracleID}/stop:
+    post:
+      description: Unsubscribe your smart contract from a topic.
+      parameters:
+      - description: the ID of the outbound oracle you want to stop.
+        in: path
+        name: outboundOracleID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Unsubscribe from Topic
+      tags:
+      - outboundOracles
+  /outboundOracle/{outboundOracleID}/subscribe:
+    post:
+      description: Subscribe your Smart Contract to a topic. This endpoint should
+        usually only be called by blockchain listeners.
+      parameters:
+      - description: The content of the subscription
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/forms.SubscriptionBody'
+      - description: the ID of the outboundOracle you want to send the subscription
+          to.
+        in: path
+        name: outboundOracleID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Subscription'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Create Event
+      tags:
+      - subscriptions
+  /outboundOracle/{outboundOracleID}/unsubscribe:
+    post:
+      description: Unsubscribe your smart contract from a topic. This endpoint should
+        usually only be called by blockchain listeners.
+      parameters:
+      - description: The information to identify the unsubscription
+        in: body
+        name: unsubscription
+        required: true
+        schema:
+          $ref: '#/definitions/forms.UnsubscriptionBody'
+      - description: the ID of the outbound oracle you want to receive the unsubscription.
+        in: path
+        name: outboundOracleID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Unsubscribe from Topic
+      tags:
+      - subscriptions
   /provider/{providerID}:
     get:
       description: Get a provider for registered user.

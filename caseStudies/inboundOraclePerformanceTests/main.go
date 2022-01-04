@@ -148,8 +148,9 @@ func subscribe(outboundOracleID int, smartContractAddress string) {
 
 func unsubscribe(outboundOracleID int, smartContractAddress string) {
 	params := map[string]interface{}{
-		"Token": "",
-		"Topic": "test-topic",
+		"Token":                "",
+		"Topic":                "test-topic",
+		"SmartContractAddress": smartContractAddress,
 	}
 	json, _ := json.Marshal(params)
 	http.NewRequest("POST", fmt.Sprintf("%soutboundOracles/%d/subscribe", BASE_URL, outboundOracleID), bytes.NewBuffer(json))
@@ -177,8 +178,14 @@ func main() {
 	hyperledgerCreateAssetTest.outputFileName = "hyperledger2Subscription.csv"
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
-	/*ethereumMintTokenTest := &PerformanceTest{
-		outputFileName: "ethereumMintTokenTest.csv",
+	unsubscribe(2, "test-contract")
+	unsubscribe(2, "test-contract2")
+	unsubscribe(2, "test-contract3")
+
+	// test ethereum pub sub oracle
+	subscribe(1, "test-contract3")
+	ethereumPerformanceTest := &PerformanceTest{
+		outputFileName: "ethereum1subscription.csv",
 		oracleEndpoint: "http://localhost:8080/providers/2/events",
 		body:           `{"receiver":"0x40536521353F9f4120A589C9ddDEB6188EF61922","amount":100}`,
 	}

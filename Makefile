@@ -61,12 +61,6 @@ prune-test-setup:
 	docker network prune -f
 	docker container prune -f
 
-register:
-	selenium-side-runner "caseStudies/${TEST_SMART_CONTRACT}/register.side"
-
-create-oracle-template:
-	selenium-side-runner "caseStudies/${TEST_SMART_CONTRACT}/create_smart_contract.side"
-
 create-oracle:
 	echo "Not implemented yet"
 
