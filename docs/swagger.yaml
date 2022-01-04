@@ -1,0 +1,370 @@
+basePath: /
+definitions:
+  forms.AuthBody:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  forms.ProviderBody:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      private:
+        type: boolean
+      topic:
+        type: string
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  models.OutboundOracle:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      dockerContainer:
+        type: string
+      id:
+        type: integer
+      isActive:
+        type: boolean
+      isOnChain:
+        type: boolean
+      pubSubOracleAddress:
+        type: string
+      subscriptions:
+        items:
+          $ref: '#/definitions/models.Subscription'
+        type: array
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+    type: object
+  models.Provider:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      description:
+        type: string
+      events:
+        items:
+          $ref: '#/definitions/models.ProviderEvent'
+        type: array
+      id:
+        type: integer
+      name:
+        type: string
+      private:
+        type: boolean
+      topic:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      userID:
+        type: integer
+    type: object
+  models.ProviderEvent:
+    properties:
+      body:
+        items:
+          type: integer
+        type: array
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      provider:
+        $ref: '#/definitions/models.Provider'
+      providerID:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.Subscription:
+    properties:
+      callback:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      filter:
+        type: string
+      id:
+        type: integer
+      outboundOracle:
+        $ref: '#/definitions/models.OutboundOracle'
+      outboundOracleID:
+        type: integer
+      smartContractAddress:
+        type: string
+      topic:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.User:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  responses.ErrorResponse:
+    properties:
+      body:
+        type: string
+    type: object
+  responses.TokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  routes.ProvidersResponse:
+    properties:
+      providers:
+        items:
+          $ref: '#/definitions/models.Provider'
+        type: array
+    type: object
+  routes.SubscriptionResponse:
+    properties:
+      subscription:
+        $ref: '#/definitions/models.Subscription'
+    type: object
+  routes.SubscriptionsResponse:
+    properties:
+      subscriptions:
+        items:
+          $ref: '#/definitions/models.Subscription'
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is the Oracle Factory server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Oracle Factory API
+  version: "2.0"
+paths:
+  /provider/{providerID}:
+    get:
+      description: Get a provider for registered user.
+      parameters:
+      - description: the ID of the provider you want to retrieve
+        in: path
+        name: providerID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.ProvidersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Get Providers
+      tags:
+      - providers
+  /providers:
+    get:
+      description: Get all providers for registered user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.ProvidersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Get Providers
+      tags:
+      - providers
+    post:
+      description: Create a providers for registered user.
+      parameters:
+      - description: provider to be created
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/forms.ProviderBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.ProvidersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Create Provider
+      tags:
+      - providers
+  /subscription/{subscriptionID}:
+    get:
+      description: Get a single subscription by id for registered user.
+      parameters:
+      - description: the ID of the subscription you want to retrieve.
+        in: path
+        name: subscriptionID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SubscriptionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Get Subscription
+      tags:
+      - subscriptions
+  /subscriptions:
+    get:
+      description: Get all subscriptions for registered user.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SubscriptionsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Get Subscriptions
+      tags:
+      - subscriptions
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user - get access token.
+      parameters:
+      - description: auth to register
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/forms.AuthBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Login User
+      tags:
+      - users
+  /users/signup:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user - get access token in return.
+      parameters:
+      - description: auth to register
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/forms.AuthBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Register User
+      tags:
+      - users
+swagger: "2.0"

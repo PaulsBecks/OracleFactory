@@ -5,11 +5,14 @@ import (
 	"net/http"
 	"strings"
 
+	docs "github.com/PaulsBecks/OracleFactory/docs"
 	"github.com/PaulsBecks/OracleFactory/src/models"
 	"github.com/PaulsBecks/OracleFactory/src/routes"
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -44,10 +47,21 @@ func auth(ctx *gin.Context) {
 	}
 }
 
+// @title           Oracle Factory API
+// @version         2.0
+// @description     This is the Oracle Factory server.
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:8080
+// @BasePath  /
+
 func main() {
 	app := gin.Default()
 	middleware(app)
 	models.InitDB()
+	docs.SwaggerInfo.BasePath = "/"
 
 	app.POST("/users/login", routes.Login)
 	app.POST("/users/signup", routes.Register)
@@ -77,5 +91,8 @@ func main() {
 		authorized.POST("/outboundOracles/:outboundOracleID/start", routes.StartOutboundOracle)
 		authorized.POST("/outboundOracles/:outboundOracleID/stop", routes.StopOutboundOracle)
 	}
+
+	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
 	app.Run()
 }

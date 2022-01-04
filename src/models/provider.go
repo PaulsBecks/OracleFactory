@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/PaulsBecks/OracleFactory/src/lock"
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"github.com/cloudflare/cfssl/log"
 	"gorm.io/gorm"
@@ -36,33 +37,37 @@ func (w *Provider) HandleEvent(body []byte) {
 	log.Info(fmt.Sprintf("Provider %d is handling event %s", w.ID, string(body)))
 	w.CreateProviderEvent(body)
 	//https://github.com/iancoleman/orderedmap
-	eventData, err := utils.GetMapInterfaceFromJson(body)
-	if err != nil {
-		log.Fatalf(err.Error())
-		return
-	}
 	var wg sync.WaitGroup
-	// only one event at a time to keep the order this is important yes?
-	for _, oracle := range GetSubsriptionsMatchingTopic(w.Topic) {
-		log.Info(fmt.Sprintf("Topic %s: found oracle %d interested with topic %s", w.Topic, oracle.ID, oracle.Topic))
-		wg.Add(1)
-		go func(oracle Subscription) {
-			defer wg.Done()
-			oracle.Publish(eventData)
-		}(oracle)
-	}
+	func(body []byte, wg *sync.WaitGroup) {
+		defer lock.PipeLock.Lock()
+		eventData, err := utils.GetMapInterfaceFromJson(body)
+		if err != nil {
+			log.Fatalf(err.Error())
+			return
+		}
+		// only one event at a time to keep the order this is important yes?
+		for _, oracle := range GetSubsriptionsMatchingTopic(w.Topic) {
+			log.Info(fmt.Sprintf("Topic %s: found oracle %d interested with topic %s", w.Topic, oracle.ID, oracle.Topic))
+			wg.Add(1)
+			go func(oracle Subscription) {
+				defer wg.Done()
+				oracle.Publish(eventData)
+			}(oracle)
+		}
 
-	for _, blockchainConnectionOutboundOracle := range GetOnChainOracleConnections() {
-		log.Info(fmt.Sprintf("Oracle %d interested in topic %s", blockchainConnectionOutboundOracle.ID, w.Topic))
-		wg.Add(1)
-		go func(blockchainConnectionOutboundOracle OutboundOracle) {
-			defer wg.Done()
-			blockchainConnectionOutboundOracle.
-				GetBlockchainConnector().
-				CreateOnChainTransaction(blockchainConnectionOutboundOracle.PubSubOracleAddress, w.Topic, eventData)
+		for _, blockchainConnectionOutboundOracle := range GetOnChainOracleConnections() {
+			log.Info(fmt.Sprintf("Oracle %d interested in topic %s", blockchainConnectionOutboundOracle.ID, w.Topic))
+			wg.Add(1)
+			go func(blockchainConnectionOutboundOracle OutboundOracle) {
+				defer wg.Done()
+				blockchainConnectionOutboundOracle.
+					GetBlockchainConnector().
+					CreateOnChainTransaction(blockchainConnectionOutboundOracle.PubSubOracleAddress, w.Topic, eventData)
 
-		}(blockchainConnectionOutboundOracle)
-	}
+			}(blockchainConnectionOutboundOracle)
+		}
+		lock.PipeLock.Unlock()
+	}(body, &wg)
 	wg.Wait()
 }
 

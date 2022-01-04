@@ -103,3 +103,6 @@ hyperledger-oracle-test: docker-network hyperledger-testnet
 hyperledger-install-contracts:
 	sh ./install-oracle-on-hyperledger.sh
 	sh ./install-test-contract.sh
+
+make swagger:
+	swag init --parseDependency --parseDepth 2
