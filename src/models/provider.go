@@ -39,7 +39,7 @@ func (w *Provider) HandleEvent(body []byte) {
 	//https://github.com/iancoleman/orderedmap
 	var wg sync.WaitGroup
 	func(body []byte, wg *sync.WaitGroup) {
-		defer lock.PipeLock.Lock()
+		defer lock.PipeLock.Unlock()
 		eventData, err := utils.GetMapInterfaceFromJson(body)
 		if err != nil {
 			log.Fatalf(err.Error())
@@ -66,7 +66,6 @@ func (w *Provider) HandleEvent(body []byte) {
 
 			}(blockchainConnectionOutboundOracle)
 		}
-		lock.PipeLock.Unlock()
 	}(body, &wg)
 	wg.Wait()
 }
