@@ -17,9 +17,9 @@ sudo chmod +x /usr/local/bin/docker-compose
 sudo apt install golang-go -y
 sudo apt install nodejs -y
 sudo apt install npm -y
-npm install -g truffle
-npm install -g @truffle/hdwallet-provider
+npm install -g truffle -y
+npm install -g @truffle/hdwallet-provider -y
 # install python dependencies
-sudo apt install python3-pip
+sudo apt install python3-pip -y
 pip3 install pandas
 pip3 install matplotlib

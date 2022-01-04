@@ -57,7 +57,7 @@ init-test-setup: docker-network eth-testnet install-eth-contract hyperledger-tes
 init-visual-test-setup: init-test-setup frontend-build frontend-start n8n
 
 prune-test-setup:
-	docker stop $$(docker ps -aq) || $$(true)
+	docker stop $$(docker ps -aq) || $$(true)
 	docker network prune -f
 	docker container prune -f
 
