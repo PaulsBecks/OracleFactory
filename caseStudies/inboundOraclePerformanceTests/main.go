@@ -30,7 +30,7 @@ type PerformanceTestRun struct {
 }
 
 func NewPerformanceTestRun(performanceTest *PerformanceTest, maxEventsParallel int) *PerformanceTestRun {
-	return &PerformanceTestRun{guard: make(chan struct{}, maxEventsParallel), mu: &sync.Mutex{}, totalEvents: 100, test: *performanceTest}
+	return &PerformanceTestRun{guard: make(chan struct{}, maxEventsParallel), mu: &sync.Mutex{}, totalEvents: 20, test: *performanceTest}
 }
 
 type EventMeasurement struct {
@@ -156,12 +156,13 @@ func unsubscribe(outboundOracleID int, smartContractAddress string) {
 }
 
 func main() {
-	repetitions := 2
+	repetitions := 5
+	now := time.Now().UTC()
 
 	// subscribe smart contract to hyperledger provider
 	subscribe(2, "test-contract")
 	hyperledgerCreateAssetTest := &PerformanceTest{
-		outputFileName: "hyperledger1Subscription.csv",
+		outputFileName: fmt.Sprintf("hyperledger1Subscription%s_.csv", now),
 		oracleEndpoint: BASE_URL + "providers/1/events",
 		body:           `{"number":1}`,
 	}
@@ -169,12 +170,12 @@ func main() {
 
 	// subscribe smart contract to hyperledger provider
 	subscribe(2, "test-contract2")
-	hyperledgerCreateAssetTest.outputFileName = "hyperledger2Subscription.csv"
+	hyperledgerCreateAssetTest.outputFileName = fmt.Sprintf("hyperledger2Subscription%s_.csv", now)
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
 	subscribe(2, "test-contract3")
-	hyperledgerCreateAssetTest.outputFileName = "hyperledger2Subscription.csv"
+	hyperledgerCreateAssetTest.outputFileName = fmt.Sprintf("hyperledger3Subscription%s_.csv", now)
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	/*ethereumMintTokenTest := &PerformanceTest{
