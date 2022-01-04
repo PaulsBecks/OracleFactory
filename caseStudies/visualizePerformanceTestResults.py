@@ -9,16 +9,16 @@ def main(file_path):
     plt.xticks(rotation=45)
     plt.title("Boxplot of the throughput of concurrent events")
     plt.suptitle("")
-    plt.savefig(file_path[:-4]+"Throughput.png")
     plt.xlabel("Amount of concurrent events")
     plt.ylabel("Throughput in events/second")
+    plt.savefig(file_path[:-4]+"Throughput.png")
 
     df.boxplot(column="latency", by="parallel events")
     plt.title("Boxplot of the latency of concurrent events")
     plt.suptitle("")
-    plt.savefig(file_path[:-4]+"Latency.png")
-    plt.xlabel("Amount of concurrent events")
     plt.ylabel("Latency in second/event")
+    plt.xlabel("Amount of concurrent events")
+    plt.savefig(file_path[:-4]+"Latency.png")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
