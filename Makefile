@@ -52,7 +52,8 @@ frontend-update: frontend-stop frontend-build frontend-start
 n8n:
 	docker run --detach --rm --name n8n -p 5678:5678 -v ${current_dir}/.n8n:/home/node/.n8n --network=$(network_name) n8nio/n8n
 
-init-test-setup: docker-network eth-testnet hyperledger-testnet oracle-blueprint docker docker-test-start
+#hyperledger-testnet
+init-test-setup: docker-network eth-testnet  oracle-blueprint docker docker-test-start
 
 init-visual-test-setup: init-test-setup frontend-build frontend-start n8n
 
@@ -60,16 +61,6 @@ prune-test-setup:
 	docker stop $$(docker ps -aq) || $$(true)
 	docker network prune -f
 	docker container prune -f
-
-create-oracle:
-	echo "Not implemented yet"
-
-use-case: register create-oracle-template create-oracle
-
-evaluation:
-	echo "Evaluation not implemented yet!"
-
-case-study: init-test-setup install-eth-contract use-case evaluation prune-test-setup
 
 hyperledger-testnet:
 	curl -sSL https://bit.ly/2ysbOFE | bash -s
@@ -92,11 +83,8 @@ performance-test:
 
 setup-and-test: test-setup performance-test
 
-hyperledger-oracle-test: docker-network hyperledger-testnet 
-	
-hyperledger-install-contracts:
-	sh ./install-oracle-on-hyperledger.sh
-	sh ./install-test-contract.sh
-
 make swagger:
 	swag init --parseDependency --parseDepth 2
+
+create-graphics:
+	cd ./caseStudies/; ls inboundOraclePerformanceTests/ | grep "csv" | while read line ; do python3 visualizePerformanceTestResults.py inboundOraclePerformanceTests/"$line"; done
