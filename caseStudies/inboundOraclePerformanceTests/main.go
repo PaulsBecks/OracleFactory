@@ -17,6 +17,7 @@ type PerformanceTest struct {
 	outputFileName string
 	oracleEndpoint string
 	body           string
+	subsciptions   int
 }
 
 type PerformanceTestRun struct {
@@ -99,14 +100,14 @@ func (p *PerformanceTest) runAll(repetitions int) {
 		log.Fatalf("Unable to open %s", p.outputFileName)
 		return
 	}
-	writeToCSV([]string{"latency", "throughput", "parallel events"}, file)
+	writeToCSV([]string{"latency", "throughput", "parallel events", "subscriptions"}, file)
 	defer file.Close()
 	for i := 0; i < repetitions; i++ {
 		for _, maxParallel := range []int{1, 2, 3, 4} { //, 30, 40, 50, 100} {
 			log.Printf("Maximum of events created in parallel %d", maxParallel)
 			performanceTestRun := NewPerformanceTestRun(p, maxParallel)
 			avgLatency, throughput := performanceTestRun.start()
-			writeToCSV([]string{fmt.Sprintf("%f", avgLatency), fmt.Sprintf("%f", throughput), fmt.Sprintf("%d", maxParallel)}, file)
+			writeToCSV([]string{fmt.Sprintf("%f", avgLatency), fmt.Sprintf("%f", throughput), fmt.Sprintf("%d", maxParallel), fmt.Sprintf("%d", p.subsciptions)}, file)
 		}
 	}
 }
@@ -167,25 +168,26 @@ func unsubscribe(outboundOracleID int, smartContractAddress string) {
 
 func main() {
 	repetitions := 5
-	now := time.Now().UTC()
-
 	// subscribe smart contract to hyperledger provider
 	subscribe(2, "test-contract", "Callback")
 	hyperledgerCreateAssetTest := &PerformanceTest{
-		outputFileName: fmt.Sprintf("hyperledger1Subscription%s_.csv", now),
+		outputFileName: "hyperledger1Subscription.csv",
 		oracleEndpoint: BASE_URL + "providers/1/events",
 		body:           `{"number":1}`,
+		subsciptions:   1,
 	}
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
 	subscribe(2, "test-contract2", "Callback")
-	hyperledgerCreateAssetTest.outputFileName = fmt.Sprintf("hyperledger2Subscription%s_.csv", now)
+	hyperledgerCreateAssetTest.outputFileName = "hyperledger2Subscription.csv"
+	hyperledgerCreateAssetTest.subsciptions = 2
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
 	subscribe(2, "test-contract3", "Callback")
-	hyperledgerCreateAssetTest.outputFileName = fmt.Sprintf("hyperledger3Subscription%s_.csv", now)
+	hyperledgerCreateAssetTest.outputFileName = "hyperledger3Subscription.csv"
+	hyperledgerCreateAssetTest.subsciptions = 3
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	unsubscribe(2, "test-contract")
@@ -195,18 +197,21 @@ func main() {
 	// test ethereum pub sub oracle
 	subscribe(1, "0x68697Ed883c1b51d14370991dA756577DDCCBc7A", "integerCallback")
 	ethereumPerformanceTest := &PerformanceTest{
-		outputFileName: fmt.Sprintf("ethereum1subscription%s_.csv", now),
+		outputFileName: "ethereum1subscription%s_.csv",
 		oracleEndpoint: BASE_URL + "providers/1/events",
 		body:           `{"integer":100}`,
+		subsciptions:   2,
 	}
 	ethereumPerformanceTest.runAll(repetitions)
 
 	subscribe(1, "0xe3Fb42873f615fcF8b0Af6e1580A7E35ec04798b", "integerCallback")
-	ethereumPerformanceTest.outputFileName = fmt.Sprintf("ethereum2subscription.%s_.csv", now)
+	ethereumPerformanceTest.outputFileName = "ethereum2subscription.csv"
+	ethereumPerformanceTest.subsciptions = 2
 	ethereumPerformanceTest.runAll(repetitions)
 
 	subscribe(1, "0x6e10CD1cC7c760903afa08FD504c5302a148F490", "integerCallback")
-	ethereumPerformanceTest.outputFileName = fmt.Sprintf("ethereum3subscription.%s_.csv", now)
+	ethereumPerformanceTest.outputFileName = "ethereum3subscription.csv"
+	ethereumPerformanceTest.subsciptions = 3
 	ethereumPerformanceTest.runAll(repetitions)
 
 	unsubscribe(1, "0x68697Ed883c1b51d14370991dA756577DDCCBc7A")
