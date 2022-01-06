@@ -3,12 +3,12 @@ import sys
 import matplotlib.pyplot as plt
 
 file_paths = [
-    "inboundOraclePerformanceTests/hyperledger1Subscription.csv"
-    "inboundOraclePerformanceTests/hyperledger2Subscription.csv"
-    "inboundOraclePerformanceTests/hyperledger3Subscription.csv"
-    "inboundOraclePerformanceTests/ethereum1Subscription.csv"
-    "inboundOraclePerformanceTests/ethereum2Subscription.csv"
-    "inboundOraclePerformanceTests/ethereum3Subscription.csv"
+    "inboundOraclePerformanceTests/hyperledger1Subscription.csv",
+    "inboundOraclePerformanceTests/hyperledger2Subscription.csv",
+    "inboundOraclePerformanceTests/hyperledger3Subscription.csv",
+    "inboundOraclePerformanceTests/ethereum1subscription.csv",
+    "inboundOraclePerformanceTests/ethereum2subscription.csv",
+    "inboundOraclePerformanceTests/ethereum3subscription.csv"
 ]
 
 def read_merged_files(all_files):
@@ -37,21 +37,21 @@ def main():
     plt.xlabel("Amount of concurrent events")
     plt.savefig(file_path[:-4]+"Latency.png")
 
-    df = read_merged_files(file_path[:4])
+    df = read_merged_files(file_paths[:4])
     df = df[df["parallel events"] == 1]
     df.boxplot(column="latency", by="subscriptions")
     plt.title("Boxplot of the artifacts event publishing latency for Hyperledger Fabric subscriptions with one concurrent event")
     plt.suptitle("")
     plt.ylabel("Latency in second/event")
     plt.xlabel("Amount of oracle subscriptions")
-    plt.savefig("inboundOraclePerforamceTests/ethereumSubscriptionsLatency.png")
+    plt.savefig("inboundOraclePerformanceTests/ethereumSubscriptionsLatency.png")
 
     plt.xticks(rotation=45)
     plt.title("Boxplot of the artifacts event publishing throughput for Hyperledger Fabric subscriptions with one concurrent event ")
     plt.suptitle("")
     plt.xlabel("Amount of concurrent events")
     plt.ylabel("Throughput (events/second)")
-    plt.savefig("inboundOraclePerforamceTests/ethereumSubscriptionsThroughput.png")
+    plt.savefig("inboundOraclePerformanceTests/ethereumSubscriptionsThroughput.png")
 
     file_path = file_paths[4]
     df = pandas.read_csv(file_path)
@@ -70,21 +70,21 @@ def main():
     plt.xlabel("Amount of concurrent events")
     plt.savefig(file_path[:-4]+"Latency.png")
     
-    df = read_merged_files(file_path[4:])
+    df = read_merged_files(file_paths[4:])
     df = df[df["parallel events"] == 1]
     df.boxplot(column="latency", by="subscriptions")
     plt.title("Boxplot of the artifacts event publishing latency for Ethereum subscriptions with one concurrent event")
     plt.suptitle("")
     plt.ylabel("Latency in second/event")
     plt.xlabel("Amount of oracle subscriptions")
-    plt.savefig("inboundOraclePerforamceTests/ethereumSubscriptionsLatency.png")
+    plt.savefig("inboundOraclePerformanceTests/ethereumSubscriptionsLatency.png")
 
     plt.xticks(rotation=45)
     plt.title("Boxplot of the artifacts event publishing throughput for Ethereum subscriptions with one concurrent event ")
     plt.suptitle("")
     plt.xlabel("Amount of concurrent events")
     plt.ylabel("Throughput (events/second)")
-    plt.savefig("inboundOraclePerforamceTests/ethereumSubscriptionsThroughput.png")
+    plt.savefig("inboundOraclePerformanceTests/ethereumSubscriptionsThroughput.png")
 
 if __name__ == "__main__":
     main()
