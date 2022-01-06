@@ -200,7 +200,7 @@ func main() {
 		outputFileName: "ethereum1subscription.csv",
 		oracleEndpoint: BASE_URL + "providers/1/events",
 		body:           `{"integer":100}`,
-		subsciptions:   2,
+		subsciptions:   1,
 	}
 	ethereumPerformanceTest.runAll(repetitions)
 
