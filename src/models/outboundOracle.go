@@ -29,12 +29,12 @@ SET EMISSION MODE \"streaming\";
 SET CONNECTION ` + connection + `;
 
 BLOCKS (CURRENT) (CONTINUOUS) {
-	LOG ENTRIES (\"ANY\") (OracleFactory(string kind, string token, string topic, string filter, string callback, address smartContractAddress)) {
+	LOG ENTRIES (\"ANY\") (OracleFactory(string kind, string token, string deferredChoiceID, string topic, string filter, string callback, address smartContractAddress)) {
 		if (kind == \"subscribe\") {
-			EMIT HTTP REQUEST (\"http://pub-sub-oracle:8080/outboundOracles/` + fmt.Sprint(o.ID) + `/subscribe\") (token, topic, filter, callback, smartContractAddress);
+			EMIT HTTP REQUEST (\"http://pub-sub-oracle:8080/outboundOracles/` + fmt.Sprint(o.ID) + `/subscribe\") (token, topic, deferredChoiceID, filter, callback, smartContractAddress);
 		}
 		if (kind == \"unsubscribe\") {
-			EMIT HTTP REQUEST (\"http://pub-sub-oracle:8080/outboundOracles/` + fmt.Sprint(o.ID) + `/unsubscribe\") (token, topic, filter, callback, smartContractAddress);
+			EMIT HTTP REQUEST (\"http://pub-sub-oracle:8080/outboundOracles/` + fmt.Sprint(o.ID) + `/unsubscribe\") (token, topic, deferredChoiceID, filter, callback, smartContractAddress);
 		}
 	}
 }`
