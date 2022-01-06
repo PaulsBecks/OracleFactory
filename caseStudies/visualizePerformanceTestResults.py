@@ -47,6 +47,7 @@ def main():
     plt.savefig("inboundOraclePerformanceTests/hyperledgerSubscriptionsLatency.png")
 
     plt.xticks(rotation=45)
+    df.boxplot(column="throughput", by="subscriptions")
     plt.title("Boxplot of the artifacts event publishing throughput for Hyperledger Fabric subscriptions with one concurrent event ")
     plt.suptitle("")
     plt.xlabel("Amount of concurrent events")
@@ -79,6 +80,7 @@ def main():
     plt.xlabel("Amount of oracle subscriptions")
     plt.savefig("inboundOraclePerformanceTests/ethereumSubscriptionsLatency.png")
 
+    df.boxplot(column="throughput", by="subscriptions")
     plt.xticks(rotation=45)
     plt.title("Boxplot of the artifacts event publishing throughput for Ethereum subscriptions with one concurrent event ")
     plt.suptitle("")
