@@ -9,6 +9,7 @@ import (
 
 type SubscriptionBody struct {
 	Token                string
+	DeferredChoiceID     string
 	Topic                string
 	Filter               string
 	Callback             string

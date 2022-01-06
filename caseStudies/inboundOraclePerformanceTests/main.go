@@ -197,7 +197,7 @@ func main() {
 	// test ethereum pub sub oracle
 	subscribe(1, "0x68697Ed883c1b51d14370991dA756577DDCCBc7A", "integerCallback")
 	ethereumPerformanceTest := &PerformanceTest{
-		outputFileName: "ethereum1subscription%s_.csv",
+		outputFileName: "ethereum1subscription.csv",
 		oracleEndpoint: BASE_URL + "providers/1/events",
 		body:           `{"integer":100}`,
 		subsciptions:   2,
