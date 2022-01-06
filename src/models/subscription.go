@@ -5,6 +5,7 @@ import (
 	"math"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/cloudflare/cfssl/log"
 
@@ -19,9 +20,24 @@ type Subscription struct {
 	OutboundOracle       OutboundOracle
 	Topic                string
 	Filter               string
+	DeferredChoiceID     string
 	Callback             string
 	SmartContractAddress string
 }
+
+type DeferredChoiceConsistency struct {
+	mutexes sync.Map // Zero value is empty and ready for use
+}
+
+func (m *DeferredChoiceConsistency) Lock(key string) func() {
+	value, _ := m.mutexes.LoadOrStore(key, &sync.Mutex{})
+	mtx := value.(*sync.Mutex)
+	mtx.Lock()
+
+	return func() { mtx.Unlock() }
+}
+
+var deferredChoiceConsistency = &DeferredChoiceConsistency{}
 
 func GetSubsriptionsMatchingTopic(topic string) []Subscription {
 	db := utils.DBConnection()
@@ -38,6 +54,9 @@ func (s *Subscription) GetOutboundOracle() *OutboundOracle {
 }
 
 func (s *Subscription) Publish(eventData map[string]interface{}) {
+	unlock := deferredChoiceConsistency.Lock(s.DeferredChoiceID + s.Callback)
+	defer unlock()
+
 	if !s.FilterRulesApply(eventData) {
 		s.GetOutboundOracle().GetBlockchainConnector().CreateTransaction(s.SmartContractAddress, s.Callback, eventData)
 	}

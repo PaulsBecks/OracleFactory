@@ -126,12 +126,13 @@ func computeAverageLatency(eventMeasurements []EventMeasurement) (float64, error
 
 const BASE_URL = "http://localhost:8080/"
 
-func subscribe(outboundOracleID int, smartContractAddress, callbackMethodName string) {
+func subscribe(outboundOracleID int, smartContractAddress, callbackMethodName, deferredChoiceID string) {
 	params := map[string]interface{}{
 		"Token":                "",
 		"Topic":                "test-topic",
 		"Filter":               "",
 		"Callback":             callbackMethodName,
+		"DeferredChoiceID":     deferredChoiceID,
 		"SmartContractAddress": smartContractAddress,
 	}
 	json, _ := json.Marshal(params)
@@ -169,9 +170,9 @@ func unsubscribe(outboundOracleID int, smartContractAddress string) {
 func main() {
 	repetitions := 5
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract", "Callback")
+	subscribe(2, "test-contract", "Callback", "choice1")
 	hyperledgerCreateAssetTest := &PerformanceTest{
-		outputFileName: "hyperledger1Subscription.csv",
+		outputFileName: "hyperledger1SubscriptionSameChoice.csv",
 		oracleEndpoint: BASE_URL + "providers/1/events",
 		body:           `{"number":1}`,
 		subsciptions:   1,
@@ -179,14 +180,36 @@ func main() {
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract2", "Callback")
-	hyperledgerCreateAssetTest.outputFileName = "hyperledger2Subscription.csv"
+	subscribe(2, "test-contract2", "Callback", "choice1")
+	hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionSameChoice.csv"
 	hyperledgerCreateAssetTest.subsciptions = 2
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract3", "Callback")
-	hyperledgerCreateAssetTest.outputFileName = "hyperledger3Subscription.csv"
+	subscribe(2, "test-contract3", "Callback", "choice1")
+	hyperledgerCreateAssetTest.outputFileName = "hyperledger3SubscriptionSameChoice.csv"
+	hyperledgerCreateAssetTest.subsciptions = 3
+	hyperledgerCreateAssetTest.runAll(repetitions)
+
+	unsubscribe(2, "test-contract")
+	unsubscribe(2, "test-contract2")
+	unsubscribe(2, "test-contract3")
+
+	// subscribe smart contract to hyperledger provider
+	subscribe(2, "test-contract", "Callback", "choice1")
+	hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionDifferentChoice.csv"
+	hyperledgerCreateAssetTest.subsciptions = 2
+	hyperledgerCreateAssetTest.runAll(repetitions)
+
+	// subscribe smart contract to hyperledger provider
+	subscribe(2, "test-contract2", "Callback", "choice2")
+	hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionDifferentChoice.csv"
+	hyperledgerCreateAssetTest.subsciptions = 2
+	hyperledgerCreateAssetTest.runAll(repetitions)
+
+	// subscribe smart contract to hyperledger provider
+	subscribe(2, "test-contract3", "Callback", "choice3")
+	hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionDifferentChoice.csv"
 	hyperledgerCreateAssetTest.subsciptions = 3
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
@@ -195,7 +218,7 @@ func main() {
 	unsubscribe(2, "test-contract3")
 
 	// test ethereum pub sub oracle
-	subscribe(1, "0x68697Ed883c1b51d14370991dA756577DDCCBc7A", "integerCallback")
+	subscribe(1, "0x68697Ed883c1b51d14370991dA756577DDCCBc7A", "integerCallback", "choice1")
 	ethereumPerformanceTest := &PerformanceTest{
 		outputFileName: "ethereum1subscription.csv",
 		oracleEndpoint: BASE_URL + "providers/1/events",
@@ -204,12 +227,12 @@ func main() {
 	}
 	ethereumPerformanceTest.runAll(repetitions)
 
-	subscribe(1, "0xe3Fb42873f615fcF8b0Af6e1580A7E35ec04798b", "integerCallback")
+	subscribe(1, "0xe3Fb42873f615fcF8b0Af6e1580A7E35ec04798b", "integerCallback", "choice1")
 	ethereumPerformanceTest.outputFileName = "ethereum2subscription.csv"
 	ethereumPerformanceTest.subsciptions = 2
 	ethereumPerformanceTest.runAll(repetitions)
 
-	subscribe(1, "0x6e10CD1cC7c760903afa08FD504c5302a148F490", "integerCallback")
+	subscribe(1, "0x6e10CD1cC7c760903afa08FD504c5302a148F490", "integerCallback", "choice1")
 	ethereumPerformanceTest.outputFileName = "ethereum3subscription.csv"
 	ethereumPerformanceTest.subsciptions = 3
 	ethereumPerformanceTest.runAll(repetitions)

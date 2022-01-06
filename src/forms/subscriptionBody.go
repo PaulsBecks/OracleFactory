@@ -26,7 +26,7 @@ func (s *SubscriptionBody) Valid() bool {
 }
 
 func (s *SubscriptionBody) CreateSubscription(outboundOracle *models.OutboundOracle) *models.Subscription {
-	return outboundOracle.CreateSubscription(s.Topic, s.Filter, s.Callback, s.SmartContractAddress)
+	return outboundOracle.CreateSubscription(s.Topic, s.Filter, s.DeferredChoiceID, s.Callback, s.SmartContractAddress)
 }
 
 type UnsubscriptionBody struct {

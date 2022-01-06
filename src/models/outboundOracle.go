@@ -117,12 +117,13 @@ func GetOutboundOracleByID(outboundOracleID string) *OutboundOracle {
 	return &outboundOracle
 }
 
-func (o *OutboundOracle) CreateSubscription(topic, filter, callback, smartContractAddress string) *Subscription {
+func (o *OutboundOracle) CreateSubscription(topic, filter, deferredChoiceId, callback, smartContractAddress string) *Subscription {
 	db := utils.DBConnection()
 	subscription := &Subscription{
 		OutboundOracleID:     o.ID,
 		Topic:                topic,
 		Filter:               filter,
+		DeferredChoiceID:     deferredChoiceId,
 		Callback:             callback,
 		SmartContractAddress: smartContractAddress,
 	}
