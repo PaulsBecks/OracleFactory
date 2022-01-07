@@ -175,14 +175,14 @@ func main() {
 	provider1Url := BASE_URL + "providers/2/events"
 	provider2Url := BASE_URL + "providers/3/events"
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract", "Callback", "choice1", "test-topic")
+	//subscribe(2, "test-contract", "Callback", "choice1", "test-topic")
 	hyperledgerCreateAssetTest := &PerformanceTest{
 		outputFileName:  "hyperledger1SubscriptionSameChoice.csv",
 		oracleEndpoints: []string{providerUrl, providerUrl, providerUrl},
 		body:            `{"number":1}`,
 		subsciptions:    1,
 	}
-	hyperledgerCreateAssetTest.runAll(repetitions)
+	/*hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
 	subscribe(2, "test-contract2", "Callback", "choice1", "test-topic")
@@ -199,7 +199,7 @@ func main() {
 	unsubscribe(2, "test-contract", "test-topic")
 	unsubscribe(2, "test-contract2", "test-topic")
 	unsubscribe(2, "test-contract3", "test-topic")
-
+*/
 	// subscribe smart contract to hyperledger provider
 	subscribe(2, "test-contract", "Callback", "choice1", "test-topic")
 	hyperledgerCreateAssetTest.outputFileName = "hyperledger1SubscriptionDifferentChoice.csv"
