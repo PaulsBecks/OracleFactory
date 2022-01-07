@@ -38,8 +38,9 @@ def main():
     plt.suptitle("")
     plt.ylabel("Latency in seconds/event")
     plt.xlabel("Amount of concurrent events")
-    f, ax = plt.subplots(1)
-    ax.set_ylim(ymin=0)
+    #f, ax = plt.subplots(1)
+    #ax.set_ylim(ymin=0)
+    plt.ylim(ymin=0)
     plt.savefig(file_path[:-4]+"Latency.png")
 
     df = read_merged_files(file_paths[:4])
