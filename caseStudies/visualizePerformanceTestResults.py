@@ -82,7 +82,7 @@ def main():
     plt.ylim(ymin=0)
     plt.savefig(file_path[:-4]+"Latency.png")
 
-    df = read_merged_files(file_paths[3:7])
+    df = read_merged_files(file_paths[3:6])
     df = df[df["parallel events"] == 1]
     df.boxplot(column="latency", by="subscriptions")
     plt.title("Boxplot of the artifacts event publishing latency \n for Hyperledger Fabric subscriptions with one concurrent event")
