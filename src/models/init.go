@@ -59,7 +59,7 @@ func initPerformanceTestSetup(db *gorm.DB) {
 		"ws://eth-test-net:8545/",
 	)
 	offChainEthereumConnector.OutboundOracle.StartOracle()
-	fmt.Println(offChainEthereumConnector);
+	fmt.Println(offChainEthereumConnector)
 	offChainHyperledgerConnector := user.CreateHyperledgerConnector(
 		false,
 		"Org1MSP",
@@ -69,11 +69,23 @@ func initPerformanceTestSetup(db *gorm.DB) {
 		key,
 	)
 	offChainHyperledgerConnector.OutboundOracle.StartOracle()
-	fmt.Println(offChainHyperledgerConnector);
+	fmt.Println(offChainHyperledgerConnector)
 	user.CreateProvider(
 		"Test Endpoint",
 		"test-topic",
 		"Endpoint to test the oracles",
+		true,
+	)
+	user.CreateProvider(
+		"Test Endpoint 1",
+		"test-topic1",
+		"Another endpoint to test the oracles",
+		true,
+	)
+	user.CreateProvider(
+		"Test Endpoint 2",
+		"test-topic2",
+		"Another endpoint to test the oracles",
 		true,
 	)
 }

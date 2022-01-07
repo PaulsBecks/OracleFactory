@@ -9,29 +9,31 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 	"time"
 )
 
 type PerformanceTest struct {
-	outputFileName string
-	oracleEndpoint string
-	body           string
-	subsciptions   int
+	outputFileName  string
+	oracleEndpoints []string
+	body            string
+	subsciptions    int
 }
 
 type PerformanceTestRun struct {
-	totalEvents int
-	waitGroup   sync.WaitGroup
-	totalStart  time.Time
-	latencies   []EventMeasurement
-	test        PerformanceTest
-	guard       chan struct{}
-	mu          *sync.Mutex
+	totalEvents       int
+	maxEventsParallel int
+	waitGroup         sync.WaitGroup
+	totalStart        time.Time
+	latencies         []EventMeasurement
+	test              PerformanceTest
+	guard             chan struct{}
+	mu                *sync.Mutex
 }
 
 func NewPerformanceTestRun(performanceTest *PerformanceTest, maxEventsParallel int) *PerformanceTestRun {
-	return &PerformanceTestRun{guard: make(chan struct{}, maxEventsParallel), mu: &sync.Mutex{}, totalEvents: 20, test: *performanceTest}
+	return &PerformanceTestRun{guard: make(chan struct{}, maxEventsParallel), mu: &sync.Mutex{}, totalEvents: 20, test: *performanceTest, maxEventsParallel: maxEventsParallel}
 }
 
 type EventMeasurement struct {
@@ -52,7 +54,7 @@ func writeToCSV(line []string, file *os.File) {
 
 func (p *PerformanceTestRun) timeEvent(worker int) {
 	var jsonStr = []byte(p.test.body)
-	req, _ := http.NewRequest("POST", p.test.oracleEndpoint, bytes.NewBuffer(jsonStr))
+	req, _ := http.NewRequest("POST", p.test.oracleEndpoints[worker%p.maxEventsParallel], bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	start := time.Now()
@@ -93,7 +95,7 @@ func (p *PerformanceTestRun) start() (averageLatency, throughputPerSecond float6
 }
 
 func (p *PerformanceTest) runAll(repetitions int) {
-	log.Printf("Execute performance test for endpoint %s.", p.oracleEndpoint)
+	log.Printf("Execute performance test for endpoints %s.", strings.Join(p.oracleEndpoints, " "))
 	var err error
 	file, err := os.Create(p.outputFileName)
 	if err != nil {
@@ -126,10 +128,10 @@ func computeAverageLatency(eventMeasurements []EventMeasurement) (float64, error
 
 const BASE_URL = "http://localhost:8080/"
 
-func subscribe(outboundOracleID int, smartContractAddress, callbackMethodName, deferredChoiceID string) {
+func subscribe(outboundOracleID int, smartContractAddress, callbackMethodName, deferredChoiceID, topic string) {
 	params := map[string]interface{}{
 		"Token":                "",
-		"Topic":                "test-topic",
+		"Topic":                topic,
 		"Filter":               "",
 		"Callback":             callbackMethodName,
 		"DeferredChoiceID":     deferredChoiceID,
@@ -148,10 +150,10 @@ func subscribe(outboundOracleID int, smartContractAddress, callbackMethodName, d
 	defer resp.Body.Close()
 }
 
-func unsubscribe(outboundOracleID int, smartContractAddress string) {
+func unsubscribe(outboundOracleID int, smartContractAddress, topic string) {
 	params := map[string]interface{}{
 		"Token": "",
-		"Topic": "test-topic",
+		"Topic": topic,
 		//"SmartContractAddress": smartContractAddress,
 	}
 	json, _ := json.Marshal(params)
@@ -169,75 +171,79 @@ func unsubscribe(outboundOracleID int, smartContractAddress string) {
 
 func main() {
 	repetitions := 5
+	providerUrl := BASE_URL + "providers/1/events"
+	provider1Url := BASE_URL + "providers/2/events"
+	provider2Url := BASE_URL + "providers/3/events"
+
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract", "Callback", "choice1")
+	subscribe(2, "test-contract", "Callback", "choice1", "test-topic")
 	hyperledgerCreateAssetTest := &PerformanceTest{
-		outputFileName: "hyperledger1SubscriptionSameChoice.csv",
-		oracleEndpoint: BASE_URL + "providers/1/events",
-		body:           `{"number":1}`,
-		subsciptions:   1,
+		outputFileName:  "hyperledger1SubscriptionSameChoice.csv",
+		oracleEndpoints: []string{providerUrl, providerUrl, providerUrl},
+		body:            `{"number":1}`,
+		subsciptions:    1,
 	}
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract2", "Callback", "choice1")
+	subscribe(2, "test-contract2", "Callback", "choice1", "test-topic")
 	hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionSameChoice.csv"
 	hyperledgerCreateAssetTest.subsciptions = 2
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract3", "Callback", "choice1")
+	subscribe(2, "test-contract3", "Callback", "choice1", "test-topic")
 	hyperledgerCreateAssetTest.outputFileName = "hyperledger3SubscriptionSameChoice.csv"
 	hyperledgerCreateAssetTest.subsciptions = 3
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
-	unsubscribe(2, "test-contract")
-	unsubscribe(2, "test-contract2")
-	unsubscribe(2, "test-contract3")
+	unsubscribe(2, "test-contract", "test-topic")
+	unsubscribe(2, "test-contract2", "test-topic")
+	unsubscribe(2, "test-contract3", "test-topic")
 
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract", "Callback", "choice1")
+	subscribe(2, "test-contract", "Callback", "choice1", "test-topic")
 	hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionDifferentChoice.csv"
 	hyperledgerCreateAssetTest.subsciptions = 2
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract2", "Callback", "choice2")
+	subscribe(2, "test-contract2", "Callback", "choice2", "test-topic1")
 	hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionDifferentChoice.csv"
 	hyperledgerCreateAssetTest.subsciptions = 2
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract3", "Callback", "choice3")
+	subscribe(2, "test-contract3", "Callback", "choice3", "test-topic2")
 	hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionDifferentChoice.csv"
 	hyperledgerCreateAssetTest.subsciptions = 3
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
-	unsubscribe(2, "test-contract")
-	unsubscribe(2, "test-contract2")
-	unsubscribe(2, "test-contract3")
+	unsubscribe(2, "test-contract", "test-topic")
+	unsubscribe(2, "test-contract2", "test-topic1")
+	unsubscribe(2, "test-contract3", "test-topic2")
 
 	// test ethereum pub sub oracle
-	subscribe(1, "0x68697Ed883c1b51d14370991dA756577DDCCBc7A", "integerCallback", "choice1")
+	subscribe(1, "0x68697Ed883c1b51d14370991dA756577DDCCBc7A", "integerCallback", "choice1", "test-topic")
 	ethereumPerformanceTest := &PerformanceTest{
-		outputFileName: "ethereum1subscription.csv",
-		oracleEndpoint: BASE_URL + "providers/1/events",
-		body:           `{"integer":100}`,
-		subsciptions:   1,
+		outputFileName:  "ethereum1subscription.csv",
+		oracleEndpoints: []string{providerUrl, providerUrl, providerUrl},
+		body:            `{"integer":100}`,
+		subsciptions:    1,
 	}
 	ethereumPerformanceTest.runAll(repetitions)
 
-	subscribe(1, "0xe3Fb42873f615fcF8b0Af6e1580A7E35ec04798b", "integerCallback", "choice1")
+	subscribe(1, "0xe3Fb42873f615fcF8b0Af6e1580A7E35ec04798b", "integerCallback", "choice1", "test-topic")
 	ethereumPerformanceTest.outputFileName = "ethereum2subscription.csv"
 	ethereumPerformanceTest.subsciptions = 2
 	ethereumPerformanceTest.runAll(repetitions)
 
-	subscribe(1, "0x6e10CD1cC7c760903afa08FD504c5302a148F490", "integerCallback", "choice1")
+	subscribe(1, "0x6e10CD1cC7c760903afa08FD504c5302a148F490", "integerCallback", "choice1", "test-topic")
 	ethereumPerformanceTest.outputFileName = "ethereum3subscription.csv"
 	ethereumPerformanceTest.subsciptions = 3
 	ethereumPerformanceTest.runAll(repetitions)
 
-	unsubscribe(1, "0x68697Ed883c1b51d14370991dA756577DDCCBc7A")
-	unsubscribe(1, "0xe3Fb42873f615fcF8b0Af6e1580A7E35ec04798b")
-	unsubscribe(1, "0x6e10CD1cC7c760903afa08FD504c5302a148F490")
+	unsubscribe(1, "0x68697Ed883c1b51d14370991dA756577DDCCBc7A", "test-topic")
+	unsubscribe(1, "0xe3Fb42873f615fcF8b0Af6e1580A7E35ec04798b", "test-topic")
+	unsubscribe(1, "0x6e10CD1cC7c760903afa08FD504c5302a148F490", "test-topic")
 }
