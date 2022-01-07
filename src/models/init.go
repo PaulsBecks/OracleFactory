@@ -78,13 +78,13 @@ func initPerformanceTestSetup(db *gorm.DB) {
 	)
 	user.CreateProvider(
 		"Test Endpoint 1",
-		"test-topic1",
+		"second-test-topic",
 		"Another endpoint to test the oracles",
 		true,
 	)
 	user.CreateProvider(
 		"Test Endpoint 2",
-		"test-topic2",
+		"third-test-topic",
 		"Another endpoint to test the oracles",
 		true,
 	)
