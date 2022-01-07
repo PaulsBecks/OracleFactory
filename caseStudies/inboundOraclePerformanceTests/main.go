@@ -202,27 +202,27 @@ func main() {
 	unsubscribe(2, "test-contract3", "test-topic")
 
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract", "Callback", "choice1", "test-topic")
+	subscribe(2, "test-contract", "Callback", "choice1", "second-test-topic")
 	hyperledgerCreateAssetTest.outputFileName = "hyperledger1SubscriptionDifferentChoice.csv"
 	hyperledgerCreateAssetTest.subsciptions = 1
 	hyperledgerCreateAssetTest.oracleEndpoints = []string{providerUrl, provider1Url, provider2Url}
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract2", "Callback", "choice2", "test-topic1")
+	subscribe(2, "test-contract2", "Callback", "choice2", "second-test-topic")
 	hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionDifferentChoice.csv"
 	hyperledgerCreateAssetTest.subsciptions = 2
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract3", "Callback", "choice3", "test-topic2")
+	subscribe(2, "test-contract3", "Callback", "choice3", "third-test-topic")
 	hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionDifferentChoice.csv"
 	hyperledgerCreateAssetTest.subsciptions = 3
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	unsubscribe(2, "test-contract", "test-topic")
-	unsubscribe(2, "test-contract2", "test-topic1")
-	unsubscribe(2, "test-contract3", "test-topic2")
+	unsubscribe(2, "test-contract2", "second-test-topic")
+	unsubscribe(2, "test-contract3", "third-test-topic")
 
 	// test ethereum pub sub oracle
 	subscribe(1, "0x68697Ed883c1b51d14370991dA756577DDCCBc7A", "integerCallback", "choice1", "test-topic")

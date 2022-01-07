@@ -59,8 +59,8 @@ func TestUnsubscription(t *testing.T) {
 	err = oracle.Unsubscribe(transactionContext, "test-topic", "TestContract")
 	require.EqualError(t, err, "Element not in list.")
 
-	err = oracle.Unsubscribe(transactionContext, "test-topic2", "TestContract")
-	require.EqualError(t, err, "No topic test-topic2")
+	err = oracle.Unsubscribe(transactionContext, "third-test-topic", "TestContract")
+	require.EqualError(t, err, "No topic third-test-topic")
 }
 
 func TestPublish(t *testing.T) {
