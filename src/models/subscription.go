@@ -54,12 +54,13 @@ func (s *Subscription) GetOutboundOracle() *OutboundOracle {
 }
 
 func (s *Subscription) Publish(eventData map[string]interface{}) {
-	unlock := deferredChoiceConsistency.Lock(s.DeferredChoiceID + s.Callback)
+	unlock := deferredChoiceConsistency.Lock(s.DeferredChoiceID + s.SmartContractAddress)
 	defer unlock()
-
+        log.Info(fmt.Sprintf("Lock for %s %s", s.DeferredChoiceID, s.SmartContractAddress))
 	if !s.FilterRulesApply(eventData) {
 		s.GetOutboundOracle().GetBlockchainConnector().CreateTransaction(s.SmartContractAddress, s.Callback, eventData)
 	}
+        log.Info(fmt.Sprintf("Unlock for %s %s", s.DeferredChoiceID, s.SmartContractAddress))
 }
 
 func (s *Subscription) FilterRulesApply(event map[string]interface{}) bool {

@@ -170,14 +170,14 @@ func unsubscribe(outboundOracleID int, smartContractAddress string) {
 func main() {
 	repetitions := 5
 	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract", "Callback", "choice1")
+	//subscribe(2, "test-contract", "Callback", "choice1")
 	hyperledgerCreateAssetTest := &PerformanceTest{
 		outputFileName: "hyperledger1SubscriptionSameChoice.csv",
 		oracleEndpoint: BASE_URL + "providers/1/events",
 		body:           `{"number":1}`,
 		subsciptions:   1,
 	}
-	hyperledgerCreateAssetTest.runAll(repetitions)
+	/*hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider
 	subscribe(2, "test-contract2", "Callback", "choice1")
@@ -194,11 +194,11 @@ func main() {
 	unsubscribe(2, "test-contract")
 	unsubscribe(2, "test-contract2")
 	unsubscribe(2, "test-contract3")
-
+*/
 	// subscribe smart contract to hyperledger provider
 	subscribe(2, "test-contract", "Callback", "choice1")
-	hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionDifferentChoice.csv"
-	hyperledgerCreateAssetTest.subsciptions = 2
+	hyperledgerCreateAssetTest.outputFileName = "hyperledger1SubscriptionDifferentChoice.csv"
+	hyperledgerCreateAssetTest.subsciptions = 1
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider

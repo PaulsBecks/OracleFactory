@@ -54,7 +54,7 @@ def main():
     plt.ylabel("Throughput (events/second)")
     plt.savefig("inboundOraclePerformanceTests/hyperledgerSubscriptionsThroughput.png")
 
-    file_path = file_paths[4]
+    file_path = file_paths[3]
     df = pandas.read_csv(file_path)
     df.boxplot(column="throughput", by="parallel events")
     plt.xticks(rotation=45)
