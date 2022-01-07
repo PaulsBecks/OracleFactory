@@ -12,6 +12,9 @@ file_paths = [
     "inboundOraclePerformanceTests/ethereum1subscription.csv",
     "inboundOraclePerformanceTests/ethereum2subscription.csv",
     "inboundOraclePerformanceTests/ethereum3subscription.csv"
+    "inboundOraclePerformanceTests/ethereum1subscriptionDifferentChoice.csv",
+    "inboundOraclePerformanceTests/ethereum2subscriptionDifferentChoice.csv",
+    "inboundOraclePerformanceTests/ethereum3subscriptionDifferentChoice.csv"
 ]
 
 def read_merged_files(all_files):
@@ -38,8 +41,6 @@ def main():
     plt.suptitle("")
     plt.ylabel("Latency in seconds/event")
     plt.xlabel("Amount of concurrent events")
-    #f, ax = plt.subplots(1)
-    #ax.set_ylim(ymin=0)
     plt.ylim(ymin=0)
     plt.savefig(file_path[:-4]+"Latency.png")
 
@@ -50,6 +51,7 @@ def main():
     plt.suptitle("")
     plt.ylabel("Latency in seconds/event")
     plt.xlabel("Amount of oracle subscriptions")
+    plt.ylim(ymin=0)
     plt.savefig("inboundOraclePerformanceTests/hyperledgerSubscriptionsLatency.png")
 
     plt.xticks(rotation=45)
@@ -58,6 +60,7 @@ def main():
     plt.suptitle("")
     plt.xlabel("Amount of concurrent events")
     plt.ylabel("Throughput (events/second)")
+    plt.ylim(ymin=0)
     plt.savefig("inboundOraclePerformanceTests/hyperledgerSubscriptionsThroughput.png")
 
     file_path = file_paths[3]
@@ -68,6 +71,7 @@ def main():
     plt.suptitle("")
     plt.xlabel("Amount of concurrent events")
     plt.ylabel("Throughput (events/second)")
+    plt.ylim(ymin=0)
     plt.savefig(file_path[:-4]+"Throughput.png")
 
     df.boxplot(column="latency", by="parallel events")
@@ -75,6 +79,7 @@ def main():
     plt.suptitle("")
     plt.ylabel("Latency in seconds/event")
     plt.xlabel("Amount of concurrent events")
+    plt.ylim(ymin=0)
     plt.savefig(file_path[:-4]+"Latency.png")
 
     df = read_merged_files(file_paths[3:7])
@@ -84,6 +89,7 @@ def main():
     plt.suptitle("")
     plt.ylabel("Latency in seconds/event")
     plt.xlabel("Amount of oracle subscriptions")
+    plt.ylim(ymin=0)
     plt.savefig("inboundOraclePerformanceTests/hyperledgerSubscriptionsLatency.png")
 
     plt.xticks(rotation=45)
@@ -92,6 +98,7 @@ def main():
     plt.suptitle("")
     plt.xlabel("Amount of concurrent events")
     plt.ylabel("Throughput (events/second)")
+    plt.ylim(ymin=0)
     plt.savefig("inboundOraclePerformanceTests/hyperledgerSubscriptionsThroughput.png")
 
     file_path = file_paths[6]
@@ -102,6 +109,7 @@ def main():
     plt.suptitle("")
     plt.xlabel("Amount of concurrent events")
     plt.ylabel("Throughput (events/second)")
+    plt.ylim(ymin=0)
     plt.savefig(file_path[:-4]+"Throughput.png")
 
     df.boxplot(column="latency", by="parallel events")
@@ -109,15 +117,17 @@ def main():
     plt.suptitle("")
     plt.ylabel("Latency in seconds/event")
     plt.xlabel("Amount of concurrent events")
+    plt.ylim(ymin=0)
     plt.savefig(file_path[:-4]+"Latency.png")
     
-    df = read_merged_files(file_paths[6:])
+    df = read_merged_files(file_paths[6:10])
     df = df[df["parallel events"] == 1]
     df.boxplot(column="latency", by="subscriptions")
     plt.title("Boxplot of the artifacts event publishing latency \n for Ethereum subscriptions with one concurrent event")
     plt.suptitle("")
     plt.ylabel("Latency in seconds/event")
     plt.xlabel("Amount of oracle subscriptions")
+    plt.ylim(ymin=0)
     plt.savefig("inboundOraclePerformanceTests/ethereumSubscriptionsLatency.png")
 
     df.boxplot(column="throughput", by="subscriptions")
@@ -126,6 +136,7 @@ def main():
     plt.suptitle("")
     plt.xlabel("Amount of concurrent events")
     plt.ylabel("Throughput (events/second)")
+    plt.ylim(ymin=0)
     plt.savefig("inboundOraclePerformanceTests/ethereumSubscriptionsThroughput.png")
 
 if __name__ == "__main__":
