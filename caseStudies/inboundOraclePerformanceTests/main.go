@@ -105,7 +105,7 @@ func (p *PerformanceTest) runAll(repetitions int) {
 	writeToCSV([]string{"latency", "throughput", "parallel events", "subscriptions"}, file)
 	defer file.Close()
 	for i := 0; i < repetitions; i++ {
-		for _, maxParallel := range []int{1, 2, 3, 4} { //, 30, 40, 50, 100} {
+		for _, maxParallel := range []int{1, 2, 3} { //, 30, 40, 50, 100} {
 			log.Printf("Maximum of events created in parallel %d", maxParallel)
 			performanceTestRun := NewPerformanceTestRun(p, maxParallel)
 			avgLatency, throughput := performanceTestRun.start()
