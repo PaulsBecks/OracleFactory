@@ -203,8 +203,9 @@ func main() {
 
 	// subscribe smart contract to hyperledger provider
 	subscribe(2, "test-contract", "Callback", "choice1", "test-topic")
-	hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionDifferentChoice.csv"
-	hyperledgerCreateAssetTest.subsciptions = 2
+	hyperledgerCreateAssetTest.outputFileName = "hyperledger1SubscriptionDifferentChoice.csv"
+	hyperledgerCreateAssetTest.subsciptions = 1
+	hyperledgerCreateAssetTest.oracleEndpoints = []string{providerUrl, provider1Url, provider2Url}
 	hyperledgerCreateAssetTest.runAll(repetitions)
 
 	// subscribe smart contract to hyperledger provider

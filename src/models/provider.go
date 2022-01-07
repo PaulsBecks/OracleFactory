@@ -66,6 +66,7 @@ func (w *Provider) HandleEvent(body []byte) {
 
 			}(blockchainConnectionOutboundOracle)
 		}
+		log.Info("Provider is done with forwarding the event")
 	}(body, &wg)
 	wg.Wait()
 }
