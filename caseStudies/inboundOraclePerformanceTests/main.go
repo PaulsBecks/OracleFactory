@@ -175,27 +175,27 @@ func main() {
 	provider1Url := BASE_URL + "providers/2/events"
 	provider2Url := BASE_URL + "providers/3/events"
 	// subscribe smart contract to hyperledger provider
-//	subscribe(2, "test-contract", "Callback", "choice1", "test-topic")
+	//	subscribe(2, "test-contract", "Callback", "choice1", "test-topic")
 	hyperledgerCreateAssetTest := &PerformanceTest{
 		outputFileName:  "hyperledger1SubscriptionSameChoice.csv",
 		oracleEndpoints: []string{providerUrl, providerUrl, providerUrl},
 		body:            `{"number":1}`,
 		subsciptions:    1,
 	}
-/*	hyperledgerCreateAssetTest.runAll(repetitions)
+	/*	hyperledgerCreateAssetTest.runAll(repetitions)
 
-	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract2", "Callback", "choice1", "test-topic")
-	hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionSameChoice.csv"
-	hyperledgerCreateAssetTest.subsciptions = 2
-	hyperledgerCreateAssetTest.runAll(repetitions)
+		// subscribe smart contract to hyperledger provider
+		subscribe(2, "test-contract2", "Callback", "choice1", "test-topic")
+		hyperledgerCreateAssetTest.outputFileName = "hyperledger2SubscriptionSameChoice.csv"
+		hyperledgerCreateAssetTest.subsciptions = 2
+		hyperledgerCreateAssetTest.runAll(repetitions)
 
-	// subscribe smart contract to hyperledger provider
-	subscribe(2, "test-contract3", "Callback", "choice1", "test-topic")
-	hyperledgerCreateAssetTest.outputFileName = "hyperledger3SubscriptionSameChoice.csv"
-	hyperledgerCreateAssetTest.subsciptions = 3
-	hyperledgerCreateAssetTest.runAll(repetitions)
-*/
+		// subscribe smart contract to hyperledger provider
+		subscribe(2, "test-contract3", "Callback", "choice1", "test-topic")
+		hyperledgerCreateAssetTest.outputFileName = "hyperledger3SubscriptionSameChoice.csv"
+		hyperledgerCreateAssetTest.subsciptions = 3
+		hyperledgerCreateAssetTest.runAll(repetitions)
+	*/
 	unsubscribe(2, "test-contract", "test-topic")
 	unsubscribe(2, "test-contract2", "test-topic")
 	unsubscribe(2, "test-contract3", "test-topic")
@@ -246,4 +246,24 @@ func main() {
 	unsubscribe(1, "0x68697Ed883c1b51d14370991dA756577DDCCBc7A", "test-topic")
 	unsubscribe(1, "0xe3Fb42873f615fcF8b0Af6e1580A7E35ec04798b", "test-topic")
 	unsubscribe(1, "0x6e10CD1cC7c760903afa08FD504c5302a148F490", "test-topic")
+
+	// test ethereum pub sub oracle
+	subscribe(1, "0x68697Ed883c1b51d14370991dA756577DDCCBc7A", "integerCallback", "choice1", "test-topic")
+	ethereumPerformanceTest.outputFileName = "ethereum1subscriptionDifferentChoice.csv"
+	ethereumPerformanceTest.subsciptions = 1
+	ethereumPerformanceTest.runAll(repetitions)
+
+	subscribe(1, "0xe3Fb42873f615fcF8b0Af6e1580A7E35ec04798b", "integerCallback", "choice2", "second-test-topic")
+	ethereumPerformanceTest.outputFileName = "ethereum2subscriptionDifferentChoice.csv"
+	ethereumPerformanceTest.subsciptions = 2
+	ethereumPerformanceTest.runAll(repetitions)
+
+	subscribe(1, "0x6e10CD1cC7c760903afa08FD504c5302a148F490", "integerCallback", "choice3", "third-test-topic")
+	ethereumPerformanceTest.outputFileName = "ethereum3subscriptionDifferentChoice.csv"
+	ethereumPerformanceTest.subsciptions = 3
+	ethereumPerformanceTest.runAll(repetitions)
+
+	unsubscribe(1, "0x68697Ed883c1b51d14370991dA756577DDCCBc7A", "test-topic")
+	unsubscribe(1, "0xe3Fb42873f615fcF8b0Af6e1580A7E35ec04798b", "second-test-topic")
+	unsubscribe(1, "0x6e10CD1cC7c760903afa08FD504c5302a148F490", "third-test-topic")
 }
