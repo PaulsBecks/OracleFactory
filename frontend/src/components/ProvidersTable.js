@@ -2,6 +2,7 @@ import React from "react";
 import { Table } from "semantic-ui-react";
 
 export default function ProvidersTable({ providers }) {
+  console.log(providers);
   if (!providers) {
     return "";
   }

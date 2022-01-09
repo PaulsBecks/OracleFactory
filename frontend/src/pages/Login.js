@@ -21,7 +21,7 @@ export default function Login() {
       const response = await postData(url, loginData);
       window.localStorage.setItem(
         "authToken",
-        JSON.stringify({ token: response.token })
+        JSON.stringify({ token: response.Token })
       );
       window.location.reload();
     } catch (err) {
