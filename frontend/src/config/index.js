@@ -6,7 +6,7 @@ const prod = {
   BASE_URL: "http://54.194.28.109:8080",
 };
 
-let config = prod;
+let config = local;
 
 if (process.env.NODE_ENV === "PROD") {
   config = prod;

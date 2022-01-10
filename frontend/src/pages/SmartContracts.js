@@ -1,13 +1,14 @@
 import useSmartContractListeners from "../hooks/useSmartContractListeners";
 import useSmartContractPublishers from "../hooks/useSmartContractPublishers";
 import { Link } from "react-router-dom";
-import { Button, Card } from "semantic-ui-react";
+import { Button, Card, Message } from "semantic-ui-react";
 import SmartContractListenerCard from "../components/SmartContractListenerCard";
 import SmartContractPublisherCard from "../components/SmartContractPublisherCard";
 import useWebServiceListeners from "../hooks/useWebServiceListeners";
 import WebServiceListenerCard from "../components/WebServiceListenerCard";
 import WebServicePublisherCard from "../components/WebServicePublisherCard";
 import useWebServicePublishers from "../hooks/useWebServicePublishers";
+import listenerPublisher from "../images/Listener-To-Publisher.drawio.png";
 
 function SmartContracts() {
   const [smartContractListeners] = useSmartContractListeners();
@@ -27,6 +28,11 @@ function SmartContracts() {
         />
       </div>
       <br />
+      <img src={listenerPublisher} alt="listener to publisher" />
+      <Message info>
+        {" "}
+        Pick a listener or a publisher you want to create an oracle with.
+      </Message>
       <div>
         <h2>Listener</h2>
         <Card.Group>
