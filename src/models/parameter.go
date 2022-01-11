@@ -15,9 +15,9 @@ type EventParameter struct {
 }
 
 func (e *EventParameter) String() string {
-	result := e.Type
+	result := e.Type + " "
 	if e.Indexed {
-		result += " indexed "
+		result += "indexed "
 	}
 	result += e.Name
 	return result
