@@ -44,6 +44,13 @@ function SmartContracts() {
           {webServiceListeners.map((webServiceListener) => (
             <WebServiceListenerCard webServiceListener={webServiceListener} />
           ))}
+          {(!webServiceListeners || webServiceListeners.length === 0) &&
+            (!smartContractListeners ||
+              smartContractListeners.length === 0) && (
+              <Message info>
+                No listeners available. You have to create them first!
+              </Message>
+            )}
         </Card.Group>
       </div>
       <br />
@@ -61,6 +68,12 @@ function SmartContracts() {
               webServicePublisher={webServicePublisher}
             />
           ))}
+          {(!webServicePublishers || webServicePublishers.length === 0) &&
+            (!smartContractPublishers || webServicePublishers.length === 0) && (
+              <Message info>
+                No publishers available. You have to create them first!
+              </Message>
+            )}
         </Card.Group>
       </div>
     </div>
