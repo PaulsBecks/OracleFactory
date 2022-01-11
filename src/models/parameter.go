@@ -15,7 +15,12 @@ type EventParameter struct {
 }
 
 func (e *EventParameter) String() string {
-	return e.Type + " " + e.Name
+	result := e.Type
+	if e.Indexed {
+		result += " indexed "
+	}
+	result += e.Name
+	return result
 }
 
 func GetEventParameterByID(id interface{}) EventParameter {
