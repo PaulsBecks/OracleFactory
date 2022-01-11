@@ -6,8 +6,9 @@ import (
 )
 
 type EventParameterBody struct {
-	Name string
-	Type string
+	Name    string
+	Type    string
+	Indexed bool
 }
 
 // TODO: create real validation

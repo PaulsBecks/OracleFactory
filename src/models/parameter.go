@@ -9,6 +9,7 @@ type EventParameter struct {
 	gorm.Model
 	Name                string
 	Type                string
+	Indexed             bool
 	ListenerPublisherID uint
 	ListenerPublisher   ListenerPublisher
 }

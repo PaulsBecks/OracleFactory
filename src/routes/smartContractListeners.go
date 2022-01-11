@@ -142,6 +142,7 @@ func PostOutboundEventParameters(ctx *gin.Context) {
 	eventParameter := models.EventParameter{
 		Name:                eventParameterBody.Name,
 		Type:                eventParameterBody.Type,
+		Indexed:             eventParameterBody.Indexed,
 		ListenerPublisherID: smartContractListener.ListenerPublisher.ID,
 	}
 	db.Create(&eventParameter)

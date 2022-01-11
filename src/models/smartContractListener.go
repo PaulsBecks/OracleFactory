@@ -39,7 +39,11 @@ func (o *SmartContractListener) GetListenerPublisher() *ListenerPublisher {
 func (o *SmartContractListener) GetEventParametersString() string {
 	eventParameterStrings := []string{}
 	for _, eventParameter := range o.GetListenerPublisher().GetEventParameters() {
-		eventParameterStrings = append(eventParameterStrings, eventParameter.String())
+		eventParameterString := eventParameter.String()
+		if eventParameter.Indexed {
+			eventParameterString = "indexed " + eventParameterString
+		}
+		eventParameterStrings = append(eventParameterStrings, eventParameterString)
 	}
 	fmt.Print(eventParameterStrings)
 	return strings.Join(eventParameterStrings, ", ")
