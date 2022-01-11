@@ -140,7 +140,7 @@ func (s *SmartContractPublisher) CreateEthereumTransaction(user *User, event *Ev
 	inputs := s.GetEventParameterJSON()
 	name := smartContract.EventName
 	abi := "[{\"inputs\":" + inputs + ",\"name\":\"" + name + "\",\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
-	fmt.Println(abi)
+	fmt.Println(abi, time.Now())
 	instance, err := ethereum.NewStore(address, client, abi)
 	if err != nil {
 		return err
@@ -184,7 +184,7 @@ func (s *SmartContractPublisher) CreateEthereumTransaction(user *User, event *Ev
 			return err
 		}
 		latestNonceByAddress.Store(user.ID, nonce+1)
-		fmt.Printf("INFO: tx sent %s\n", tx.Hash().Hex())
+		fmt.Printf("INFO: tx sent %s %s\n", tx.Hash().Hex(), time.Now())
 		return nil
 	}
 	return retry(sendTransaction, 10)
