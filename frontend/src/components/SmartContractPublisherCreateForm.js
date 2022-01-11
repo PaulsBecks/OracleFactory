@@ -295,6 +295,21 @@ export default function SmartContractPublisherForm({
                           setSmartContractPublisher(_smartContractPublisher);
                         }}
                       />
+                      <Form.Checkbox
+                        checked={input.Indexed}
+                        label="Indexed"
+                        name="Indexed"
+                        toggle
+                        onChange={(event, { name, checked }) => {
+                          let _smartContractPublisher = {
+                            ...smartContractPublisher,
+                          };
+                          _smartContractPublisher.smartContractPublishers[
+                            oracleI
+                          ].inputs[i]["Indexed"] = checked;
+                          setSmartContractPublisher(_smartContractPublisher);
+                        }}
+                      />
                     </Form.Group>
                   ))}
                   <div>
