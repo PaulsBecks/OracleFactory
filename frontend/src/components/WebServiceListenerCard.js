@@ -28,7 +28,10 @@ export default function WebServiceListenerCard({
         </div>
         <Card.Header>{webServiceListener.ListenerPublisher.Name}</Card.Header>
         <Card.Meta>
-          {config.BASE_URL + "/webServiceListener/" + webServiceListener.ID}
+          {config.BASE_URL +
+            "/webServiceListeners/" +
+            webServiceListener.ID +
+            "/events"}
         </Card.Meta>
       </Card.Content>
       <Card.Content extra>

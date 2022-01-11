@@ -19,6 +19,10 @@ Inbound Oracles receive some data from an off-chain program and will forward thi
 
 Outbound Oracle go the other way they listen to events created from smart-contracts and will forward the data to an off-chain program, also shown in the graphic below.
 
+![](Inbound-Outbound-Oracle.drawio.png)
+
+You can see, that the oracle always contains a listener and a publisher. If we want to use a smart contract as a provider we need to create an outbound oracle. If the smart contract should be a consumer, we create an inbound oracle.
+
 ## The Software
 The software you will test will try to let no-coders create these oracles, so no-coders can integrate smart contracts into their workflows.
 
