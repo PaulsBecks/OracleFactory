@@ -10,4 +10,5 @@ RUN npm install http-server -g
 
 EXPOSE 3000
 
-CMD ["http-server", "./build/", "-p", "3000", "-a", "0.0.0.0"]
+#CMD ["http-server", "./build/", "-p", "3000", "-a", "0.0.0.0"]
+CMD ["yarn", "start"]

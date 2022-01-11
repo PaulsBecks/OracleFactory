@@ -3,10 +3,10 @@ const local = {
 };
 
 const prod = {
-  BASE_URL: "http://54.194.28.109:8080",
+  BASE_URL: "https://oracles.work/api",
 };
 
-let config = local;
+let config = prod;
 
 if (process.env.NODE_ENV === "PROD") {
   config = prod;
