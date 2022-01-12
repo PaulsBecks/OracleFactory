@@ -75,7 +75,7 @@ function SmartContracts() {
             />
           ))}
         </Card.Group>
-        {(!smartContractPublishers || webServicePublishers.length === 0) && (
+        {(!smartContractPublishers || smartContractPublishers.length === 0) && (
           <Message info>
             No smart contract publishers available. You have to create them
             first!
