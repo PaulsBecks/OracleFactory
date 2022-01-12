@@ -25,14 +25,14 @@ export default function WebServiceCreate() {
           name="Name"
           value={webServiceListener.Name}
           onChange={updateWebServiceListener}
-          placeholder="A name to recognize the oracle"
+          placeholder="A name to recognize the listener"
         />
         <Form.Input
           label="Description"
           name="Description"
           value={webServiceListener.Description}
           onChange={updateWebServiceListener}
-          placeholder="A name to recognize the oracle"
+          placeholder="Explain what the listener does"
         />
         <Form.Field>
           <label>

@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useInboundOracle from "../hooks/useInboundOracle";
-import {
-  Button,
-  Form,
-  Icon,
-  Segment,
-  Table,
-  TableCell,
-} from "semantic-ui-react";
+import { Button, Icon, Segment, Table, TableCell } from "semantic-ui-react";
 import {
   ExampleRequest,
   InboundOracleForm,
@@ -17,7 +10,7 @@ import {
 } from "../components";
 import FilterForm from "../components/FilterForm";
 import { ORACLE_STATUS_STARTED } from "../config/constants";
-import SmartContractPublisherCard from "../components/SmartContractPublisherCard";
+import { BASE_URL } from "../config";
 
 export default function InboundOracleDetail({}) {
   const { inboundOracleID } = useParams();
@@ -78,7 +71,7 @@ export default function InboundOracleDetail({}) {
             )}
             <br />
             <p>
-              <b>Webhook:</b> http://localhost:8080/inboundOracles/
+              <b>Webhook:</b> {BASE_URL}/inboundOracles/
               {inboundOracle.ID}/events
             </p>
             <StartStopButton
