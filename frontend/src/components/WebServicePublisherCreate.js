@@ -26,21 +26,21 @@ export default function WebServicePublisherCreate() {
           name="Name"
           value={webServicePublisher.Name}
           onChange={updateWebServicePublisher}
-          placeholder="A name to recognize the oracle"
+          placeholder="A name to recognize the publisher"
         />
         <Form.Input
           label="Description"
           name="Description"
           value={webServicePublisher.Description}
           onChange={updateWebServicePublisher}
-          placeholder="A name to recognize the oracle"
+          placeholder="Describe what the publisher does"
         />
         <Form.Input
           label="URL"
           name="URL"
           value={webServicePublisher.URL}
           onChange={updateWebServicePublisher}
-          placeholder="A name to recognize the oracle"
+          placeholder="The URL you want to publish to"
         />
         <Form.Field>
           <label>

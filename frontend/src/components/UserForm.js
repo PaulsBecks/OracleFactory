@@ -34,14 +34,12 @@ export default function UserForm({ user, setUser }) {
             name="HyperledgerOrganizationName"
             value={user.HyperledgerOrganizationName}
             onChange={updateUser}
-            placeholder="Your ethereum gateway"
           />
           <Form.Input
             label="Hyperledger Channel"
             name="HyperledgerChannel"
             value={user.HyperledgerChannel}
             onChange={updateUser}
-            placeholder="Your ethereum gateway"
           />
         </Form.Group>
         <Form.TextArea
@@ -49,21 +47,18 @@ export default function UserForm({ user, setUser }) {
           name="HyperledgerConfig"
           value={user.HyperledgerConfig}
           onChange={updateUser}
-          placeholder="Your ethereum gateway"
         />
         <Form.TextArea
           label="Hyperledger Certificate"
           name="HyperledgerCert"
           value={user.HyperledgerCert}
           onChange={updateUser}
-          placeholder="Your ethereum gateway"
         />
         <Form.TextArea
           label="Hyperledger Key"
           name="HyperledgerKey"
           value={user.HyperledgerKey}
           onChange={updateUser}
-          placeholder="Your ethereum gateway"
         />
       </Segment>
     </Form>

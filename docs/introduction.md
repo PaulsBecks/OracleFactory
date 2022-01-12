@@ -43,7 +43,7 @@ We ask you to do some tasks. Before starting please open [our tool](https://orac
 1. Create an account and connect it to the Ethereum
 blockchain with the following credentials:
     * Ethereum Private Key: 0x34567ab1289efb761298732.
-    * Ethereum Gateway: https://infura.com/hfjdksafehuka
+    * Ethereum Gateway: wss://infura.com/ws/v3/hfjdksafehuka
 2. Create a smart contract listener for the
 crypto kitties birth event.
     * Smart Contract Address: 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d
@@ -67,3 +67,4 @@ that will publish data to a workflow to play Glorious on Spotify.
 7. Create an inbound oracle that will let you transfer a cat when you receive an email.
 8. Is the inbound oracle running?
 9. Start the outbound oracle.
+10. Where does the 
