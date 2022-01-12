@@ -26,11 +26,27 @@ function SmartContracts() {
           as={Link}
           to="/smartContracts/create"
         />
+        <Button
+          basic
+          primary
+          icon="plus"
+          content="Create Outbound Oracle"
+          as={Link}
+          to="/outboundOracle/create"
+        />
+        <Button
+          basic
+          primary
+          icon="plus"
+          content="Create Inbound Oracle"
+          as={Link}
+          to="/inboundOracles/create"
+        />
       </div>
       <br />
       <Message info size="huge">
         {" "}
-        Pick a listener or a publisher you want to create an oracle with.
+        Click on a listener or a publisher you want to create an oracle with.
       </Message>
       <div>
         <h2>Smart Contract Listener</h2>
