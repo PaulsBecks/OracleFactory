@@ -67,4 +67,6 @@ that will publish data to a workflow to play Glorious on Spotify.
 7. Create an inbound oracle that will let you transfer a cat when you receive an email.
 8. Is the inbound oracle running?
 9. Start the outbound oracle.
-10. Where does the 
+10. Go to Zapier https://zapier.com and log in with the credentials provided and navigate to the zaps
+11. In zap Test 1, what would you need to change to let the outbound oracle you created in step 6 be used as a provider in this workflow
+12. In zap Test 2, what would you need to change to use the inbound oracle you created in step 7 as a consumer.
