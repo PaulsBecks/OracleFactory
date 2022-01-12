@@ -10,7 +10,7 @@ import {
 } from "../components";
 import FilterForm from "../components/FilterForm";
 import { ORACLE_STATUS_STARTED } from "../config/constants";
-import { BASE_URL } from "../config";
+import config from "../config";
 
 export default function InboundOracleDetail({}) {
   const { inboundOracleID } = useParams();
@@ -71,7 +71,7 @@ export default function InboundOracleDetail({}) {
             )}
             <br />
             <p>
-              <b>Webhook:</b> {BASE_URL}/inboundOracles/
+              <b>Webhook:</b> {config.BASE_URL}/inboundOracles/
               {inboundOracle.ID}/events
             </p>
             <StartStopButton
