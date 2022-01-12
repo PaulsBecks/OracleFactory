@@ -34,15 +34,12 @@ function SmartContracts() {
         Pick a listener or a publisher you want to create an oracle with.
       </Message>
       <div>
-        <h2>Listener</h2>
+        <h2>Smart Contract Listener</h2>
         <Card.Group>
           {smartContractListeners.map((smartContractListener) => (
             <SmartContractListenerCard
               smartContractListener={smartContractListener}
             />
-          ))}
-          {webServiceListeners.map((webServiceListener) => (
-            <WebServiceListenerCard webServiceListener={webServiceListener} />
           ))}
           {(!webServiceListeners || webServiceListeners.length === 0) &&
             (!smartContractListeners ||
@@ -52,28 +49,52 @@ function SmartContracts() {
               </Message>
             )}
         </Card.Group>
+
+        <br />
+        <br />
+        <h2>Web Service Listener</h2>
+        <Card.Group>
+          {webServiceListeners.map((webServiceListener) => (
+            <WebServiceListenerCard webServiceListener={webServiceListener} />
+          ))}
+        </Card.Group>
+        {(!webServiceListeners || webServiceListeners.length === 0) && (
+          <Message info>
+            No listeners available. You have to create them first!
+          </Message>
+        )}
       </div>
       <br />
       <br />
       <div>
-        <h2>Publisher</h2>
+        <h2>Smart Contract Publisher</h2>
         <Card.Group>
           {smartContractPublishers.map((smartContractPublisher) => (
             <SmartContractPublisherCard
               smartContractPublisher={smartContractPublisher}
             />
           ))}
+        </Card.Group>
+        {(!smartContractPublishers || webServicePublishers.length === 0) && (
+          <Message info>
+            No smart contract publishers available. You have to create them
+            first!
+          </Message>
+        )}
+        <br />
+        <br />
+        <h2>Web Service Publisher</h2>
+        <Card.Group>
           {webServicePublishers.map((webServicePublisher) => (
             <WebServicePublisherCard
               webServicePublisher={webServicePublisher}
             />
           ))}
-          {(!webServicePublishers || webServicePublishers.length === 0) &&
-            (!smartContractPublishers || webServicePublishers.length === 0) && (
-              <Message info>
-                No publishers available. You have to create them first!
-              </Message>
-            )}
+          {(!webServicePublishers || webServicePublishers.length === 0) && (
+            <Message info>
+              No service publishers available. You have to create them first!
+            </Message>
+          )}
         </Card.Group>
       </div>
     </div>
