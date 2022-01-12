@@ -28,8 +28,7 @@ function SmartContracts() {
         />
       </div>
       <br />
-      <img src={listenerPublisher} alt="listener to publisher" />
-      <Message info>
+      <Message info size="huge">
         {" "}
         Pick a listener or a publisher you want to create an oracle with.
       </Message>
@@ -75,7 +74,7 @@ function SmartContracts() {
             />
           ))}
         </Card.Group>
-        {(!smartContractPublishers || webServicePublishers.length === 0) && (
+        {(!smartContractPublishers || smartContractPublishers.length === 0) && (
           <Message info>
             No smart contract publishers available. You have to create them
             first!
