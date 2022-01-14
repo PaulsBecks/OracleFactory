@@ -13,6 +13,7 @@ def main(file_path):
     plt.xlabel("Amount of concurrent events")
     plt.ylabel("Throughput (events/second)")
     plt.ylim(ymin=0)
+    plt.tight_layout()
     plt.savefig(file_path[:-4]+"Throughput.png")
 
     df.boxplot(column="latency", by="parallel events")
