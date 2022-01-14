@@ -165,22 +165,25 @@ func (s *SmartContractPublisher) CreateEthereumTransaction(user *User, event *Ev
 	defer unlock()
 
 	sendTransaction := func() error {
+		fmt.Printf("INFO: start prepare transaction %s\n", time.Now())
+
 		fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
 		nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
 		if err != nil {
 			return err
 		}
 		cachedNonce, nonceFound := latestNonceByAddress.Load(user.ID)
-		if !nonceFound && cachedNonce != nil && nonce < cachedNonce.(uint64) {
+		fmt.Printf("INFO: nonce found %d %d %s\n", nonce, cachedNonce, time.Now())
+
+		if nonceFound && cachedNonce != nil && nonce < cachedNonce.(uint64) {
 			nonce = cachedNonce.(uint64)
 		}
-		if err != nil {
-			log.Fatal(err)
-		}
+		fmt.Printf("INFO: nonce found %d %d %s\n", nonce, cachedNonce, time.Now())
 		auth.Nonce = big.NewInt(int64(nonce))
-
+		fmt.Printf("INFO: send transaction %s\n", time.Now())
 		tx, err := instance.StoreTransactor.Contract.Transact(auth, name, parameters...)
 		if err != nil {
+			fmt.Printf("INFO: error while sending transaction %s %s\n", err.Error(), time.Now())
 			return err
 		}
 		latestNonceByAddress.Store(user.ID, nonce+1)
