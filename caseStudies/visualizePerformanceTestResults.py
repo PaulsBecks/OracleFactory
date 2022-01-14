@@ -1,12 +1,14 @@
 import pandas
 import sys
 import matplotlib.pyplot as plt
+import matplotlib
+
+matplotlib.rcParams.update({'font.size': 22})
 
 def main(file_path):
     df = pandas.read_csv(file_path)
     df.boxplot(column="throughput", by="parallel events")
-    plt.xticks(rotation=45)
-    plt.title("Boxplot of the throughput by concurrent events")
+    plt.title("Boxplot of the artifacts event publishing throughput \n with one subscription")
     plt.suptitle("")
     plt.xlabel("Amount of concurrent events")
     plt.ylabel("Throughput (events/second)")
