@@ -54,7 +54,7 @@ n8n:
 	docker run --detach --rm --name n8n -p 5678:5678 -v ${current_dir}/.n8n:/home/node/.n8n --network=$(network_name) n8nio/n8n
 
 #hyperledger-testnet
-init-test-setup: docker-network eth-testnet oracle-blueprint docker docker-test-start
+init-test-setup: docker-network eth-testnet hyperledger-testnet oracle-blueprint docker docker-test-start
 
 init-visual-test-setup: init-test-setup frontend-build frontend-start n8n
 
