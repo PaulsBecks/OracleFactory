@@ -3,7 +3,7 @@ import sys
 import matplotlib.pyplot as plt
 import matplotlib
 
-matplotlib.rcParams.update({'font.size': 22})
+matplotlib.rcParams.update({'font.size': 18})
 
 def main(file_path):
     df = pandas.read_csv(file_path)
