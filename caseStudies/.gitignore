@@ -1,4 +1,3 @@
-inboundOraclePerformanceTests
-outboundOraclePerformanceTests
-*.csv
+inboundOraclePerformanceTests/inboundOraclePerformanceTests/
+outboundOraclePerformanceTests/outboundOraclePerformanceTests
 venv/
