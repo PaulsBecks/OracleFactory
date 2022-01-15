@@ -60,7 +60,8 @@ function SmartContracts() {
             (!smartContractListeners ||
               smartContractListeners.length === 0) && (
               <Message info>
-                No listeners available. You have to create them first!
+                No listeners available. You have to{" "}
+                <Link to="/smartContracts/create">create them first here</Link>!
               </Message>
             )}
         </Card.Group>
@@ -75,7 +76,8 @@ function SmartContracts() {
         </Card.Group>
         {(!webServiceListeners || webServiceListeners.length === 0) && (
           <Message info>
-            No listeners available. You have to create them first!
+            No listeners available. You have to{" "}
+            <Link to="/smartContracts/create">create them first here</Link>!
           </Message>
         )}
       </div>
@@ -92,8 +94,8 @@ function SmartContracts() {
         </Card.Group>
         {(!smartContractPublishers || smartContractPublishers.length === 0) && (
           <Message info>
-            No smart contract publishers available. You have to create them
-            first!
+            No smart contract publishers available. You have to{" "}
+            <Link to="/smartContracts/create">create them first here</Link>!
           </Message>
         )}
         <br />
@@ -107,7 +109,8 @@ function SmartContracts() {
           ))}
           {(!webServicePublishers || webServicePublishers.length === 0) && (
             <Message info>
-              No service publishers available. You have to create them first!
+              No service publishers available. You have to{" "}
+              <Link to="/smartContracts/create">create them first here</Link>!
             </Message>
           )}
         </Card.Group>
