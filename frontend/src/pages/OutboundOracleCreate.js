@@ -30,7 +30,10 @@ export default function OutboundOracleCreate() {
     return (
       <div>
         <h1>Create Outbound Oracle</h1>
-        <Message>Choose a Listener</Message>
+        <Message>
+          Choose a smart contract listener or{" "}
+          <Link to="/smartContracts/create">create one here</Link>
+        </Message>
         <Card.Group>
           {smartContractListeners.map((smartContractListener) => (
             <SmartContractListenerCard
@@ -63,7 +66,10 @@ export default function OutboundOracleCreate() {
     return (
       <div>
         <h1>Create Outbound Oracle</h1>
-        <Message>Choose a Publisher</Message>
+        <Message>
+          Choose a web service publisher or{" "}
+          <Link to="/smartContracts/create">create one here</Link>
+        </Message>
         <Card.Group>
           {webServicePublishers.map((webServicePublisher) => (
             <WebServicePublisherCard

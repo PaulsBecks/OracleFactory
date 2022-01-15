@@ -25,8 +25,9 @@ function Home() {
       <br />
       {(!user || !user.EthereumPrivateKey || !user.EthereumAddress) && (
         <Message warning>
-          You did not yet complete your ethereum connection settings. You have
-          to enter your credentials before you can create oracles.
+          You did not yet complete your{" "}
+          <Link to="/settings">ethereum connection settings</Link>. You have to
+          enter your credentials before you can create oracles.
         </Message>
       )}
       {outboundOracles && outboundOracles.length > 0 && (

@@ -29,7 +29,10 @@ export default function InboundOracleCreate() {
     return (
       <div>
         <h1>Create Inbound Oracle</h1>
-        <Message>Choose a Listener</Message>
+        <Message>
+          Choose a web service listener or{" "}
+          <Link to="/smartContracts/create">create one here</Link>
+        </Message>
         <Card.Group>
           {webServiceListeners.map((webServiceListener) => (
             <WebServiceListenerCard
@@ -60,7 +63,10 @@ export default function InboundOracleCreate() {
     return (
       <div>
         <h1>Create Inbound Oracle</h1>
-        <Message>Choose a Publisher</Message>
+        <Message>
+          Choose a smart contract publisher or{" "}
+          <Link to="/smartContracts/create">create one here</Link>
+        </Message>
         <Card.Group>
           {smartContractPublishers.map((smartContractPublisher) => (
             <SmartContractPublisherCard
