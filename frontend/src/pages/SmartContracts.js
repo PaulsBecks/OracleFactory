@@ -32,7 +32,7 @@ function SmartContracts() {
           icon="plus"
           content="Create Outbound Oracle"
           as={Link}
-          to="/outboundOracle/create"
+          to="/outboundOracles/create"
         />
         <Button
           basic
