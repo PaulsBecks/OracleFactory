@@ -60,7 +60,7 @@ func writeToCSV(line []string, file *os.File) {
 	}
 }
 
-func sendRequestToInboundOracle(endpoint string, body []byte) {
+func sendRequestToOutboundOracle(endpoint string, body []byte) {
 	req, _ := http.NewRequest("POST", endpoint, bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
@@ -91,7 +91,7 @@ func (p *PerformanceTestRun) timeEvent(worker int) {
 		workerID: worker,
 	}
 	p.mu.Unlock()
-	sendRequestToInboundOracle(p.test.oracleEndpoint, jsonStr)
+	sendRequestToOutboundOracle(p.test.oracleEndpoint, jsonStr)
 	fmt.Println(fmt.Sprintf("New event created %d", worker))
 }
 
@@ -187,23 +187,12 @@ func computeAverageLatency(eventMeasurements []EventMeasurement) (float64, error
 func main() {
 	repetitions := 10
 	startServer()
-	hyperledgerCreateAssetTest := &PerformanceTest{
-		outputFileName:  "hyperledgerCreateAssetTest.csv",
-		oracleEndpoint:  "http://localhost:8080/webServiceListeners/1/events",
-		body:            `{"ID":"1","Color":"green", "Size":"m", "Owner":"me", "AppraisedValue":1}`,
-		keyVariableName: "ID",
-	}
-	hyperledgerCreateAssetTest.runAll(repetitions)
-	ethereumMintTokenTest := &PerformanceTest{
-		outputFileName:  "ethereumTransferTokenTest.csv",
-		oracleEndpoint:  "http://localhost:8080/webServiceListeners/3/events",
+	test := &PerformanceTest{
+		outputFileName:  "test.csv",
+		oracleEndpoint:  "http://localhost:8080/outboundOracles/2/events",
 		body:            `{"receiver":"0x40536521353F9f4120A589C9ddDEB6188EF61922","amount":0}`,
 		keyVariableName: "amount",
 	}
-
-	//sendRequestToInboundOracle("http://localhost:8080/webServiceListeners/2/events", []byte(`{"receiver":"0x40536521353F9f4120A589C9ddDEB6188EF61922","amount":100000}`))
-
-	ethereumMintTokenTest.runAll(repetitions)
-
+	test.runAll(repetitions)
 	stopServer()
 }
