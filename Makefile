@@ -6,16 +6,16 @@ TEST_SMART_CONTRACT=${smart_contract}
 all: docker-network eth-testnet eth-test-contract n8n
 
 docker:
-	docker build -t "oracle_factory" .
+	docker build -t "paulsbecks/pub-sub-oracle" .
 
 docker-start:
-	docker run -p 8080:8080 -d --name oracle-factory --network=$(network_name) --add-host=host.docker.internal:host-gateway -v /var/run/docker.sock:/var/run/docker.sock oracle_factory
+	docker run -p 8080:8080 -d --name oracle-factory --network=$(network_name) --add-host=host.docker.internal:host-gateway -v /var/run/docker.sock:/var/run/docker.sock paulsbecks/pub-sub-oracle
 
 docker-test-start:
-	docker run -p 8080:8080 -d --name oracle-factory --network=$(network_name) --add-host=host.docker.internal:host-gateway --env ENV=PERFORMANCE_TEST -v /var/run/docker.sock:/var/run/docker.sock oracle_factory
+	docker run -p 8080:8080 -d --name oracle-factory --network=$(network_name) --add-host=host.docker.internal:host-gateway --env ENV=PERFORMANCE_TEST -v /var/run/docker.sock:/var/run/docker.sock paulsbecks/pub-sub-oracle
 
 docker-stop:
-	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="oracle_factory" --format="{{.ID}}"))
+	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="paulsbecks/pub-sub-oracle" --format="{{.ID}}"))
 
 docker-update: docker-stop docker docker-start
 
@@ -40,13 +40,13 @@ fmt:
 	go fmt ./...
 
 frontend-build:
-	cd ./frontend; docker build -t "oracle_factory_frontend" .; cd ..
+	cd ./frontend; docker build -t "paulsbecks/pub-sub-oracle_frontend" .; cd ..
 
 frontend-start:
-	docker run --detach -p 3000:3000 --network=$(network_name) --name oracle-factory-frontend oracle_factory_frontend
+	docker run --detach -p 3000:3000 --network=$(network_name) --name oracle-factory-frontend paulsbecks/pub-sub-oracle_frontend
 
 frontend-stop:
-	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="oracle_factory_frontend" --format="{{.ID}}"))
+	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="paulsbecks/pub-sub-oracle_frontend" --format="{{.ID}}"))
 
 frontend-update: frontend-stop frontend-build frontend-start
 
