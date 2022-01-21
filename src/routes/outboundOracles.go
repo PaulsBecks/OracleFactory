@@ -79,6 +79,16 @@ func DeleteOutboundOracle(ctx *gin.Context) {
 	ctx.JSON(http.StatusNotImplemented, gin.H{"body": "Hi there, deletion is not implemented yet!"})
 }
 
+// StartOuboundOracle godoc
+// @Summary      Start an Outbound Oracle
+// @Description  Start the specified outbound oracle. This will be called from the frontend, when a user wants to use an oracle for a blockchain conenction.
+// @Tags         outboundOracles
+// @Param		 outboundOracleID path int true "the ID of the outbound oracle you want to start."
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /outboundOracles/{outboundOracleID}/start [post]
 func StartOutboundOracle(ctx *gin.Context) {
 	id := ctx.Param("outboundOracleId")
 	outboundOracle, err := models.GetOutboundOracleById(id)
@@ -95,6 +105,16 @@ func StartOutboundOracle(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"msg": "Oracle got started successfully."})
 }
 
+// StopOutboundOracle godoc
+// @Summary      Stop an outbound oracle
+// @Description  Stop the specified outbound oracle. This will be called from the frontend, when a user wants to stop an oracle for a blockchain conenction.
+// @Tags         outboundOracles
+// @Param		 outboundOracleID path int true "the ID of the outbound oracle you want to stop."
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /outboundOracles/{outboundOracleID}/stop [post]
 func StopOutboundOracle(ctx *gin.Context) {
 	id := ctx.Param("outboundOracleId")
 	outboundOracle, err := models.GetOutboundOracleById(id)

@@ -1,0 +1,146 @@
+basePath: /
+definitions:
+  forms.AuthBody:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  responses.ErrorResponse:
+    properties:
+      body:
+        type: string
+    type: object
+  responses.TokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is the Oracle Factory server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Oracle Factory API
+  version: "2.0"
+paths:
+  /outboundOracles/{outboundOracleID}/start:
+    post:
+      description: Start the specified outbound oracle. This will be called from the
+        frontend, when a user wants to use an oracle for a blockchain conenction.
+      parameters:
+      - description: the ID of the outbound oracle you want to start.
+        in: path
+        name: outboundOracleID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Start an Outbound Oracle
+      tags:
+      - outboundOracles
+  /outboundOracles/{outboundOracleID}/stop:
+    post:
+      description: Stop the specified outbound oracle. This will be called from the
+        frontend, when a user wants to stop an oracle for a blockchain conenction.
+      parameters:
+      - description: the ID of the outbound oracle you want to stop.
+        in: path
+        name: outboundOracleID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Stop an outbound oracle
+      tags:
+      - outboundOracles
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user - get access token.
+      parameters:
+      - description: auth to register
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/forms.AuthBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Login User
+      tags:
+      - users
+  /users/signup:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user - get access token in return.
+      parameters:
+      - description: auth to register
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/forms.AuthBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Register User
+      tags:
+      - users
+swagger: "2.0"

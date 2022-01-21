@@ -50,6 +50,17 @@ func UpdateCurrentUser(ctx *gin.Context) {
 	db.Save(&user)
 }
 
+// Login godoc
+// @Summary      Login User
+// @Description  Login a user - get access token.
+// @Tags         users
+// @Param		 auth body forms.AuthBody true "auth to register"
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  responses.TokenResponse
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /users/login [post]
 func Login(ctx *gin.Context) {
 
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
@@ -83,6 +94,17 @@ func Login(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"token": token})
 }
 
+// Register godoc
+// @Summary      Register User
+// @Description  Register a new user - get access token in return.
+// @Tags         users
+// @Accept       json
+// @Param		 auth body forms.AuthBody true "auth to register"
+// @Produce      json
+// @Success      200  {object}  responses.TokenResponse
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /users/signup [post]
 func Register(ctx *gin.Context) {
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
 	if err != nil {
