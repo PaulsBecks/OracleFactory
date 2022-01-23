@@ -75,7 +75,7 @@ To run the visual test scenarios, where you need the GUI, you have to first setu
 make init-visual-test-setup
 ```
 
-Now you have a running ethereum blockchain and hyperledger fabric blockchain with test smart contracts installed. Also an n8n server is running for you to create workflows with. At http://localhost:7890
+Now you have a running ethereum blockchain and hyperledger fabric blockchain with test smart contracts installed. Also an n8n server is running for you to create workflows with. At http://localhost:5678
 
 
 If you want to just run the performance test, run
