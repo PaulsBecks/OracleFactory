@@ -1,7 +1,7 @@
 if [ -z ${1+x} ]; then
     echo "Backend base url not set, please run the script as: sh run_docker_containers.sh <Backend_URL> ; (e.g. sh run_docker_containers.sh http://127.0.0.1:8080)"
     return
-done;
+fi;
 
 docker pull paulsbecks/pub-sub-oracle 
 docker pull paulsbecks/pub-sub-oracle-frontend 
