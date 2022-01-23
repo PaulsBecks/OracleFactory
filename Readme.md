@@ -66,3 +66,32 @@ To update the swagger documentation run
 ```
 swagg init
 ```
+
+## Running Testscenarios
+
+To run the visual test scenarios, where you need the GUI, you have to first setup the test environment:
+
+```
+make init-visual-test-setup
+```
+
+Now you have a running ethereum blockchain and hyperledger fabric blockchain with test smart contracts installed. Also an n8n server is running for you to create workflows with. At http://localhost:7890
+
+
+If you want to just run the performance test, run
+
+```
+make init-test-setup
+```
+
+or if some docker already, you have to cleanup first and re run it with
+
+```
+make test-setup
+```
+
+Next, to execute the tests run
+
+```
+make performance-test
+```
