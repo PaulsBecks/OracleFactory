@@ -42,14 +42,14 @@ func HandleSmartContractEvent(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
 		return
 	}
-	fmt.Println(smartContractProvider)
 	for _, outboundSubscription := range smartContractProvider.OutboundSubscriptions {
 		fmt.Println(outboundSubscription)
 		event := models.CreateEvent(data, outboundSubscription.GetSubscription().ID)
 		event.ParseEventValues(bodyData, outboundSubscription.GetSmartContractProvider().ProviderConsumerID)
-
-		webServiceConsumer := outboundSubscription.GetWebServiceConsumer()
-		webServiceConsumer.Publish(*event)
+		if outboundSubscription.GetSubscription().CheckInput(event) {
+			webServiceConsumer := outboundSubscription.GetWebServiceConsumer()
+			webServiceConsumer.Publish(*event)
+		}
 	}
 }
 

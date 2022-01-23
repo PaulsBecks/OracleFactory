@@ -65,7 +65,8 @@ func (e *Event) ParseBody() ([]interface{}, error) {
 func (e *Event) GetEventValueByParameterName(eventParameterID uint) string {
 	db := utils.DBConnection()
 	var eventValue EventValue
-	db.Find(&eventValue, "event_id = ? AND event_parameter_id", eventParameterID)
+	db.Find(&eventValue, "event_parameter_id = ?", eventParameterID)
+	fmt.Println(eventValue.Value, eventParameterID)
 	return eventValue.Value
 }
 

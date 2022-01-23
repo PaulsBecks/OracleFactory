@@ -34,7 +34,7 @@ func (o *Subscription) CreateEvent(eventJson []byte) *Event {
 func (o *Subscription) CheckInput(event *Event) bool {
 	parameterFilters := o.GetParameterFilters()
 	for _, parameterFilter := range parameterFilters {
-		value := event.GetEventValueByParameterName(parameterFilter.ID)
+		value := event.GetEventValueByParameterName(parameterFilter.GetEventParameter().ID)
 		if valid := parameterFilter.Check(value); !valid {
 			return false
 		}
