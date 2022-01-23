@@ -1,20 +1,19 @@
-import useSmartContractListeners from "../hooks/useSmartContractListeners";
-import useSmartContractPublishers from "../hooks/useSmartContractPublishers";
+import useSmartContractProviders from "../hooks/useSmartContractProviders";
+import useSmartContractConsumers from "../hooks/useSmartContractConsumers";
 import { Link } from "react-router-dom";
 import { Button, Card, Message } from "semantic-ui-react";
-import SmartContractListenerCard from "../components/SmartContractListenerCard";
-import SmartContractPublisherCard from "../components/SmartContractPublisherCard";
-import useWebServiceListeners from "../hooks/useWebServiceListeners";
-import WebServiceListenerCard from "../components/WebServiceListenerCard";
-import WebServicePublisherCard from "../components/WebServicePublisherCard";
-import useWebServicePublishers from "../hooks/useWebServicePublishers";
-import listenerPublisher from "../images/Listener-To-Publisher.drawio.png";
+import SmartContractProviderCard from "../components/SmartContractProviderCard";
+import SmartContractConsumerCard from "../components/SmartContractConsumerCard";
+import useWebServiceProviders from "../hooks/useWebServiceProviders";
+import WebServiceProviderCard from "../components/WebServiceProviderCard";
+import WebServiceConsumerCard from "../components/WebServiceConsumerCard";
+import useWebServiceConsumers from "../hooks/useWebServiceConsumers";
 
 function SmartContracts() {
-  const [smartContractListeners] = useSmartContractListeners();
-  const [smartContractPublishers] = useSmartContractPublishers();
-  const [webServiceListeners] = useWebServiceListeners();
-  const [webServicePublishers] = useWebServicePublishers();
+  const [smartContractProviders] = useSmartContractProviders();
+  const [smartContractConsumers] = useSmartContractConsumers();
+  const [webServiceProviders] = useWebServiceProviders();
+  const [webServiceConsumers] = useWebServiceConsumers();
   return (
     <div>
       <div>
@@ -22,7 +21,7 @@ function SmartContracts() {
           basic
           primary
           icon="plus"
-          content="Create Publisher or Listener"
+          content="Create Consumer or Provider"
           as={Link}
           to="/smartContracts/create"
         />
@@ -30,37 +29,38 @@ function SmartContracts() {
           basic
           primary
           icon="plus"
-          content="Create Outbound Oracle"
+          content="Create Outbound Subscription"
           as={Link}
-          to="/outboundOracles/create"
+          to="/outboundSubscriptions/create"
         />
         <Button
           basic
           primary
           icon="plus"
-          content="Create Inbound Oracle"
+          content="Create Inbound Subscription"
           as={Link}
-          to="/inboundOracles/create"
+          to="/inboundSubscriptions/create"
         />
       </div>
       <br />
       <Message info size="huge">
         {" "}
-        Click on a listener or a publisher you want to create an oracle with.
+        Click on a provider or a consumer you want to create an subscription
+        with.
       </Message>
       <div>
-        <h2>Smart Contract Listener</h2>
+        <h2>Smart Contract Provider</h2>
         <Card.Group>
-          {smartContractListeners.map((smartContractListener) => (
-            <SmartContractListenerCard
-              smartContractListener={smartContractListener}
+          {smartContractProviders.map((smartContractProvider) => (
+            <SmartContractProviderCard
+              smartContractProvider={smartContractProvider}
             />
           ))}
-          {(!webServiceListeners || webServiceListeners.length === 0) &&
-            (!smartContractListeners ||
-              smartContractListeners.length === 0) && (
+          {(!webServiceProviders || webServiceProviders.length === 0) &&
+            (!smartContractProviders ||
+              smartContractProviders.length === 0) && (
               <Message info>
-                No listeners available. You have to{" "}
+                No providers available. You have to{" "}
                 <Link to="/smartContracts/create">create them first here</Link>!
               </Message>
             )}
@@ -68,15 +68,15 @@ function SmartContracts() {
 
         <br />
         <br />
-        <h2>Web Service Listener</h2>
+        <h2>Web Service Provider</h2>
         <Card.Group>
-          {webServiceListeners.map((webServiceListener) => (
-            <WebServiceListenerCard webServiceListener={webServiceListener} />
+          {webServiceProviders.map((webServiceProvider) => (
+            <WebServiceProviderCard webServiceProvider={webServiceProvider} />
           ))}
         </Card.Group>
-        {(!webServiceListeners || webServiceListeners.length === 0) && (
+        {(!webServiceProviders || webServiceProviders.length === 0) && (
           <Message info>
-            No listeners available. You have to{" "}
+            No providers available. You have to{" "}
             <Link to="/smartContracts/create">create them first here</Link>!
           </Message>
         )}
@@ -84,32 +84,30 @@ function SmartContracts() {
       <br />
       <br />
       <div>
-        <h2>Smart Contract Publisher</h2>
+        <h2>Smart Contract Consumer</h2>
         <Card.Group>
-          {smartContractPublishers.map((smartContractPublisher) => (
-            <SmartContractPublisherCard
-              smartContractPublisher={smartContractPublisher}
+          {smartContractConsumers.map((smartContractConsumer) => (
+            <SmartContractConsumerCard
+              smartContractConsumer={smartContractConsumer}
             />
           ))}
         </Card.Group>
-        {(!smartContractPublishers || smartContractPublishers.length === 0) && (
+        {(!smartContractConsumers || smartContractConsumers.length === 0) && (
           <Message info>
-            No smart contract publishers available. You have to{" "}
+            No smart contract consumers available. You have to{" "}
             <Link to="/smartContracts/create">create them first here</Link>!
           </Message>
         )}
         <br />
         <br />
-        <h2>Web Service Publisher</h2>
+        <h2>Web Service Consumer</h2>
         <Card.Group>
-          {webServicePublishers.map((webServicePublisher) => (
-            <WebServicePublisherCard
-              webServicePublisher={webServicePublisher}
-            />
+          {webServiceConsumers.map((webServiceConsumer) => (
+            <WebServiceConsumerCard webServiceConsumer={webServiceConsumer} />
           ))}
-          {(!webServicePublishers || webServicePublishers.length === 0) && (
+          {(!webServiceConsumers || webServiceConsumers.length === 0) && (
             <Message info>
-              No service publishers available. You have to{" "}
+              No service consumers available. You have to{" "}
               <Link to="/smartContracts/create">create them first here</Link>!
             </Message>
           )}

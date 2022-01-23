@@ -10,20 +10,20 @@ import (
 
 type Event struct {
 	gorm.Model
-	Success     bool
-	OracleID    uint
-	Oracle      Oracle
-	EventValues []EventValue
-	Body        []byte
+	Success        bool
+	SubscriptionID uint
+	Subscription   Subscription
+	EventValues    []EventValue
+	Body           []byte
 }
 
-func CreateEvent(body []byte, oracleID uint) *Event {
+func CreateEvent(body []byte, subscriptionID uint) *Event {
 	db := utils.DBConnection()
 
 	event := &Event{
-		OracleID: oracleID,
-		Success:  false,
-		Body:     body,
+		SubscriptionID: subscriptionID,
+		Success:        false,
+		Body:           body,
 	}
 	db.Create(event)
 	return event
@@ -69,10 +69,10 @@ func (e *Event) GetEventValueByParameterName(eventParameterID uint) string {
 	return eventValue.Value
 }
 
-func (e *Event) ParseEventValues(bodyData map[string]interface{}, listenerPublisherID uint) ([]EventValue, error) {
+func (e *Event) ParseEventValues(bodyData map[string]interface{}, providerConsumerID uint) ([]EventValue, error) {
 	var eventParameters []EventParameter
 	db := utils.DBConnection()
-	db.Find(&eventParameters, "listener_publisher_id = ?", listenerPublisherID)
+	db.Find(&eventParameters, "provider_consumer_id = ?", providerConsumerID)
 	fmt.Println(eventParameters)
 	var eventValues []EventValue
 	for _, eventParameter := range eventParameters {

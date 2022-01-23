@@ -1,8 +1,8 @@
-export function formToAbi(oracles) {
+export function formToAbi(subscriptions) {
   return JSON.stringify(
-    oracles.map((oracle) => {
-      delete oracle.ContractAddress;
-      return oracle;
+    subscriptions.map((subscription) => {
+      delete subscription.ContractAddress;
+      return subscription;
     })
   )
     .replace(/"ContractName":/g, '"name":')
@@ -11,18 +11,21 @@ export function formToAbi(oracles) {
 }
 
 export function parseAbi(abi) {
-  let oracles = [];
+  let subscriptions = [];
   try {
     JSON.parse(abi);
     const parsedAbi = JSON.parse(
       abi.replace(/"name":/g, '"Name":').replace(/"type":/g, '"Type":')
     );
-    oracles = parsedAbi.map((oracle) => {
-      const _oracle = { ...oracle, ContractName: oracle.Name };
-      delete _oracle.Name;
-      return _oracle;
+    subscriptions = parsedAbi.map((subscription) => {
+      const _subscription = {
+        ...subscription,
+        ContractName: subscription.Name,
+      };
+      delete _subscription.Name;
+      return _subscription;
     });
-    return oracles;
+    return subscriptions;
   } catch (err) {
     console.log(err, "No valid abi");
   }

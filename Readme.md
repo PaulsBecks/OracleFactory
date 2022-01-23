@@ -1,5 +1,22 @@
 # OracleFactory
 
+
+## Quickstart
+If you simple want to run the OracleFactory on you machine and Docker is already installed you can run:
+```
+curl -s "https://raw.githubusercontent.com/PaulsBecks/OracleFactory/master/run_docker_containers.sh" | sudo bash
+```
+
+At the current version the code requires root access, but if docker already has root access on your machine you can run:
+```
+curl -s "https://raw.githubusercontent.com/PaulsBecks/OracleFactory/master/run_docker_containers.sh" | bash
+```
+
+This will download and run the backend and frontend.
+
+If you are interested in quickstart the the performance tests, you can execute 
+
+## Longer Start
 To run this project on your local machine make sure docker is installed. You can then choose to run it by compiling this repo and a couple of others or by downloading the docker images and running them.
 
 ```
@@ -18,10 +35,10 @@ docker run -p 3000:3000 -d --name pub-sub-oracle-frontend --network=pub-sub-orac
 You can start an Ethereum testnetwork locally that is connected to the same network as follows.
 
 ```
-docker run --detach -p 8545:8545 -p 7545:7545 --network=pub-sub-oracle-network --name eth-test-net trufflesuite/ganache-cli:latest --accounts 10  --blockTime 2 --seed OracleFramework
+docker run --detach -p 8545:8545 -p 7545:7545 --network=pub-sub-oracle-network --name eth-test-net trufflesuite/ganache-cli:latest --accounts 10  --blockTime 2 --seed SubscriptionFramework
 ```
 
-If you want to deploy the on-chain publish-subscribe oracle manually, you can switch to the `ethereumOnChainOracle` folder and execute `truffle migrate`.
+If you want to deploy the on-chain publish-subscribe oracle manually, you can switch to the `ethereumOnChainSubscription` folder and execute `truffle migrate`.
 
 # Prerequirements
 

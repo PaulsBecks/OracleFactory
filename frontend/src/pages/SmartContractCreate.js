@@ -1,33 +1,33 @@
 import { Tab } from "semantic-ui-react";
 import SmartContractCreateDetail from "../components/SmartContractCreateDetail";
-import WebServiceListenerCreate from "../components/WebServiceListenerCreate";
-import WebServicePublisherCreate from "../components/WebServicePublisherCreate";
+import WebServiceProviderCreate from "../components/WebServiceProviderCreate";
+import WebServiceConsumerCreate from "../components/WebServiceConsumerCreate";
 
 export default function PublishSubscriberCreate() {
   return (
     <div>
-      <h1>Create Listeners and Publishers</h1>
+      <h1>Create Providers and Consumers</h1>
       <Tab
         menu={{ secondary: true, pointing: true }}
         panes={[
           {
-            menuItem: "Web Service Listener",
+            menuItem: "Web Service Provider",
             render: () => (
               <Tab.Pane attached={false}>
-                <WebServiceListenerCreate listener />
+                <WebServiceProviderCreate provider />
               </Tab.Pane>
             ),
           },
           {
-            menuItem: "Web Service Publisher",
+            menuItem: "Web Service Consumer",
             render: () => (
               <Tab.Pane attached={false}>
-                <WebServicePublisherCreate publisher />
+                <WebServiceConsumerCreate consumer />
               </Tab.Pane>
             ),
           },
           {
-            menuItem: "Smart Contract Listener",
+            menuItem: "Smart Contract Provider",
             render: () => (
               <Tab.Pane attached={false}>
                 <SmartContractCreateDetail outbound key="Outbound" />
@@ -35,7 +35,7 @@ export default function PublishSubscriberCreate() {
             ),
           },
           {
-            menuItem: "Smart Contract Publisher",
+            menuItem: "Smart Contract Consumer",
             render: () => (
               <Tab.Pane attached={false}>
                 <SmartContractCreateDetail inbound key="Inbound" />

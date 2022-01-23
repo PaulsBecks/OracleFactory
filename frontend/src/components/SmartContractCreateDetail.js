@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import postData from "../services/postData";
-import { SmartContractPublisherForm } from ".";
+import { SmartContractConsumerForm } from ".";
 import { Button } from "semantic-ui-react";
 import { Link, useHistory } from "react-router-dom";
 
 export default function SmartContractCreate({ fromABI, inbound, outbound }) {
   const history = useHistory();
-  const [smartContractPublisher, setSmartContractPublisher] = useState({
+  const [smartContractConsumer, setSmartContractConsumer] = useState({
     Description: "",
     Name: "",
     Private: true,
     BlockchainName: "Ethereum",
     ContractAddress: "",
     ContractAddressSynonym: "",
-    smartContractPublishers: fromABI
+    smartContractConsumers: fromABI
       ? []
       : [
           {
@@ -27,9 +27,9 @@ export default function SmartContractCreate({ fromABI, inbound, outbound }) {
   const [loading, setLoading] = useState(false);
   return (
     <div>
-      <SmartContractPublisherForm
-        smartContractPublisher={smartContractPublisher}
-        setSmartContractPublisher={setSmartContractPublisher}
+      <SmartContractConsumerForm
+        smartContractConsumer={smartContractConsumer}
+        setSmartContractConsumer={setSmartContractConsumer}
         fromABI={fromABI}
         inbound={inbound}
         outbound={outbound}
@@ -44,46 +44,46 @@ export default function SmartContractCreate({ fromABI, inbound, outbound }) {
         content="Create"
         onClick={async () => {
           setLoading(true);
-          for (const element of smartContractPublisher.smartContractPublishers) {
+          for (const element of smartContractConsumer.smartContractConsumers) {
             let result;
             if (element.Type === "function") {
-              result = await postData(`/smartContractPublishers`, {
-                Name: smartContractPublisher.Name,
-                Description: smartContractPublisher.Description,
-                BlockchainAddress: smartContractPublisher.BlockchainAddress,
-                BlockchainName: smartContractPublisher.BlockchainName,
-                ContractAddress: smartContractPublisher.ContractAddress,
+              result = await postData(`/smartContractConsumers`, {
+                Name: smartContractConsumer.Name,
+                Description: smartContractConsumer.Description,
+                BlockchainAddress: smartContractConsumer.BlockchainAddress,
+                BlockchainName: smartContractConsumer.BlockchainName,
+                ContractAddress: smartContractConsumer.ContractAddress,
                 ContractAddressSynonym:
-                  smartContractPublisher.ContractAddressSynonym,
+                  smartContractConsumer.ContractAddressSynonym,
                 ContractName: element.ContractName,
-                Private: smartContractPublisher.Private,
+                Private: smartContractConsumer.Private,
               });
             } else {
-              result = await postData(`/smartContractListeners`, {
-                Name: smartContractPublisher.Name,
-                Description: smartContractPublisher.Description,
-                BlockchainAddress: smartContractPublisher.BlockchainAddress,
-                BlockchainName: smartContractPublisher.BlockchainName,
-                ContractAddress: smartContractPublisher.ContractAddress,
+              result = await postData(`/smartContractProviders`, {
+                Name: smartContractConsumer.Name,
+                Description: smartContractConsumer.Description,
+                BlockchainAddress: smartContractConsumer.BlockchainAddress,
+                BlockchainName: smartContractConsumer.BlockchainName,
+                ContractAddress: smartContractConsumer.ContractAddress,
                 ContractAddressSynonym:
-                  smartContractPublisher.ContractAddressSynonym,
+                  smartContractConsumer.ContractAddressSynonym,
                 EventName: element.ContractName,
-                Private: smartContractPublisher.Private,
+                Private: smartContractConsumer.Private,
               });
             }
             const smartContract =
               element.Type === "function"
-                ? result.smartContractPublisher
-                : result.smartContractListener;
+                ? result.smartContractConsumer
+                : result.smartContractProvider;
             for (const input of element.inputs) {
               if (element.Type === "function") {
                 await postData(
-                  `/smartContractPublishers/${smartContract.ID}/eventParameters`,
+                  `/smartContractConsumers/${smartContract.ID}/eventParameters`,
                   input
                 );
               } else {
                 await postData(
-                  `/smartContractListeners/${smartContract.ID}/eventParameters`,
+                  `/smartContractProviders/${smartContract.ID}/eventParameters`,
                   input
                 );
               }

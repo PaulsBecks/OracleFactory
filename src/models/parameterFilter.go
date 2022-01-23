@@ -12,8 +12,8 @@ type ParameterFilter struct {
 	EventParameterID uint
 	Filter           Filter
 	FilterID         uint
-	Oracle           Oracle
-	OracleID         uint
+	Subscription     Subscription
+	SubscriptionID   uint
 }
 
 func (p *ParameterFilter) GetFilter() *Filter {

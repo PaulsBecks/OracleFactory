@@ -7,11 +7,11 @@ import (
 
 type EventParameter struct {
 	gorm.Model
-	Name                string
-	Type                string
-	Indexed             bool
-	ListenerPublisherID uint
-	ListenerPublisher   ListenerPublisher
+	Name               string
+	Type               string
+	Indexed            bool
+	ProviderConsumerID uint
+	ProviderConsumer   ProviderConsumer
 }
 
 func (e *EventParameter) String() string {

@@ -41,9 +41,9 @@ func auth(ctx *gin.Context) {
 	}
 }
 
-// @title           Oracle Factory API
+// @title           Subscription Factory API
 // @version         2.0
-// @description     This is the Oracle Factory server.
+// @description     This is the Subscription Factory server.
 
 // @license.name  Apache 2.0
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
@@ -59,54 +59,54 @@ func main() {
 	app.POST("/users/login", routes.Login)
 	app.POST("/users/signup", routes.Register)
 
-	app.POST("/outboundOracles/:outboundOracleId/events", routes.PostOutboundOracleEvent)
-	app.POST("/inboundOracles/:inboundOracleID/events", routes.PostInboundOracleEvent)
-	app.POST("/webServiceListeners/:webServiceListenerID/events", routes.HandleWebServiceListenerEvent)
-	app.POST("/smartContractListeners/:smartContractListenerID/events", routes.HandleSmartContractEvent)
+	app.POST("/outboundSubscriptions/:outboundSubscriptionId/events", routes.PostOutboundSubscriptionEvent)
+	app.POST("/inboundSubscriptions/:inboundSubscriptionID/events", routes.PostInboundSubscriptionEvent)
+	app.POST("/webServiceProviders/:webServiceProviderID/events", routes.HandleWebServiceProviderEvent)
+	app.POST("/smartContractProviders/:smartContractProviderID/events", routes.HandleSmartContractEvent)
 
 	authorized := app.Group("/", auth)
 	{
-		authorized.GET("/outboundOracles", routes.GetOutboundOracles)
-		authorized.GET("/outboundOracles/:outboundOracleId", routes.GetOutboundOracle)
-		authorized.PUT("/outboundOracles/:outboundOracleId", routes.UpdateOutboundOracle)
-		authorized.DELETE("/outboundOracles/:outboundOracleId", routes.DeleteOutboundOracle)
-		authorized.POST("/outboundOracles/:outboundOracleId/start", routes.StartOutboundOracle)
-		authorized.POST("/outboundOracles/:outboundOracleId/stop", routes.StopOutboundOracle)
-		authorized.POST("/outboundOracles", routes.PostOutboundOracle)
+		authorized.GET("/outboundSubscriptions", routes.GetOutboundSubscriptions)
+		authorized.GET("/outboundSubscriptions/:outboundSubscriptionId", routes.GetOutboundSubscription)
+		authorized.PUT("/outboundSubscriptions/:outboundSubscriptionId", routes.UpdateOutboundSubscription)
+		authorized.DELETE("/outboundSubscriptions/:outboundSubscriptionId", routes.DeleteOutboundSubscription)
+		authorized.POST("/outboundSubscriptions/:outboundSubscriptionId/start", routes.StartOutboundSubscription)
+		authorized.POST("/outboundSubscriptions/:outboundSubscriptionId/stop", routes.StopOutboundSubscription)
+		authorized.POST("/outboundSubscriptions", routes.PostOutboundSubscription)
 
-		authorized.GET("/smartContractListeners", routes.GetSmartContractListeners)
-		authorized.POST("/smartContractListeners", routes.PostSmartContractListener)
-		authorized.GET("/smartContractListeners/:smartContractListenerID", routes.GetSmartContractListener)
-		authorized.POST("/smartContractListeners/:smartContractListenerID/eventParameters", routes.PostOutboundEventParameters)
+		authorized.GET("/smartContractProviders", routes.GetSmartContractProviders)
+		authorized.POST("/smartContractProviders", routes.PostSmartContractProvider)
+		authorized.GET("/smartContractProviders/:smartContractProviderID", routes.GetSmartContractProvider)
+		authorized.POST("/smartContractProviders/:smartContractProviderID/eventParameters", routes.PostOutboundEventParameters)
 
-		authorized.GET("/inboundOracles/:inboundOracleId", routes.GetInboundOracle)
-		authorized.PUT("/inboundOracles/:inboundOracleId", routes.UpdateInboundOracle)
-		authorized.GET("/smartContractPublishers/:smartContractPublisherID", routes.GetSmartContractPublisher)
-		authorized.GET("/inboundOracles", routes.GetInboundOracles)
-		authorized.POST("/inboundOracles/:inboundOracleID/start", routes.StartInboundOracle)
-		authorized.POST("/inboundOracles/:inboundOracleID/stop", routes.StopInboundOracle)
-		authorized.POST("/inboundOracles", routes.PostInboundOracle)
+		authorized.GET("/inboundSubscriptions/:inboundSubscriptionId", routes.GetInboundSubscription)
+		authorized.PUT("/inboundSubscriptions/:inboundSubscriptionId", routes.UpdateInboundSubscription)
+		authorized.GET("/smartContractConsumers/:smartContractConsumerID", routes.GetSmartContractConsumer)
+		authorized.GET("/inboundSubscriptions", routes.GetInboundSubscriptions)
+		authorized.POST("/inboundSubscriptions/:inboundSubscriptionID/start", routes.StartInboundSubscription)
+		authorized.POST("/inboundSubscriptions/:inboundSubscriptionID/stop", routes.StopInboundSubscription)
+		authorized.POST("/inboundSubscriptions", routes.PostInboundSubscription)
 
-		authorized.POST("/smartContractPublishers/:smartContractPublisherID/inboundOracles", routes.PostInboundOracle)
-		authorized.POST("/smartContractPublishers/:smartContractPublisherID/eventParameters", routes.PostInboundEventParameters)
-		authorized.GET("/smartContractPublishers", routes.GetSmartContractPublishers)
-		authorized.POST("/smartContractPublishers", routes.PostSmartContractPublisher)
+		authorized.POST("/smartContractConsumers/:smartContractConsumerID/inboundSubscriptions", routes.PostInboundSubscription)
+		authorized.POST("/smartContractConsumers/:smartContractConsumerID/eventParameters", routes.PostInboundEventParameters)
+		authorized.GET("/smartContractConsumers", routes.GetSmartContractConsumers)
+		authorized.POST("/smartContractConsumers", routes.PostSmartContractConsumer)
 
 		authorized.GET("/filters", routes.GetFilters)
 
-		authorized.GET("/oracles/:oracleID/parameterFilters", routes.GetOracleParameterFilters)
-		authorized.POST("/oracles/:oracleID/parameterFilters", routes.PostOracleParameterFilters)
-		authorized.DELETE("/oracles/:oracleID/parameterFilters/:parameterFilterID", routes.DeleteOracleParameterFilter)
+		authorized.GET("/subscriptions/:subscriptionID/parameterFilters", routes.GetSubscriptionParameterFilters)
+		authorized.POST("/subscriptions/:subscriptionID/parameterFilters", routes.PostSubscriptionParameterFilters)
+		authorized.DELETE("/subscriptions/:subscriptionID/parameterFilters/:parameterFilterID", routes.DeleteSubscriptionParameterFilter)
 
-		authorized.GET("/webServiceListeners", routes.GetWebServiceListeners)
-		authorized.GET("/webServiceListeners/:webServiceListenerID", routes.GetWebServiceListener)
-		authorized.POST("/webServiceListeners", routes.PostWebServiceListener)
+		authorized.GET("/webServiceProviders", routes.GetWebServiceProviders)
+		authorized.GET("/webServiceProviders/:webServiceProviderID", routes.GetWebServiceProvider)
+		authorized.POST("/webServiceProviders", routes.PostWebServiceProvider)
 
-		authorized.GET("/webServicePublishers", routes.GetWebServicePublishers)
-		authorized.GET("/webServicePublishers/:webServicePublisherID", routes.GetWebServicePublisher)
-		authorized.POST("/webServicePublishers", routes.PostWebServicePublisher)
+		authorized.GET("/webServiceConsumers", routes.GetWebServiceConsumers)
+		authorized.GET("/webServiceConsumers/:webServiceConsumerID", routes.GetWebServiceConsumer)
+		authorized.POST("/webServiceConsumers", routes.PostWebServiceConsumer)
 
-		authorized.GET("/listenerPublishers/:listenerPublisherID/eventParameters", routes.GetListenerPublisherEventParameters)
+		authorized.GET("/providerConsumers/:providerConsumerID/eventParameters", routes.GetProviderConsumerEventParameters)
 
 		authorized.GET("/user", routes.GetCurrentUserDetail)
 		authorized.PUT("/user", routes.UpdateCurrentUser)

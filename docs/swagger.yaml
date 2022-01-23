@@ -20,275 +20,26 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: This is the Oracle Factory server.
+  description: This is the Subscription Factory server.
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: Oracle Factory API
+  title: Subscription Factory API
   version: "2.0"
 paths:
-  /inboundOracles:
+  /inboundSubscriptions:
     get:
-      description: Retrieve all inbound oracles of a user. This will be called from
-        the frontend, when a user wants to view a list of oracle.
+      description: Retrieve all inbound subscriptions of a user. This will be called
+        from the frontend, when a user wants to view a list of subscription.
       produces:
       - application/json
       responses: {}
-      summary: Retrieves all inbound oracle of a user
+      summary: Retrieves all inbound subscription of a user
       tags:
-      - inboundOracles
+      - inboundSubscriptions
     post:
-      description: Creates an inbound oracle for a user. This service will be called
-        by the frontend to when a user filled out the inbound oracle form.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Creates an inbound oracle for a user
-      tags:
-      - inboundOracles
-  /inboundOracles/{inboundOracleID}:
-    get:
-      description: Retrieve the specified inbound oracle. This will be called from
-        the frontend, when a user wants to view an oracle.
-      parameters:
-      - description: the ID of the inbound oracle you want to retrieve.
-        in: path
-        name: inboundOracleID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses: {}
-      summary: Retrieve an inbound oracle
-      tags:
-      - inboundOracles
-    put:
-      description: Update the specified inbound oracle. This will be called from the
-        frontend, when a user wants to update an oracle.
-      parameters:
-      - description: the ID of the inbound oracle you want to update.
-        in: path
-        name: inboundOracleID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses: {}
-      summary: Update an inbound oracle
-      tags:
-      - inboundOracles
-  /inboundOracles/{inboundOracleID}/start:
-    post:
-      description: Start the specified inbound oracle. This will be called from the
-        frontend, when a user wants to use an oracle for a blockchain conenction.
-      parameters:
-      - description: the ID of the inbound oracle you want to start.
-        in: path
-        name: inboundOracleID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Start an Outbound Oracle
-      tags:
-      - inboundOracles
-  /inboundOracles/{inboundOracleID}/stop:
-    post:
-      description: Stop the specified inbound oracle. This will be called from the
-        frontend, when a user wants to stop an oracle for a blockchain conenction.
-      parameters:
-      - description: the ID of the inbound oracle you want to stop.
-        in: path
-        name: inboundOracleID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Stop an inbound oracle
-      tags:
-      - inboundOracles
-  /outboundOracles:
-    get:
-      description: Retrieve all outbound oracles of a user. This will be called from
-        the frontend, when a user wants to view a list of oracle.
-      produces:
-      - application/json
-      responses: {}
-      summary: Retrieves all outbound oracle of a user
-      tags:
-      - outboundOracles
-    post:
-      description: Creates an outbound oracle for a user. This service will be called
-        by the frontend to when a user filled out the outbound oracle form.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Creates an outbound oracle for a user
-      tags:
-      - outboundOracles
-  /outboundOracles/{outboundOracleID}:
-    get:
-      description: Retrieve the specified outbound oracle. This will be called from
-        the frontend, when a user wants to view an oracle.
-      parameters:
-      - description: the ID of the outbound oracle you want to retrieve.
-        in: path
-        name: outboundOracleID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses: {}
-      summary: Retrieve an outbound oracle
-      tags:
-      - outboundOracles
-    put:
-      description: Update the specified outbound oracle. This will be called from
-        the frontend, when a user wants to update an oracle.
-      parameters:
-      - description: the ID of the outbound oracle you want to update.
-        in: path
-        name: outboundOracleID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses: {}
-      summary: Update an outbound oracle
-      tags:
-      - outboundOracles
-  /outboundOracles/{outboundOracleID}/start:
-    post:
-      description: Start the specified outbound oracle. This will be called from the
-        frontend, when a user wants to use an oracle for a blockchain conenction.
-      parameters:
-      - description: the ID of the outbound oracle you want to start.
-        in: path
-        name: outboundOracleID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Start an Outbound Oracle
-      tags:
-      - outboundOracles
-  /outboundOracles/{outboundOracleID}/stop:
-    post:
-      description: Stop the specified outbound oracle. This will be called from the
-        frontend, when a user wants to stop an oracle for a blockchain conenction.
-      parameters:
-      - description: the ID of the outbound oracle you want to stop.
-        in: path
-        name: outboundOracleID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Stop an outbound oracle
-      tags:
-      - outboundOracles
-  /smartContractListeners:
-    get:
-      description: Retrieves all smart contract listener of the user signed in. This
-        endpoint will be called from the frontend, to display information about all
-        smart contract listeners of the user signed in.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Retrieves all smart contract listener of the user signed in.
-      tags:
-      - smartContractListener
-    post:
-      description: Creates a smart contract listeners for a user. This service will
-        be called by the frontend to when a user filled out the smart contract listener
+      description: Creates an inbound subscription for a user. This service will be
+        called by the frontend to when a user filled out the inbound subscription
         form.
       produces:
       - application/json
@@ -305,17 +56,48 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
-      summary: Creates a smart contract listeners for a user
+      summary: Creates an inbound subscription for a user
       tags:
-      - smartContractListener
-  /smartContractListeners/{smartContractListenerID}:
+      - inboundSubscriptions
+  /inboundSubscriptions/{inboundSubscriptionID}:
     get:
-      description: Retrieves a smart contract listener. This endpoint will be called
-        from the frontend, to display information about a smart contract listener.
+      description: Retrieve the specified inbound subscription. This will be called
+        from the frontend, when a user wants to view an subscription.
       parameters:
-      - description: the ID of the smart contract listener to send data to.
+      - description: the ID of the inbound subscription you want to retrieve.
         in: path
-        name: smartContractListenerID
+        name: inboundSubscriptionID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: Retrieve an inbound subscription
+      tags:
+      - inboundSubscriptions
+    put:
+      description: Update the specified inbound subscription. This will be called
+        from the frontend, when a user wants to update an subscription.
+      parameters:
+      - description: the ID of the inbound subscription you want to update.
+        in: path
+        name: inboundSubscriptionID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: Update an inbound subscription
+      tags:
+      - inboundSubscriptions
+  /inboundSubscriptions/{inboundSubscriptionID}/start:
+    post:
+      description: Start the specified inbound subscription. This will be called from
+        the frontend, when a user wants to use an subscription for a blockchain conenction.
+      parameters:
+      - description: the ID of the inbound subscription you want to start.
+        in: path
+        name: inboundSubscriptionID
         required: true
         type: integer
       produces:
@@ -333,17 +115,312 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
-      summary: Retrieves a smart contract listener
+      summary: Start an Outbound Subscription
       tags:
-      - smartContractListener
-  /smartContractListeners/{smartContractListenerID}/events:
+      - inboundSubscriptions
+  /inboundSubscriptions/{inboundSubscriptionID}/stop:
+    post:
+      description: Stop the specified inbound subscription. This will be called from
+        the frontend, when a user wants to stop an subscription for a blockchain conenction.
+      parameters:
+      - description: the ID of the inbound subscription you want to stop.
+        in: path
+        name: inboundSubscriptionID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Stop an inbound subscription
+      tags:
+      - inboundSubscriptions
+  /outboundSubscriptions:
+    get:
+      description: Retrieve all outbound subscriptions of a user. This will be called
+        from the frontend, when a user wants to view a list of subscription.
+      produces:
+      - application/json
+      responses: {}
+      summary: Retrieves all outbound subscription of a user
+      tags:
+      - outboundSubscriptions
+    post:
+      description: Creates an outbound subscription for a user. This service will
+        be called by the frontend to when a user filled out the outbound subscription
+        form.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Creates an outbound subscription for a user
+      tags:
+      - outboundSubscriptions
+  /outboundSubscriptions/{outboundSubscriptionID}:
+    get:
+      description: Retrieve the specified outbound subscription. This will be called
+        from the frontend, when a user wants to view an subscription.
+      parameters:
+      - description: the ID of the outbound subscription you want to retrieve.
+        in: path
+        name: outboundSubscriptionID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: Retrieve an outbound subscription
+      tags:
+      - outboundSubscriptions
+    put:
+      description: Update the specified outbound subscription. This will be called
+        from the frontend, when a user wants to update an subscription.
+      parameters:
+      - description: the ID of the outbound subscription you want to update.
+        in: path
+        name: outboundSubscriptionID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: Update an outbound subscription
+      tags:
+      - outboundSubscriptions
+  /outboundSubscriptions/{outboundSubscriptionID}/start:
+    post:
+      description: Start the specified outbound subscription. This will be called
+        from the frontend, when a user wants to use an subscription for a blockchain
+        conenction.
+      parameters:
+      - description: the ID of the outbound subscription you want to start.
+        in: path
+        name: outboundSubscriptionID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Start an Outbound Subscription
+      tags:
+      - outboundSubscriptions
+  /outboundSubscriptions/{outboundSubscriptionID}/stop:
+    post:
+      description: Stop the specified outbound subscription. This will be called from
+        the frontend, when a user wants to stop an subscription for a blockchain conenction.
+      parameters:
+      - description: the ID of the outbound subscription you want to stop.
+        in: path
+        name: outboundSubscriptionID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Stop an outbound subscription
+      tags:
+      - outboundSubscriptions
+  /smartContractConsumers:
+    get:
+      description: Retrieves all smart contract consumers for a user. This service
+        will be called by the frontend to retrieve all smart contract consumers of
+        the user signed in.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Retrieves all smart contract consumers for a user
+      tags:
+      - smartContractConsumer
+    post:
+      description: Creates a smart contract consumers for a user. This service will
+        be called by the frontend to when a user filled out the smart contract consumer
+        form.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Creates a smart contract consumers for a user
+      tags:
+      - smartContractConsumer
+  /smartContractConsumers/{smartContractConsumerID}:
+    get:
+      description: Retrieves the smart contract consumer specified. This service will
+        be called by the frontend to retrieve a specific consumers of the user signed
+        in.
+      parameters:
+      - description: the ID of the smart contract consumer to send data to.
+        in: path
+        name: smartContractConsumerID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Retrieves a smart contract consumer for a user
+      tags:
+      - smartContractConsumer
+  /smartContractProviders:
+    get:
+      description: Retrieves all smart contract provider of the user signed in. This
+        endpoint will be called from the frontend, to display information about all
+        smart contract providers of the user signed in.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Retrieves all smart contract provider of the user signed in.
+      tags:
+      - smartContractProvider
+    post:
+      description: Creates a smart contract providers for a user. This service will
+        be called by the frontend to when a user filled out the smart contract provider
+        form.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Creates a smart contract providers for a user
+      tags:
+      - smartContractProvider
+  /smartContractProviders/{smartContractProviderID}:
+    get:
+      description: Retrieves a smart contract provider. This endpoint will be called
+        from the frontend, to display information about a smart contract provider.
+      parameters:
+      - description: the ID of the smart contract provider to send data to.
+        in: path
+        name: smartContractProviderID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Retrieves a smart contract provider
+      tags:
+      - smartContractProvider
+  /smartContractProviders/{smartContractProviderID}/events:
     post:
       description: Handles the event send from a smart contract provider. This endpoint
         will be called from the BLF, that provides data to the artifact.
       parameters:
-      - description: the ID of the smart contract listener to send data to.
+      - description: the ID of the smart contract provider to send data to.
         in: path
-        name: smartContractListenerID
+        name: smartContractProviderID
         required: true
         type: integer
       produces:
@@ -363,81 +440,7 @@ paths:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Handles the event send from a smart contract provider
       tags:
-      - smartContractListener
-  /smartContractPublishers:
-    get:
-      description: Retrieves all smart contract publishers for a user. This service
-        will be called by the frontend to retrieve all smart contract publishers of
-        the user signed in.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Retrieves all smart contract publishers for a user
-      tags:
-      - smartContractPublisher
-    post:
-      description: Creates a smart contract publishers for a user. This service will
-        be called by the frontend to when a user filled out the smart contract publisher
-        form.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Creates a smart contract publishers for a user
-      tags:
-      - smartContractPublisher
-  /smartContractPublishers/{smartContractPublisherID}:
-    get:
-      description: Retrieves the smart contract publisher specified. This service
-        will be called by the frontend to retrieve a specific publishers of the user
-        signed in.
-      parameters:
-      - description: the ID of the smart contract publisher to send data to.
-        in: path
-        name: smartContractPublisherID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Retrieves a smart contract publisher for a user
-      tags:
-      - smartContractPublisher
+      - smartContractProvider
   /user:
     get:
       consumes:
@@ -545,10 +548,10 @@ paths:
       summary: Register User
       tags:
       - users
-  /webServiceListeners:
+  /webServiceConsumers:
     get:
-      description: Retrieves all web service listeners for a user. This service will
-        be called by the frontend to retrieve all web service listeners of the user
+      description: Retrieves all web service consumers for a user. This service will
+        be called by the frontend to retrieve all web service consumers of the user
         signed in.
       produces:
       - application/json
@@ -565,12 +568,12 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
-      summary: Retrieves all web service listeners for a user
+      summary: Retrieves all web service consumers for a user
       tags:
-      - webServiceListener
+      - webServiceConsumer
     post:
-      description: Creates a web service listeners for a user. This service will be
-        called by the frontend to when a user filled out the web service listener
+      description: Creates a web service consumers for a user. This service will be
+        called by the frontend to when a user filled out the web service consumer
         form.
       produces:
       - application/json
@@ -587,18 +590,18 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
-      summary: Creates a web service listeners for a user
+      summary: Creates a web service consumers for a user
       tags:
-      - webServiceListener
-  /webServiceListeners/{webServiceListenerID}:
+      - webServiceConsumer
+  /webServiceConsumers/{webServiceConsumerID}:
     get:
-      description: Retrieves the web service listener specified. This service will
-        be called by the frontend to retrieve a specific listeners of the user signed
+      description: Retrieves the web service consumer specified. This service will
+        be called by the frontend to retrieve a specific consumers of the user signed
         in.
       parameters:
-      - description: the ID of the web service listener to send data to.
+      - description: the ID of the web service consumer to send data to.
         in: path
-        name: webServiceListenerID
+        name: webServiceConsumerID
         required: true
         type: integer
       produces:
@@ -616,17 +619,91 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/responses.ErrorResponse'
-      summary: Retrieves a web service listener for a user
+      summary: Retrieves a web service consumer for a user
       tags:
-      - webServiceListener
-  /webServiceListeners/{webServiceListenerID}/events:
+      - webServiceConsumer
+  /webServiceProviders:
+    get:
+      description: Retrieves all web service providers for a user. This service will
+        be called by the frontend to retrieve all web service providers of the user
+        signed in.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Retrieves all web service providers for a user
+      tags:
+      - webServiceProvider
+    post:
+      description: Creates a web service providers for a user. This service will be
+        called by the frontend to when a user filled out the web service provider
+        form.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Creates a web service providers for a user
+      tags:
+      - webServiceProvider
+  /webServiceProviders/{webServiceProviderID}:
+    get:
+      description: Retrieves the web service provider specified. This service will
+        be called by the frontend to retrieve a specific providers of the user signed
+        in.
+      parameters:
+      - description: the ID of the web service provider to send data to.
+        in: path
+        name: webServiceProviderID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.ErrorResponse'
+      summary: Retrieves a web service provider for a user
+      tags:
+      - webServiceProvider
+  /webServiceProviders/{webServiceProviderID}/events:
     post:
       description: Handles the event send from a web service provider. This endpoint
         will be called from an external service, that provides data to the artifact.
       parameters:
-      - description: the ID of the web service listener to send data to.
+      - description: the ID of the web service provider to send data to.
         in: path
-        name: webServiceListenerID
+        name: webServiceProviderID
         required: true
         type: integer
       produces:
@@ -646,79 +723,5 @@ paths:
             $ref: '#/definitions/responses.ErrorResponse'
       summary: Handles the event send from a web service provider
       tags:
-      - webServiceListener
-  /webServicePublishers:
-    get:
-      description: Retrieves all web service publishers for a user. This service will
-        be called by the frontend to retrieve all web service publishers of the user
-        signed in.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Retrieves all web service publishers for a user
-      tags:
-      - webServicePublisher
-    post:
-      description: Creates a web service publishers for a user. This service will
-        be called by the frontend to when a user filled out the web service publisher
-        form.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Creates a web service publishers for a user
-      tags:
-      - webServicePublisher
-  /webServicePublishers/{webServicePublisherID}:
-    get:
-      description: Retrieves the web service publisher specified. This service will
-        be called by the frontend to retrieve a specific publishers of the user signed
-        in.
-      parameters:
-      - description: the ID of the web service publisher to send data to.
-        in: path
-        name: webServicePublisherID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/responses.ErrorResponse'
-      summary: Retrieves a web service publisher for a user
-      tags:
-      - webServicePublisher
+      - webServiceProvider
 swagger: "2.0"

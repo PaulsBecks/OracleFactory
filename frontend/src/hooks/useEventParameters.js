@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import getData from "../services/getData";
 
-export default function useEventParameters(listenerPublisherID) {
+export default function useEventParameters(providerConsumerID) {
   const [parameters, setParameters] = useState([]);
-  console.log(listenerPublisherID);
+  console.log(providerConsumerID);
 
   async function fetchParameters() {
     const data = await getData(
-      "/listenerPublishers/" + listenerPublisherID + "/eventParameters"
+      "/providerConsumers/" + providerConsumerID + "/eventParameters"
     );
     setParameters(data.eventParameters);
   }
