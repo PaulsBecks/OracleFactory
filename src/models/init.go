@@ -17,18 +17,18 @@ func InitDB() {
 
 	// Check if table exists - if not create it
 	db.AutoMigrate(&EventParameter{},
-		&SmartContractListener{},
+		&SmartContractProvider{},
 		&EventValue{},
-		&OutboundOracle{},
+		&OutboundSubscription{},
 		&EventParameter{},
 		&Event{},
-		&SmartContractPublisher{},
-		&InboundOracle{},
+		&SmartContractConsumer{},
+		&InboundSubscription{},
 		&User{},
 		&Filter{},
 		&ParameterFilter{},
-		&WebServiceListener{},
-		&WebServicePublisher{},
+		&WebServiceProvider{},
+		&WebServiceConsumer{},
 	)
 	InitFilter(db)
 	env := os.Getenv("ENV")
@@ -63,15 +63,15 @@ func initPerformanceTestSetup(db *gorm.DB) {
 	}
 	db.Create(&user)
 
-	// create hyperledger performance test oracles
-	initHyperledgerOracles(db, user)
+	// create hyperledger performance test subscriptions
+	initHyperledgerSubscriptions(db, user)
 
-	// create ethereum performance test oracle
-	initEthereumOracles(db, user)
+	// create ethereum performance test subscription
+	initEthereumSubscriptions(db, user)
 
 }
-func initEthereumOracles(db *gorm.DB, user User) {
-	mintEthereumSmartContractPublisher := user.CreateSmartContractPublisher(
+func initEthereumSubscriptions(db *gorm.DB, user User) {
+	mintEthereumSmartContractConsumer := user.CreateSmartContractConsumer(
 		"Ethereum",
 		"mint",
 		"0xe4EFfB267484Cd790143484de3Bae7fDfbE31F00",
@@ -84,14 +84,14 @@ func initEthereumOracles(db *gorm.DB, user User) {
 			{Name: "amount", Type: "uint256"},
 		},
 	)
-	webServiceListener := user.CreateWebServiceListener(
+	webServiceProvider := user.CreateWebServiceProvider(
 		"Token Give Away",
 		"Continuous stream of receivers and amount of tokens.",
 		true,
 	)
-	user.CreateInboundOracle("Mint tokens on request", mintEthereumSmartContractPublisher.ID, webServiceListener.ID)
+	user.CreateInboundSubscription("Mint tokens on request", mintEthereumSmartContractConsumer.ID, webServiceProvider.ID)
 
-	transferEthereumSmartContractPublisher := user.CreateSmartContractPublisher(
+	transferEthereumSmartContractConsumer := user.CreateSmartContractConsumer(
 		"Ethereum",
 		"transfer",
 		"0xe4EFfB267484Cd790143484de3Bae7fDfbE31F00",
@@ -105,14 +105,14 @@ func initEthereumOracles(db *gorm.DB, user User) {
 		},
 	)
 
-	transferWebServiceListener := user.CreateWebServiceListener(
+	transferWebServiceProvider := user.CreateWebServiceProvider(
 		"Token transferal",
 		"Continuous stream of receivers and amount of tokens.",
 		true,
 	)
-	user.CreateInboundOracle("Transfer tokens on request", transferEthereumSmartContractPublisher.ID, transferWebServiceListener.ID)
+	user.CreateInboundSubscription("Transfer tokens on request", transferEthereumSmartContractConsumer.ID, transferWebServiceProvider.ID)
 
-	ethereumSmartContractListener := user.CreateSmartContractListener(
+	ethereumSmartContractProvider := user.CreateSmartContractProvider(
 		"Ethereum",
 		"Transfer",
 		"0xe4EFfB267484Cd790143484de3Bae7fDfbE31F00",
@@ -126,19 +126,19 @@ func initEthereumOracles(db *gorm.DB, user User) {
 			{Name: "amount", Type: "uint256"},
 		},
 	)
-	webServicePublisher := user.CreateWebServicePublisher("Notify test setup", "Forward data to the test setup endpoint", testUrl, true)
-	outboundOracle := user.CreateOutboundOracle("Outbound Oracle Test", ethereumSmartContractListener.ID, webServicePublisher.ID)
-	outboundOracle.StartOracle()
+	webServiceConsumer := user.CreateWebServiceConsumer("Notify test setup", "Forward data to the test setup endpoint", testUrl, true)
+	outboundSubscription := user.CreateOutboundSubscription("Outbound Subscription Test", ethereumSmartContractProvider.ID, webServiceConsumer.ID)
+	outboundSubscription.StartSubscription()
 }
 
-func initHyperledgerOracles(db *gorm.DB, user User) {
-	hyperledgerSmartContractPublisher := user.CreateSmartContractPublisher(
+func initHyperledgerSubscriptions(db *gorm.DB, user User) {
+	hyperledgerSmartContractConsumer := user.CreateSmartContractConsumer(
 		"Hyperledger",
 		"CreateAsset",
 		"events",
 		"Events",
 		"Create Asset On Hyperledger",
-		"This publisher creates an asset in the events smart contract.",
+		"This consumer creates an asset in the events smart contract.",
 		true,
 		[]NameTypePair{
 			{Name: "ID", Type: "string"},
@@ -148,16 +148,16 @@ func initHyperledgerOracles(db *gorm.DB, user User) {
 			{Name: "AppraisedValue", Type: "int"},
 		},
 	)
-	webServiceListener := user.CreateWebServiceListener("New Assets Endpoint", "This listener receives newly created assets.", true)
-	user.CreateInboundOracle("Hyperledger Inbound Test", hyperledgerSmartContractPublisher.ID, webServiceListener.ID)
+	webServiceProvider := user.CreateWebServiceProvider("New Assets Endpoint", "This provider receives newly created assets.", true)
+	user.CreateInboundSubscription("Hyperledger Inbound Test", hyperledgerSmartContractConsumer.ID, webServiceProvider.ID)
 
-	hyperledgerSmartContractListener := user.CreateSmartContractListener(
+	hyperledgerSmartContractProvider := user.CreateSmartContractProvider(
 		"Hyperledger",
 		"CreateAsset",
 		"events",
 		"Events",
 		"Receive newly created assets on Hyperledger",
-		"This listener waits for newly created assets.",
+		"This provider waits for newly created assets.",
 		true,
 		[]NameTypePair{
 			{Name: "ID", Type: "string"},
@@ -167,7 +167,7 @@ func initHyperledgerOracles(db *gorm.DB, user User) {
 			{Name: "AppraisedValue", Type: "int"},
 		},
 	)
-	webServicePublisher := user.CreateWebServicePublisher("New Assets Publisher", "This publisher forwards newly created assets.", testUrl, true)
-	outboundOracle := user.CreateOutboundOracle("Hyperledger Oubound Test", hyperledgerSmartContractListener.ID, webServicePublisher.ID)
-	outboundOracle.StartOracle()
+	webServiceConsumer := user.CreateWebServiceConsumer("New Assets Consumer", "This consumer forwards newly created assets.", testUrl, true)
+	outboundSubscription := user.CreateOutboundSubscription("Hyperledger Oubound Test", hyperledgerSmartContractProvider.ID, webServiceConsumer.ID)
+	outboundSubscription.StartSubscription()
 }

@@ -5,7 +5,7 @@
   "url": "http://localhost:3000",
   "tests": [{
     "id": "46531dcb-7aed-4210-b630-a9492b808cb0",
-    "name": "Create Oracle",
+    "name": "Create Subscription",
     "commands": [{
       "id": "d5b58a31-46b7-4805-b2f9-e2e7983a6346",
       "comment": "",
@@ -76,15 +76,15 @@
       "id": "32771b5e-a777-4666-a7df-20ff5ced708c",
       "comment": "",
       "command": "click",
-      "target": "linkText=Create Oracle",
+      "target": "linkText=Create Subscription",
       "targets": [
-        ["linkText=Create Oracle", "linkText"],
+        ["linkText=Create Subscription", "linkText"],
         ["css=.primary", "css:finder"],
-        ["xpath=//a[contains(text(),'Create Oracle')]", "xpath:link"],
+        ["xpath=//a[contains(text(),'Create Subscription')]", "xpath:link"],
         ["xpath=//div[@id='root']/div[2]/div/div/a", "xpath:idRelative"],
         ["xpath=//a[contains(@href, '/smartContracts')]", "xpath:href"],
         ["xpath=//div[2]/div/div/a", "xpath:position"],
-        ["xpath=//a[contains(.,'Create Oracle')]", "xpath:innerText"]
+        ["xpath=//a[contains(.,'Create Subscription')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -106,14 +106,14 @@
       "id": "b5332ecb-b3ac-40f6-ab3a-f8c0ba4ea47a",
       "comment": "",
       "command": "click",
-      "target": "linkText=Publisher",
+      "target": "linkText=Consumer",
       "targets": [
-        ["linkText=Publisher", "linkText"],
+        ["linkText=Consumer", "linkText"],
         ["css=.ui > .item:nth-child(2)", "css:finder"],
-        ["xpath=//a[contains(text(),'Publisher')]", "xpath:link"],
+        ["xpath=//a[contains(text(),'Consumer')]", "xpath:link"],
         ["xpath=//div[@id='root']/div[2]/div/div/div/a[2]", "xpath:idRelative"],
         ["xpath=//a[2]", "xpath:position"],
-        ["xpath=//a[contains(.,'Publisher')]", "xpath:innerText"]
+        ["xpath=//a[contains(.,'Consumer')]", "xpath:innerText"]
       ],
       "value": ""
     }, {
@@ -167,7 +167,7 @@
         ["xpath=//div[@id='root']/div[2]/div/div/div[2]/div/div/form/div[3]/div/div/input", "xpath:idRelative"],
         ["xpath=//div[3]/div/div/input", "xpath:position"]
       ],
-      "value": "Test Oracle"
+      "value": "Test Subscription"
     }, {
       "id": "1ed93d09-071a-4d1c-9781-067c526589bf",
       "comment": "",

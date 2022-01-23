@@ -25,7 +25,7 @@ export default function Navbar() {
           to="/"
           style={{ color: "var(--primary-color)", fontSize: "25px" }}
         >
-          Oracle Factory
+          Subscription Factory
         </Link>
         <div>
           <Button

@@ -49,74 +49,74 @@ func UserFromContext(ctx *gin.Context) User {
 	return userInterface.(User)
 }
 
-func (u *User) CreateWebServicePublisher(name string, description string, url string, private bool) WebServicePublisher {
+func (u *User) CreateWebServiceConsumer(name string, description string, url string, private bool) WebServiceConsumer {
 	db := utils.DBConnection()
-	listenerPublisher := ListenerPublisher{
+	providerConsumer := ProviderConsumer{
 		Name:        name,
 		Description: description,
 		Private:     private,
 		UserID:      u.ID,
 		User:        *u,
 	}
-	db.Create(&listenerPublisher)
-	webServicePublisher := WebServicePublisher{
-		ListenerPublisher: listenerPublisher,
-		Url:               url,
+	db.Create(&providerConsumer)
+	webServiceConsumer := WebServiceConsumer{
+		ProviderConsumer: providerConsumer,
+		Url:              url,
 	}
-	db.Create(&webServicePublisher)
-	return webServicePublisher
+	db.Create(&webServiceConsumer)
+	return webServiceConsumer
 }
 
-func (u *User) CreateWebServiceListener(name string, description string, private bool) WebServiceListener {
+func (u *User) CreateWebServiceProvider(name string, description string, private bool) WebServiceProvider {
 	db := utils.DBConnection()
-	listenerPublisher := ListenerPublisher{
+	providerConsumer := ProviderConsumer{
 		Name:        name,
 		Description: description,
 		Private:     private,
 		UserID:      u.ID,
 		User:        *u,
 	}
-	db.Create(&listenerPublisher)
-	webServiceListener := WebServiceListener{
-		ListenerPublisher: listenerPublisher,
+	db.Create(&providerConsumer)
+	webServiceProvider := WebServiceProvider{
+		ProviderConsumer: providerConsumer,
 	}
-	db.Create(&webServiceListener)
-	return webServiceListener
+	db.Create(&webServiceProvider)
+	return webServiceProvider
 }
 
-func (u *User) CreateInboundOracle(name string, smartContractPublisherID, webServiceListenerID uint) InboundOracle {
+func (u *User) CreateInboundSubscription(name string, smartContractConsumerID, webServiceProviderID uint) InboundSubscription {
 	db := utils.DBConnection()
-	ethereumOracle := Oracle{
+	ethereumSubscription := Subscription{
 		Name:   name,
 		UserID: u.ID,
 	}
-	db.Create(&ethereumOracle)
-	inboundOracle := InboundOracle{
-		Oracle:                   ethereumOracle,
-		SmartContractPublisherID: smartContractPublisherID,
-		WebServiceListenerID:     webServiceListenerID,
+	db.Create(&ethereumSubscription)
+	inboundSubscription := InboundSubscription{
+		Subscription:            ethereumSubscription,
+		SmartContractConsumerID: smartContractConsumerID,
+		WebServiceProviderID:    webServiceProviderID,
 	}
-	db.Create(&inboundOracle)
-	return inboundOracle
+	db.Create(&inboundSubscription)
+	return inboundSubscription
 }
 
-func (u *User) CreateOutboundOracle(name string, smartContractListenerID, webServicePublisherID uint) *OutboundOracle {
+func (u *User) CreateOutboundSubscription(name string, smartContractProviderID, webServiceConsumerID uint) *OutboundSubscription {
 	db := utils.DBConnection()
-	oracle := Oracle{
+	subscription := Subscription{
 		Name: name,
 		User: *u,
 	}
-	db.Create(&oracle)
-	outboundOracle := &OutboundOracle{
-		SmartContractListenerID: smartContractListenerID,
-		WebServicePublisherID:   webServicePublisherID,
-		Oracle:                  oracle,
+	db.Create(&subscription)
+	outboundSubscription := &OutboundSubscription{
+		SmartContractProviderID: smartContractProviderID,
+		WebServiceConsumerID:    webServiceConsumerID,
+		Subscription:            subscription,
 	}
-	db.Create(&outboundOracle)
-	return outboundOracle
+	db.Create(&outboundSubscription)
+	return outboundSubscription
 }
 
-func (u *User) CreateSmartContractPublisher(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, publisherName string, description string, private bool, eventParameters []NameTypePair) SmartContractPublisher {
+func (u *User) CreateSmartContractConsumer(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, consumerName string, description string, private bool, eventParameters []NameTypePair) SmartContractConsumer {
 	db := utils.DBConnection()
 	smartContract := SmartContract{
 		BlockchainName:         blockchainName,
@@ -125,31 +125,31 @@ func (u *User) CreateSmartContractPublisher(blockchainName string, eventName str
 		ContractAddressSynonym: contractAddressSynonym,
 	}
 	db.Create(&smartContract)
-	listenerPublisher := ListenerPublisher{
-		Name:        publisherName,
+	providerConsumer := ProviderConsumer{
+		Name:        consumerName,
 		Description: description,
 		Private:     private,
 		UserID:      u.ID,
 		User:        *u,
 	}
-	db.Create(&listenerPublisher)
-	smartContractPublisher := SmartContractPublisher{
-		SmartContract:     smartContract,
-		ListenerPublisher: listenerPublisher,
+	db.Create(&providerConsumer)
+	smartContractConsumer := SmartContractConsumer{
+		SmartContract:    smartContract,
+		ProviderConsumer: providerConsumer,
 	}
-	db.Create(&smartContractPublisher)
+	db.Create(&smartContractConsumer)
 	for _, nameType := range eventParameters {
 		fmt.Println(nameType)
 		eventParameter := EventParameter{
-			Name:                nameType.Name,
-			Type:                nameType.Type,
-			ListenerPublisherID: listenerPublisher.ID,
+			Name:               nameType.Name,
+			Type:               nameType.Type,
+			ProviderConsumerID: providerConsumer.ID,
 		}
 		db.Create(&eventParameter)
 	}
-	return smartContractPublisher
+	return smartContractConsumer
 }
-func (u *User) CreateSmartContractListener(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, listenerName string, description string, private bool, eventParameters []NameTypePair) SmartContractListener {
+func (u *User) CreateSmartContractProvider(blockchainName string, eventName string, contractAddress string, contractAddressSynonym string, providerName string, description string, private bool, eventParameters []NameTypePair) SmartContractProvider {
 	db := utils.DBConnection()
 	smartContract := SmartContract{
 		BlockchainName:         blockchainName,
@@ -158,40 +158,40 @@ func (u *User) CreateSmartContractListener(blockchainName string, eventName stri
 		ContractAddressSynonym: contractAddressSynonym,
 	}
 	db.Create(&smartContract)
-	listenerPublisher := ListenerPublisher{
-		Name:        listenerName,
+	providerConsumer := ProviderConsumer{
+		Name:        providerName,
 		Description: description,
 		Private:     private,
 		UserID:      u.ID,
 		User:        *u,
 	}
-	db.Create(&listenerPublisher)
-	smartContractListener := SmartContractListener{
-		SmartContract:     smartContract,
-		ListenerPublisher: listenerPublisher,
+	db.Create(&providerConsumer)
+	smartContractProvider := SmartContractProvider{
+		SmartContract:    smartContract,
+		ProviderConsumer: providerConsumer,
 	}
-	db.Create(&smartContractListener)
+	db.Create(&smartContractProvider)
 	for _, nameType := range eventParameters {
 		eventParameter := EventParameter{
-			Name:                nameType.Name,
-			Type:                nameType.Type,
-			ListenerPublisherID: listenerPublisher.ID,
+			Name:               nameType.Name,
+			Type:               nameType.Type,
+			ProviderConsumerID: providerConsumer.ID,
 		}
 		db.Create(&eventParameter)
 	}
-	return smartContractListener
+	return smartContractProvider
 }
 
-func (u *User) GetWebServiceListeners() []WebServiceListener {
+func (u *User) GetWebServiceProviders() []WebServiceProvider {
 	db := utils.DBConnection()
-	var webServiceListener []WebServiceListener
-	db.Joins("ListenerPublisher").Find(&webServiceListener, "ListenerPublisher.private = 0 OR ListenerPublisher.user_id = ?", u.ID)
-	return webServiceListener
+	var webServiceProvider []WebServiceProvider
+	db.Joins("ProviderConsumer").Find(&webServiceProvider, "ProviderConsumer.private = 0 OR ProviderConsumer.user_id = ?", u.ID)
+	return webServiceProvider
 }
 
-func (u *User) GetWebServicePublishers() []WebServicePublisher {
+func (u *User) GetWebServiceConsumers() []WebServiceConsumer {
 	db := utils.DBConnection()
-	var webServicePublisher []WebServicePublisher
-	db.Joins("ListenerPublisher").Find(&webServicePublisher, "ListenerPublisher.private = 0 OR ListenerPublisher.user_id = ?", u.ID)
-	return webServicePublisher
+	var webServiceConsumer []WebServiceConsumer
+	db.Joins("ProviderConsumer").Find(&webServiceConsumer, "ProviderConsumer.private = 0 OR ProviderConsumer.user_id = ?", u.ID)
+	return webServiceConsumer
 }

@@ -3,13 +3,15 @@ import getData from "../services/getData";
 import deleteData from "../services/deleteData";
 import postData from "../services/postData";
 
-export default function useParameterFilters(oracleID) {
+export default function useParameterFilters(subscriptionID) {
   const [parameterFilters, setParameterFilters] = useState([]);
   const [loading, setLoading] = useState(false);
 
   async function fetchParameterFilters() {
     setLoading(true);
-    const data = await getData("/oracles/" + oracleID + "/parameterFilters");
+    const data = await getData(
+      "/subscriptions/" + subscriptionID + "/parameterFilters"
+    );
     setParameterFilters(data.parameterFilters);
     setLoading(false);
   }
@@ -17,7 +19,7 @@ export default function useParameterFilters(oracleID) {
   async function createParameterFilter(parameterFilter) {
     setLoading(true);
     await postData(
-      "/oracles/" + oracleID + "/parameterFilters",
+      "/subscriptions/" + subscriptionID + "/parameterFilters",
       parameterFilter
     );
     fetchParameterFilters();
@@ -27,7 +29,10 @@ export default function useParameterFilters(oracleID) {
   async function deleteParameterFilter(parameterFilterId) {
     setLoading(true);
     await deleteData(
-      "/oracles/" + oracleID + "/parameterFilters/" + parameterFilterId
+      "/subscriptions/" +
+        subscriptionID +
+        "/parameterFilters/" +
+        parameterFilterId
     );
     fetchParameterFilters();
     setLoading(false);

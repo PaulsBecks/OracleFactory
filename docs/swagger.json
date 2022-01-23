@@ -1,0 +1,1034 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the Subscription Factory server.",
+        "title": "Subscription Factory API",
+        "contact": {},
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "2.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/inboundSubscriptions": {
+            "get": {
+                "description": "Retrieve all inbound subscriptions of a user. This will be called from the frontend, when a user wants to view a list of subscription.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inboundSubscriptions"
+                ],
+                "summary": "Retrieves all inbound subscription of a user",
+                "responses": {}
+            },
+            "post": {
+                "description": "Creates an inbound subscription for a user. This service will be called by the frontend to when a user filled out the inbound subscription form.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inboundSubscriptions"
+                ],
+                "summary": "Creates an inbound subscription for a user",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/inboundSubscriptions/{inboundSubscriptionID}": {
+            "get": {
+                "description": "Retrieve the specified inbound subscription. This will be called from the frontend, when a user wants to view an subscription.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inboundSubscriptions"
+                ],
+                "summary": "Retrieve an inbound subscription",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the inbound subscription you want to retrieve.",
+                        "name": "inboundSubscriptionID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            },
+            "put": {
+                "description": "Update the specified inbound subscription. This will be called from the frontend, when a user wants to update an subscription.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inboundSubscriptions"
+                ],
+                "summary": "Update an inbound subscription",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the inbound subscription you want to update.",
+                        "name": "inboundSubscriptionID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/inboundSubscriptions/{inboundSubscriptionID}/start": {
+            "post": {
+                "description": "Start the specified inbound subscription. This will be called from the frontend, when a user wants to use an subscription for a blockchain conenction.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inboundSubscriptions"
+                ],
+                "summary": "Start an Outbound Subscription",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the inbound subscription you want to start.",
+                        "name": "inboundSubscriptionID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/inboundSubscriptions/{inboundSubscriptionID}/stop": {
+            "post": {
+                "description": "Stop the specified inbound subscription. This will be called from the frontend, when a user wants to stop an subscription for a blockchain conenction.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "inboundSubscriptions"
+                ],
+                "summary": "Stop an inbound subscription",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the inbound subscription you want to stop.",
+                        "name": "inboundSubscriptionID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/outboundSubscriptions": {
+            "get": {
+                "description": "Retrieve all outbound subscriptions of a user. This will be called from the frontend, when a user wants to view a list of subscription.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "outboundSubscriptions"
+                ],
+                "summary": "Retrieves all outbound subscription of a user",
+                "responses": {}
+            },
+            "post": {
+                "description": "Creates an outbound subscription for a user. This service will be called by the frontend to when a user filled out the outbound subscription form.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "outboundSubscriptions"
+                ],
+                "summary": "Creates an outbound subscription for a user",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/outboundSubscriptions/{outboundSubscriptionID}": {
+            "get": {
+                "description": "Retrieve the specified outbound subscription. This will be called from the frontend, when a user wants to view an subscription.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "outboundSubscriptions"
+                ],
+                "summary": "Retrieve an outbound subscription",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the outbound subscription you want to retrieve.",
+                        "name": "outboundSubscriptionID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            },
+            "put": {
+                "description": "Update the specified outbound subscription. This will be called from the frontend, when a user wants to update an subscription.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "outboundSubscriptions"
+                ],
+                "summary": "Update an outbound subscription",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the outbound subscription you want to update.",
+                        "name": "outboundSubscriptionID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/outboundSubscriptions/{outboundSubscriptionID}/start": {
+            "post": {
+                "description": "Start the specified outbound subscription. This will be called from the frontend, when a user wants to use an subscription for a blockchain conenction.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "outboundSubscriptions"
+                ],
+                "summary": "Start an Outbound Subscription",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the outbound subscription you want to start.",
+                        "name": "outboundSubscriptionID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/outboundSubscriptions/{outboundSubscriptionID}/stop": {
+            "post": {
+                "description": "Stop the specified outbound subscription. This will be called from the frontend, when a user wants to stop an subscription for a blockchain conenction.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "outboundSubscriptions"
+                ],
+                "summary": "Stop an outbound subscription",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the outbound subscription you want to stop.",
+                        "name": "outboundSubscriptionID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/smartContractConsumers": {
+            "get": {
+                "description": "Retrieves all smart contract consumers for a user. This service will be called by the frontend to retrieve all smart contract consumers of the user signed in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "smartContractConsumer"
+                ],
+                "summary": "Retrieves all smart contract consumers for a user",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a smart contract consumers for a user. This service will be called by the frontend to when a user filled out the smart contract consumer form.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "smartContractConsumer"
+                ],
+                "summary": "Creates a smart contract consumers for a user",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/smartContractConsumers/{smartContractConsumerID}": {
+            "get": {
+                "description": "Retrieves the smart contract consumer specified. This service will be called by the frontend to retrieve a specific consumers of the user signed in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "smartContractConsumer"
+                ],
+                "summary": "Retrieves a smart contract consumer for a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the smart contract consumer to send data to.",
+                        "name": "smartContractConsumerID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/smartContractProviders": {
+            "get": {
+                "description": "Retrieves all smart contract provider of the user signed in. This endpoint will be called from the frontend, to display information about all smart contract providers of the user signed in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "smartContractProvider"
+                ],
+                "summary": "Retrieves all smart contract provider of the user signed in.",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a smart contract providers for a user. This service will be called by the frontend to when a user filled out the smart contract provider form.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "smartContractProvider"
+                ],
+                "summary": "Creates a smart contract providers for a user",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/smartContractProviders/{smartContractProviderID}": {
+            "get": {
+                "description": "Retrieves a smart contract provider. This endpoint will be called from the frontend, to display information about a smart contract provider.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "smartContractProvider"
+                ],
+                "summary": "Retrieves a smart contract provider",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the smart contract provider to send data to.",
+                        "name": "smartContractProviderID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/smartContractProviders/{smartContractProviderID}/events": {
+            "post": {
+                "description": "Handles the event send from a smart contract provider. This endpoint will be called from the BLF, that provides data to the artifact.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "smartContractProvider"
+                ],
+                "summary": "Handles the event send from a smart contract provider",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the smart contract provider to send data to.",
+                        "name": "smartContractProviderID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "description": "Retrieve the signed in user. This will be called by the frontend to get all information about the user signed in.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Retrieve signed in user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a user. This will be called from the frontend to update the settings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update User",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "description": "Login a user - get access token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Login User",
+                "parameters": [
+                    {
+                        "description": "auth to register",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.AuthBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/signup": {
+            "post": {
+                "description": "Register a new user - get access token in return.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Register User",
+                "parameters": [
+                    {
+                        "description": "auth to register",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.AuthBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/webServiceConsumers": {
+            "get": {
+                "description": "Retrieves all web service consumers for a user. This service will be called by the frontend to retrieve all web service consumers of the user signed in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "webServiceConsumer"
+                ],
+                "summary": "Retrieves all web service consumers for a user",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a web service consumers for a user. This service will be called by the frontend to when a user filled out the web service consumer form.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "webServiceConsumer"
+                ],
+                "summary": "Creates a web service consumers for a user",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/webServiceConsumers/{webServiceConsumerID}": {
+            "get": {
+                "description": "Retrieves the web service consumer specified. This service will be called by the frontend to retrieve a specific consumers of the user signed in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "webServiceConsumer"
+                ],
+                "summary": "Retrieves a web service consumer for a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the web service consumer to send data to.",
+                        "name": "webServiceConsumerID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/webServiceProviders": {
+            "get": {
+                "description": "Retrieves all web service providers for a user. This service will be called by the frontend to retrieve all web service providers of the user signed in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "webServiceProvider"
+                ],
+                "summary": "Retrieves all web service providers for a user",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a web service providers for a user. This service will be called by the frontend to when a user filled out the web service provider form.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "webServiceProvider"
+                ],
+                "summary": "Creates a web service providers for a user",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/webServiceProviders/{webServiceProviderID}": {
+            "get": {
+                "description": "Retrieves the web service provider specified. This service will be called by the frontend to retrieve a specific providers of the user signed in.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "webServiceProvider"
+                ],
+                "summary": "Retrieves a web service provider for a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the web service provider to send data to.",
+                        "name": "webServiceProviderID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/webServiceProviders/{webServiceProviderID}/events": {
+            "post": {
+                "description": "Handles the event send from a web service provider. This endpoint will be called from an external service, that provides data to the artifact.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "webServiceProvider"
+                ],
+                "summary": "Handles the event send from a web service provider",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "the ID of the web service provider to send data to.",
+                        "name": "webServiceProviderID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "forms.AuthBody": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.TokenResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -4,20 +4,20 @@ import useParameterFilters from "../hooks/useParameterFilters";
 import useParameters from "../hooks/useEventParameters";
 import { useState } from "react";
 
-const createParameterFilterSceleton = (oracleID) => ({
+const createParameterFilterSceleton = (subscriptionID) => ({
   EventParameterID: 0,
   FilterID: 0,
-  OracleID: oracleID,
+  SubscriptionID: subscriptionID,
   Scheme: "",
 });
 
-export default function FilterForm({ listenerPublisherID, oracleID }) {
+export default function FilterForm({ providerConsumerID, subscriptionID }) {
   const [parameterFilters, createParameterFilter, deleteParameterFilter] =
-    useParameterFilters(oracleID);
-  const [parameters] = useParameters(listenerPublisherID);
+    useParameterFilters(subscriptionID);
+  const [parameters] = useParameters(providerConsumerID);
   const [filters] = useFilters();
   const [newParameterFilter, setNewParameterFilter] = useState(
-    createParameterFilterSceleton(oracleID)
+    createParameterFilterSceleton(subscriptionID)
   );
 
   console.log(parameters);
@@ -57,7 +57,7 @@ export default function FilterForm({ listenerPublisherID, oracleID }) {
             </Table.Body>
           </Table>
         ) : (
-          <p>No filters set for this oracle yet.</p>
+          <p>No filters set for this subscription yet.</p>
         )}
         <Form>
           <Form.Group widths="3">
@@ -112,7 +112,9 @@ export default function FilterForm({ listenerPublisherID, oracleID }) {
           icon="plus"
           onClick={async () => {
             await createParameterFilter(newParameterFilter);
-            setNewParameterFilter(createParameterFilterSceleton(oracleID));
+            setNewParameterFilter(
+              createParameterFilterSceleton(subscriptionID)
+            );
           }}
         />
       </Segment>

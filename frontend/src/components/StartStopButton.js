@@ -2,18 +2,18 @@ import { Button } from "semantic-ui-react";
 
 export default function StartStopButton({
   loading,
-  oracleStarted,
-  stopOracle,
-  startOracle,
+  subscriptionStarted,
+  stopSubscription,
+  startSubscription,
 }) {
   return (
     <Button
       basic
       fluid
       loading={loading}
-      content={oracleStarted ? "Stop Oracle" : "Start Oracle"}
-      color={oracleStarted ? "negative" : "positive"}
-      onClick={oracleStarted ? stopOracle : startOracle}
+      content={subscriptionStarted ? "Stop Subscription" : "Start Subscription"}
+      color={subscriptionStarted ? "negative" : "positive"}
+      onClick={subscriptionStarted ? stopSubscription : startSubscription}
     />
   );
 }

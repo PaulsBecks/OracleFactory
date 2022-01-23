@@ -1,13 +1,16 @@
-import useOutboundOracles from "../hooks/useOutboundOracles";
-import useInboundOracles from "../hooks/useInboundOracles";
+import useOutboundSubscriptions from "../hooks/useOutboundSubscriptions";
+import useInboundSubscriptions from "../hooks/useInboundSubscriptions";
 import { Link } from "react-router-dom";
-import { InboundOracleTable, OutboundOracleTable } from "../components";
+import {
+  InboundSubscriptionTable,
+  OutboundSubscriptionTable,
+} from "../components";
 import { Button, Message } from "semantic-ui-react";
 import useUser from "../hooks/useUser";
 
 function Home() {
-  const [outboundOracles] = useOutboundOracles();
-  const [inboundOracles] = useInboundOracles();
+  const [outboundSubscriptions] = useOutboundSubscriptions();
+  const [inboundSubscriptions] = useInboundSubscriptions();
   const [user] = useUser();
   console.log(user);
   return (
@@ -17,7 +20,7 @@ function Home() {
           basic
           primary
           icon="plus"
-          content="Create Oracle"
+          content="Create Subscription"
           as={Link}
           to="/smartContracts"
         />
@@ -27,20 +30,24 @@ function Home() {
         <Message warning>
           You did not yet complete your{" "}
           <Link to="/settings">ethereum connection settings</Link>. You have to
-          enter your credentials before you can create oracles.
+          enter your credentials before you can create subscriptions.
         </Message>
       )}
-      {outboundOracles && outboundOracles.length > 0 && (
+      {outboundSubscriptions && outboundSubscriptions.length > 0 && (
         <div>
-          <h2>Outbound Oracles</h2>
-          <OutboundOracleTable outboundOracles={outboundOracles} />
+          <h2>Outbound Subscriptions</h2>
+          <OutboundSubscriptionTable
+            outboundSubscriptions={outboundSubscriptions}
+          />
         </div>
       )}
       <br />
-      {inboundOracles && inboundOracles.length > 0 && (
+      {inboundSubscriptions && inboundSubscriptions.length > 0 && (
         <div>
-          <h2>Inbound Oracles</h2>
-          <InboundOracleTable inboundOracles={inboundOracles} />
+          <h2>Inbound Subscriptions</h2>
+          <InboundSubscriptionTable
+            inboundSubscriptions={inboundSubscriptions}
+          />
         </div>
       )}
     </div>

@@ -8,7 +8,12 @@ const prod = {
 
 let config = prod;
 
-if (process.env.NODE_ENV === "PROD") {
+console.log(process.env);
+if (process.env.NODE_ENV === "PROD" || process.env.REACT_APP_ENV === "PROD") {
+  let envUrl = process.env.REACT_APP_BASE_URL;
+  if (envUrl && envUrl !== "") {
+    prod["BASE_URL"] = envUrl;
+  }
   config = prod;
 }
 

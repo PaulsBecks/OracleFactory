@@ -21,15 +21,15 @@ There is one on-chain service called Crypto Kitties where you can breed, buy and
 
 This means, integrating smart contracts into workflow automation is difficult. But other computer programs, called oracles, can create a bridge between smart contract and off-chain programs. There are two kind of oracles that are particularly interesting to us. Push-based inbound oracles and push-based outbound oracles, which I will call for simplicity just inbound and outbound from now on. 
 
-Inbound Oracles receive some data from an off-chain program and will forward this data to a on-chain smart contract service, as displayed in the graphic below.
+Inbound Subscriptions receive some data from an off-chain program and will forward this data to a on-chain smart contract service, as displayed in the graphic below.
 
-Outbound Oracle go the other way they listen to events created by smart-contracts and will forward the data to an off-chain program, also shown in the graphic below.
+Outbound Subscription go the other way they listen to events created by smart-contracts and will forward the data to an off-chain program, also shown in the graphic below.
 
-![](Inbound-Outbound-Oracle.png)
+![](Inbound-Outbound-Subscription.png)
 
-You can see, that the oracle always contains a listener and a publisher. If we want to use a smart contract as a provider we need to create an outbound oracle. If the smart contract should be a consumer, we create an inbound oracle.
+You can see, that the oracle always contains a provider and a consumer. If we want to use a smart contract as a provider we need to create an outbound oracle. If the smart contract should be a consumer, we create an inbound oracle.
 
-In our example this could look like this: a new cat is born in the Crypto Kitties smart contract -> this is registered by a smart contract listener of an outbound oracle -> web service publisher sends it to workflow -> workflow contacts spotify to play the song.
+In our example this could look like this: a new cat is born in the Crypto Kitties smart contract -> this is registered by a smart contract provider of an outbound oracle -> web service consumer sends it to workflow -> workflow contacts spotify to play the song.
 
 But also the other way around could be possible. Where a smart contract acts as a consumer. For example let's say you want to transfer a cat to your brother when he sends you an email. Then you could use GMail as a provider and an inbound oracle as the consumer.
 
@@ -51,29 +51,29 @@ Go to Zapier https://zapier.com and log in with the credentials provided and nav
 1. The Zap "Test 2", create an inbound oracle that consumes the events of this worflow.
 
 
-### Creating Listeners and Publishers
+### Creating Providers and Consumers
 1. In zap Test 1, what would you need to change to let the outbound oracle you created in step 6 be used as a provider in this workflow
 
 1. Create an account and connect it to the Ethereum
 blockchain with the following credentials:
     * Ethereum Private Key: 0x34567ab1289efb761298732.
     * Ethereum Gateway: wss://infura.com/ws/v3/hfjdksafehuka
-1. Create a smart contract listener for the
+1. Create a smart contract provider for the
 crypto kitties birth event.
     * Smart Contract Address: 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d
     * Contract Address Synonym: Crypto Kitties
     * Event Name: Birth
     * Parameters:
         owner of type address,  kittyId of type uint256, matronId of type uint256 ,  sireId of type uint256 and genes of type uint256
-1. Create a smart contract publisher for
+1. Create a smart contract consumer for
 the given smart method:
     * Smart Contract Address: 0x06012c8cf97BEaD5deAe237070F9587f8E7A266d
     * Contract Address Synonym: Crypto Kitties
     * Method Name: Transfer
     * Parameters:
         _to of type address, _tokenId of type uint256
-1. Create a web service listener to trigger transfering an kitty
-1. Create a web service publisher with
+1. Create a web service provider to trigger transfering an kitty
+1. Create a web service consumer with
 that will publish data to a workflow to play Glorious on Spotify.
     * URL: https://hooks.zapier.com/hooks/catch/1796279/b1239873
 
