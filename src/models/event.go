@@ -66,7 +66,6 @@ func (e *Event) GetEventValueByParameterName(eventParameterID uint) string {
 	db := utils.DBConnection()
 	var eventValue EventValue
 	db.Find(&eventValue, "event_parameter_id = ?", eventParameterID)
-	fmt.Println(eventValue.Value, eventParameterID)
 	return eventValue.Value
 }
 
@@ -74,7 +73,6 @@ func (e *Event) ParseEventValues(bodyData map[string]interface{}, providerConsum
 	var eventParameters []EventParameter
 	db := utils.DBConnection()
 	db.Find(&eventParameters, "provider_consumer_id = ?", providerConsumerID)
-	fmt.Println(eventParameters)
 	var eventValues []EventValue
 	for _, eventParameter := range eventParameters {
 		v := bodyData[eventParameter.Name]

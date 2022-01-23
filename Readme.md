@@ -2,14 +2,15 @@
 
 
 ## Quickstart
-If you simple want to run the OracleFactory on you machine and Docker is already installed you can run:
+If you simple want to run the OracleFactory on you machine and Docker is already installed you can run the following command. Replace `<the-base-url-of-the-backend>` with the URL of the backend. If you run it on your local machine that would be `http://localhost:8080` if you run it on a server with IP 1.2.3.4 than `http://1.2.3.4:8080` etc.
+
 ```
-curl -s "https://raw.githubusercontent.com/PaulsBecks/OracleFactory/master/run_docker_containers.sh" | sudo bash
+curl -s "https://raw.githubusercontent.com/PaulsBecks/OracleFactory/master/run_docker_containers.sh" | sudo bash -s -- <the-base-url-of-the-backend>
 ```
 
 At the current version the code requires root access, but if docker already has root access on your machine you can run:
 ```
-curl -s "https://raw.githubusercontent.com/PaulsBecks/OracleFactory/master/run_docker_containers.sh" | bash
+curl -s "https://raw.githubusercontent.com/PaulsBecks/OracleFactory/master/run_docker_containers.sh" | bash -s -- <the-base-url-of-the-backend>
 ```
 
 This will download and run the backend and frontend.

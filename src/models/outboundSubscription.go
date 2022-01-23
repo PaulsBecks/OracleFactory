@@ -118,7 +118,6 @@ func (o *OutboundSubscription) StopSubscription() error {
 		"docker",
 		"stop",
 		o.DockerContainer)
-	fmt.Println(cmd.Args)
 	out, err := cmd.Output()
 	fmt.Println("INFO: " + string(out))
 	if err == nil {

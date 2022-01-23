@@ -43,7 +43,7 @@ frontend-build:
 	cd ./frontend; docker build -t "paulsbecks/pub-sub-oracle-frontend" .; cd ..
 
 frontend-start:
-	docker run --detach -p 3000:3000 --network=$(network_name) --name oracle-factory-frontend paulsbecks/pub-sub-oracle-frontend
+	docker run --detach -p 3000:3000 --network=$(network_name) --name oracle-factory-frontend paulsbecks/pub-sub-oracle-frontend 
 
 frontend-stop:
 	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="paulsbecks/pub-sub-oracle-frontend" --format="{{.ID}}"))

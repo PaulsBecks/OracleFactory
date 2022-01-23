@@ -208,7 +208,6 @@ func (s *SmartContractConsumer) CreateHyperledgerTransaction(user *User, event *
 	for _, eventValue := range event.GetEventValues() {
 		parameters = append(parameters, eventValue.Value)
 	}
-	fmt.Println(parameters)
 
 	wallet := gateway.NewInMemoryWallet()
 	wallet.Put("appUser", gateway.NewX509Identity(organizationName, string(cert), string(key)))

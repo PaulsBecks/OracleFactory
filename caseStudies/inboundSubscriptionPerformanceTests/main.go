@@ -69,7 +69,6 @@ func (p *PerformanceTestRun) timeEvent(worker int) {
 	}
 	elapsed := time.Since(start)
 	measurement := EventMeasurement{latency: elapsed.Seconds(), success: true, workerID: worker}
-	fmt.Println(start.String(), worker)
 	p.mu.Lock()
 	p.latencies = append(p.latencies, measurement)
 	p.mu.Unlock()
