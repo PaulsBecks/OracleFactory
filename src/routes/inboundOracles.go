@@ -27,6 +27,12 @@ func PostInboundOracleEvent(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{})
 }
 
+// GetInboundOracles godoc
+// @Summary      Retrieves all inbound oracle of a user
+// @Description  Retrieve all inbound oracles of a user. This will be called from the frontend, when a user wants to view a list of oracle.
+// @Tags         inboundOracles
+// @Produce      json
+// @Router       /inboundOracles [get]
 func GetInboundOracles(ctx *gin.Context) {
 	user := models.UserFromContext(ctx)
 	db := utils.DBConnection()
@@ -37,6 +43,13 @@ func GetInboundOracles(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"inboundOracles": inboundOracles})
 }
 
+// GetInboundOracle godoc
+// @Summary      Retrieve an inbound oracle
+// @Description  Retrieve the specified inbound oracle. This will be called from the frontend, when a user wants to view an oracle.
+// @Tags         inboundOracles
+// @Param		 inboundOracleID path int true "the ID of the inbound oracle you want to retrieve."
+// @Produce      json
+// @Router       /inboundOracles/{inboundOracleID} [get]
 func GetInboundOracle(ctx *gin.Context) {
 	id := ctx.Param("inboundOracleId")
 	db := utils.DBConnection()
@@ -50,6 +63,13 @@ func GetInboundOracle(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"inboundOracle": inboundOracle})
 }
 
+// UpdateInboundOracle godoc
+// @Summary      Update an inbound oracle
+// @Description  Update the specified inbound oracle. This will be called from the frontend, when a user wants to update an oracle.
+// @Tags         inboundOracles
+// @Param		 inboundOracleID path int true "the ID of the inbound oracle you want to update."
+// @Produce      json
+// @Router       /inboundOracles/{inboundOracleID} [put]
 func UpdateInboundOracle(ctx *gin.Context) {
 	id := ctx.Param("inboundOracleId")
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
@@ -75,6 +95,16 @@ func UpdateInboundOracle(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"inboundOracle": inboundOracle})
 }
 
+// StartInboundOracle godoc
+// @Summary      Start an Outbound Oracle
+// @Description  Start the specified inbound oracle. This will be called from the frontend, when a user wants to use an oracle for a blockchain conenction.
+// @Tags         inboundOracles
+// @Param		 inboundOracleID path int true "the ID of the inbound oracle you want to start."
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /inboundOracles/{inboundOracleID}/start [post]
 func StartInboundOracle(ctx *gin.Context) {
 	id := ctx.Param("inboundOracleID")
 	inboundOracle, err := models.GetInboundOracleByID(id)
@@ -86,6 +116,16 @@ func StartInboundOracle(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"msg": "Oracle got started successfully."})
 }
 
+// StopInboundOracle godoc
+// @Summary      Stop an inbound oracle
+// @Description  Stop the specified inbound oracle. This will be called from the frontend, when a user wants to stop an oracle for a blockchain conenction.
+// @Tags         inboundOracles
+// @Param		 inboundOracleID path int true "the ID of the inbound oracle you want to stop."
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /inboundOracles/{inboundOracleID}/stop [post]
 func StopInboundOracle(ctx *gin.Context) {
 	id := ctx.Param("inboundOracleID")
 	inboundOracle, err := models.GetInboundOracleByID(id)
@@ -97,6 +137,15 @@ func StopInboundOracle(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"msg": "Oracle got stopped successfully."})
 }
 
+// PostInboundOracle godoc
+// @Summary      Creates an inbound oracle for a user
+// @Description  Creates an inbound oracle for a user. This service will be called by the frontend to when a user filled out the inbound oracle form.
+// @Tags         inboundOracles
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /inboundOracles [post]
 func PostInboundOracle(ctx *gin.Context) {
 	var inboundOracleBody forms.InboundOracleBody
 	if err := ctx.ShouldBind(&inboundOracleBody); err != nil || !inboundOracleBody.Valid() {

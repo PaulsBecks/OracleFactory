@@ -189,7 +189,7 @@ func main() {
 	startServer()
 	test := &PerformanceTest{
 		outputFileName:  "test.csv",
-		oracleEndpoint:  "http://localhost:8080/outboundOracles/2/events",
+		oracleEndpoint:  "http://localhost:8080/smartContractListeners/2/events",
 		body:            `{"receiver":"0x40536521353F9f4120A589C9ddDEB6188EF61922","amount":0}`,
 		keyVariableName: "amount",
 	}

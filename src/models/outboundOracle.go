@@ -95,7 +95,7 @@ func (o *OutboundOracle) StartOracle() error {
 		"run",
 		"-d",
 		"--network=oracle-factory-network",
-		"oracle_blueprint",
+		"paulsbecks/blf-outbound-oracle",
 		"/bin/bash",
 		"-c",
 		copyFilesToContainerCommand+"cat manifest.bloql; java -jar Blockchain-Logging-Framework/target/blf-cmd.jar extract manifest.bloql")

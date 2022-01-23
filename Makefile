@@ -20,7 +20,7 @@ docker-stop:
 docker-update: docker-stop docker docker-start
 
 oracle-blueprint:
-	docker build --no-cache -t "oracle_blueprint" ./oracleBlueprint
+	docker build --no-cache -t "paulsbecks/blf-outbound-oracle" ./oracleBlueprint
 
 eth-testnet:
 	docker run --detach -p 8545:8545 -p 7545:7545 --network=$(network_name) --name eth-test-net trufflesuite/ganache-cli:latest --accounts 10 --blockTime 2 --seed OracleFramework
@@ -40,13 +40,13 @@ fmt:
 	go fmt ./...
 
 frontend-build:
-	cd ./frontend; docker build -t "paulsbecks/pub-sub-oracle_frontend" .; cd ..
+	cd ./frontend; docker build -t "paulsbecks/pub-sub-oracle-frontend" .; cd ..
 
 frontend-start:
-	docker run --detach -p 3000:3000 --network=$(network_name) --name oracle-factory-frontend paulsbecks/pub-sub-oracle_frontend
+	docker run --detach -p 3000:3000 --network=$(network_name) --name oracle-factory-frontend paulsbecks/pub-sub-oracle-frontend
 
 frontend-stop:
-	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="paulsbecks/pub-sub-oracle_frontend" --format="{{.ID}}"))
+	docker rm $$(docker stop $$(docker ps -a -q --filter ancestor="paulsbecks/pub-sub-oracle-frontend" --format="{{.ID}}"))
 
 frontend-update: frontend-stop frontend-build frontend-start
 
@@ -82,3 +82,8 @@ performance-test:
 	echo "Performance test started in background"
 
 setup-and-test: test-setup performance-test
+
+push:
+	docker push paulsbecks/pub-sub-oracle
+	docker push paulsbecks/pub-sub-oracle-frontend
+	docker push paulsbecks/blf-outbound-oracle

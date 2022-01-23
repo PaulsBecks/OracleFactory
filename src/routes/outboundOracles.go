@@ -15,6 +15,12 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+// GetOutboundOracles godoc
+// @Summary      Retrieves all outbound oracle of a user
+// @Description  Retrieve all outbound oracles of a user. This will be called from the frontend, when a user wants to view a list of oracle.
+// @Tags         outboundOracles
+// @Produce      json
+// @Router       /outboundOracles [get]
 func GetOutboundOracles(ctx *gin.Context) {
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
 	if err != nil {
@@ -31,6 +37,13 @@ func GetOutboundOracles(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"outboundOracles": oracles})
 }
 
+// GetOutboundOracle godoc
+// @Summary      Retrieve an outbound oracle
+// @Description  Retrieve the specified outbound oracle. This will be called from the frontend, when a user wants to view an oracle.
+// @Tags         outboundOracles
+// @Param		 outboundOracleID path int true "the ID of the outbound oracle you want to retrieve."
+// @Produce      json
+// @Router       /outboundOracles/{outboundOracleID} [get]
 func GetOutboundOracle(ctx *gin.Context) {
 	id := ctx.Param("outboundOracleId")
 	i, err := strconv.Atoi(id)
@@ -53,6 +66,13 @@ func GetOutboundOracle(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"outboundOracle": outboundOracle})
 }
 
+// UpdateOutboundOracle godoc
+// @Summary      Update an outbound oracle
+// @Description  Update the specified outbound oracle. This will be called from the frontend, when a user wants to update an oracle.
+// @Tags         outboundOracles
+// @Param		 outboundOracleID path int true "the ID of the outbound oracle you want to update."
+// @Produce      json
+// @Router       /outboundOracles/{outboundOracleID} [put]
 func UpdateOutboundOracle(ctx *gin.Context) {
 	id := ctx.Param("outboundOracleId")
 	outboundOracle, err := models.GetOutboundOracleById(id)
@@ -79,7 +99,7 @@ func DeleteOutboundOracle(ctx *gin.Context) {
 	ctx.JSON(http.StatusNotImplemented, gin.H{"body": "Hi there, deletion is not implemented yet!"})
 }
 
-// StartOuboundOracle godoc
+// StartOutboundOracle godoc
 // @Summary      Start an Outbound Oracle
 // @Description  Start the specified outbound oracle. This will be called from the frontend, when a user wants to use an oracle for a blockchain conenction.
 // @Tags         outboundOracles
@@ -156,4 +176,29 @@ func PostOutboundOracleEvent(ctx *gin.Context) {
 
 	webServicePublisher := outboundOracle.GetWebServicePublisher()
 	webServicePublisher.Publish(*event)
+}
+
+// PostOutboundOracle godoc
+// @Summary      Creates an outbound oracle for a user
+// @Description  Creates an outbound oracle for a user. This service will be called by the frontend to when a user filled out the outbound oracle form.
+// @Tags         outboundOracles
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /outboundOracles [post]
+func PostOutboundOracle(ctx *gin.Context) {
+	var outboundOraclePostBody forms.OutboundOraclePostBody
+	if err := ctx.ShouldBind(&outboundOraclePostBody); err != nil || !outboundOraclePostBody.Valid() {
+		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid body send!"})
+		return
+	}
+
+	user := models.UserFromContext(ctx)
+	outboundOracle := user.CreateOutboundOracle(
+		outboundOraclePostBody.Oracle.Name,
+		outboundOraclePostBody.SmartContractListenerID,
+		outboundOraclePostBody.WebServicePublisherID,
+	)
+	ctx.JSON(http.StatusOK, gin.H{"outboundOracle": outboundOracle})
 }

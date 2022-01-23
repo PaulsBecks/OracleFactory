@@ -62,6 +62,7 @@ func main() {
 	app.POST("/outboundOracles/:outboundOracleId/events", routes.PostOutboundOracleEvent)
 	app.POST("/inboundOracles/:inboundOracleID/events", routes.PostInboundOracleEvent)
 	app.POST("/webServiceListeners/:webServiceListenerID/events", routes.HandleWebServiceListenerEvent)
+	app.POST("/smartContractListeners/:smartContractListenerID/events", routes.HandleSmartContractEvent)
 
 	authorized := app.Group("/", auth)
 	{

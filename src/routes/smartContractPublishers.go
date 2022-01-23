@@ -13,6 +13,15 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+// PostSmartContractPublisher godoc
+// @Summary      Creates a smart contract publishers for a user
+// @Description  Creates a smart contract publishers for a user. This service will be called by the frontend to when a user filled out the smart contract publisher form.
+// @Tags         smartContractPublisher
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /smartContractPublishers [post]
 func PostSmartContractPublisher(ctx *gin.Context) {
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
 	if err != nil {
@@ -53,6 +62,16 @@ func PostSmartContractPublisher(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"smartContractPublisher": smartContractPublisher})
 }
 
+// GetSmartContractPublisher godoc
+// @Summary      Retrieves a smart contract publisher for a user
+// @Description  Retrieves the smart contract publisher specified. This service will be called by the frontend to retrieve a specific publishers of the user signed in.
+// @Tags         smartContractPublisher
+// @Param		 smartContractPublisherID path int true "the ID of the smart contract publisher to send data to."
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /smartContractPublishers/{smartContractPublisherID} [get]
 func GetSmartContractPublisher(ctx *gin.Context) {
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
 	if err != nil {
@@ -82,6 +101,15 @@ func GetSmartContractPublisher(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"smartContractPublisher": smartContractPublisher, "inboundOracles": inboundOracles})
 }
 
+// GetSmartContractPublishers godoc
+// @Summary      Retrieves all smart contract publishers for a user
+// @Description  Retrieves all smart contract publishers for a user. This service will be called by the frontend to retrieve all smart contract publishers of the user signed in.
+// @Tags         smartContractPublisher
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /smartContractPublishers [get]
 func GetSmartContractPublishers(ctx *gin.Context) {
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
 	if err != nil {

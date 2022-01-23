@@ -6,6 +6,7 @@ import (
 
 	"github.com/PaulsBecks/OracleFactory/src/utils"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 const (
@@ -20,6 +21,13 @@ type SmartContractListener struct {
 	ListenerPublisherID uint
 	ListenerPublisher   ListenerPublisher
 	OutboundOracles     []OutboundOracle
+}
+
+func GetSmartContractListenerByID(ID uint) *SmartContractListener {
+	db := utils.DBConnection()
+	var smartContractListener *SmartContractListener
+	db.Preload(clause.Associations).Find(&smartContractListener, ID)
+	return smartContractListener
 }
 
 func (o *SmartContractListener) GetSmartContract() *SmartContract {

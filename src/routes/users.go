@@ -13,12 +13,32 @@ import (
 	"gorm.io/gorm"
 )
 
+// GetCurrentUserDetail godoc
+// @Summary      Retrieve signed in user
+// @Description  Retrieve the signed in user. This will be called by the frontend to get all information about the user signed in.
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  responses.TokenResponse
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /user [get]
 func GetCurrentUserDetail(ctx *gin.Context) {
 	userInterface, _ := ctx.Get("user")
 	user, _ := userInterface.(models.User)
 	ctx.JSON(http.StatusOK, gin.H{"user": user})
 }
 
+// UpdateCurrentUser godoc
+// @Summary      Update User
+// @Description  Update a user. This will be called from the frontend to update the settings
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  responses.TokenResponse
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /user [put]
 func UpdateCurrentUser(ctx *gin.Context) {
 	userInterface, _ := ctx.Get("user")
 	user, _ := userInterface.(models.User)

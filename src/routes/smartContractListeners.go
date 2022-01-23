@@ -1,7 +1,9 @@
 package routes
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 
@@ -13,6 +15,54 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+// HandleSmartContractListenerEvent godoc
+// @Summary      Handles the event send from a smart contract provider
+// @Description  Handles the event send from a smart contract provider. This endpoint will be called from the BLF, that provides data to the artifact.
+// @Tags         smartContractListener
+// @Param		 smartContractListenerID path int true "the ID of the smart contract listener to send data to."
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /smartContractListeners/{smartContractListenerID}/events [post]
+func HandleSmartContractEvent(ctx *gin.Context) {
+	id := ctx.Param("smartContractListenerID")
+	i, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid listener id!"})
+		return
+	}
+	fmt.Println(id, i)
+	smartContractListener := models.GetSmartContractListenerByID(uint(i))
+
+	data, _ := ioutil.ReadAll(ctx.Request.Body)
+	var bodyData map[string]interface{}
+	if err := json.Unmarshal(data, &bodyData); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"msg": err.Error()})
+		return
+	}
+	fmt.Println(smartContractListener)
+	for _, outboundOracle := range smartContractListener.OutboundOracles {
+		fmt.Println(outboundOracle)
+		event := models.CreateEvent(data, outboundOracle.GetOracle().ID)
+		event.ParseEventValues(bodyData, outboundOracle.GetSmartContractListener().ListenerPublisherID)
+
+		webServicePublisher := outboundOracle.GetWebServicePublisher()
+		webServicePublisher.Publish(*event)
+	}
+}
+
+// GetSmartContractListener godoc
+// @Summary      Retrieves a smart contract listener
+// @Description  Retrieves a smart contract listener. This endpoint will be called from the frontend, to display information about a smart contract listener.
+// @Tags         smartContractListener
+// @Param		 smartContractListenerID path int true "the ID of the smart contract listener to send data to."
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /smartContractListeners/{smartContractListenerID} [get]
 func GetSmartContractListener(ctx *gin.Context) {
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
 	if err != nil {
@@ -41,6 +91,15 @@ func GetSmartContractListener(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"smartContractListener": smartContractListener})
 }
 
+// GetSmartContractListeners godoc
+// @Summary      Retrieves all smart contract listener of the user signed in.
+// @Description  Retrieves all smart contract listener of the user signed in. This endpoint will be called from the frontend, to display information about all smart contract listeners of the user signed in.
+// @Tags         smartContractListener
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /smartContractListeners [get]
 func GetSmartContractListeners(ctx *gin.Context) {
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
 	if err != nil {
@@ -59,22 +118,15 @@ func GetSmartContractListeners(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"smartContractListeners": smartContractListeners})
 }
 
-func PostOutboundOracle(ctx *gin.Context) {
-	var outboundOraclePostBody forms.OutboundOraclePostBody
-	if err := ctx.ShouldBind(&outboundOraclePostBody); err != nil || !outboundOraclePostBody.Valid() {
-		ctx.JSON(http.StatusBadRequest, gin.H{"body": "No valid body send!"})
-		return
-	}
-
-	user := models.UserFromContext(ctx)
-	outboundOracle := user.CreateOutboundOracle(
-		outboundOraclePostBody.Oracle.Name,
-		outboundOraclePostBody.SmartContractListenerID,
-		outboundOraclePostBody.WebServicePublisherID,
-	)
-	ctx.JSON(http.StatusOK, gin.H{"outboundOracle": outboundOracle})
-}
-
+// PostSmartContractListener godoc
+// @Summary      Creates a smart contract listeners for a user
+// @Description  Creates a smart contract listeners for a user. This service will be called by the frontend to when a user filled out the smart contract listener form.
+// @Tags         smartContractListener
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /smartContractListeners [post]
 func PostSmartContractListener(ctx *gin.Context) {
 	db, err := gorm.Open(sqlite.Open("./OracleFactory.db"), &gorm.Config{})
 	if err != nil {

@@ -10,6 +10,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// HandleWebServiceListenerEvent godoc
+// @Summary      Handles the event send from a web service provider
+// @Description  Handles the event send from a web service provider. This endpoint will be called from an external service, that provides data to the artifact.
+// @Tags         webServiceListener
+// @Param		 webServiceListenerID path int true "the ID of the web service listener to send data to."
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /webServiceListeners/{webServiceListenerID}/events [post]
 func HandleWebServiceListenerEvent(ctx *gin.Context) {
 	webServiceListenerID := ctx.Param("webServiceListenerID")
 	webServiceListener, err := models.GetWebServiceListenerByID(webServiceListenerID)
@@ -21,12 +31,31 @@ func HandleWebServiceListenerEvent(ctx *gin.Context) {
 	webServiceListener.HandleEvent(data)
 }
 
+// GetWebServiceListeners godoc
+// @Summary      Retrieves all web service listeners for a user
+// @Description  Retrieves all web service listeners for a user. This service will be called by the frontend to retrieve all web service listeners of the user signed in.
+// @Tags         webServiceListener
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /webServiceListeners [get]
 func GetWebServiceListeners(ctx *gin.Context) {
 	user := models.UserFromContext(ctx)
 	webServiceListeners := user.GetWebServiceListeners()
 	ctx.JSON(http.StatusOK, gin.H{"webServiceListeners": webServiceListeners})
 }
 
+// GetWebServiceListener godoc
+// @Summary      Retrieves a web service listener for a user
+// @Description  Retrieves the web service listener specified. This service will be called by the frontend to retrieve a specific listeners of the user signed in.
+// @Tags         webServiceListener
+// @Param		 webServiceListenerID path int true "the ID of the web service listener to send data to."
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /webServiceListeners/{webServiceListenerID} [get]
 func GetWebServiceListener(ctx *gin.Context) {
 	webServiceListenerID := ctx.Param("webServiceListenerID")
 	// add check whether this is the right user
@@ -40,6 +69,15 @@ func GetWebServiceListener(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"webServiceListener": webServiceListener})
 }
 
+// PostWebServiceListener godoc
+// @Summary      Creates a web service listeners for a user
+// @Description  Creates a web service listeners for a user. This service will be called by the frontend to when a user filled out the web service listener form.
+// @Tags         webServiceListener
+// @Produce      json
+// @Success      200 {string} string "ok"
+// @Failure      400  {object}  responses.ErrorResponse
+// @Failure      500  {object}  responses.ErrorResponse
+// @Router       /webServiceListeners [post]
 func PostWebServiceListener(ctx *gin.Context) {
 	user := models.UserFromContext(ctx)
 	var eventParameterBody forms.WebServiceListenerBody
