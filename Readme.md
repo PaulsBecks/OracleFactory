@@ -59,7 +59,7 @@ sudo sh ./install.sh
 
 ## Interface documentation
 
-You can find more information about the interfaces by starting the oracle factory locally and visiting http://localhost:8080/swagger/index.html
+You can find more information about the interfaces by starting the oracle factory locally and visiting http://localhost:8080/swagger/index.html or you can visit https://oracles.work/api/swagger/index.html.
 
 To update the swagger documentation run
 
