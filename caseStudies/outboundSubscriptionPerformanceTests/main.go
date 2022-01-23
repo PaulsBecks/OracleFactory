@@ -146,7 +146,6 @@ func (p *PerformanceTestRun) handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Error occured %v", err)
 		return
 	}
-	fmt.Println(workerID, event)
 	measurement := p.events[intWorkerID]
 	measurement.latency = stop.Sub(measurement.start).Seconds()
 
