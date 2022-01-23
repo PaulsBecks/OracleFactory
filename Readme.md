@@ -31,7 +31,7 @@ docker run -p 3000:3000 -d --name pub-sub-oracle-frontend --network=pub-sub-orac
 ```
 
 
-# Ethereum Testnet
+## Ethereum Testnet
 
 You can start an Ethereum testnetwork locally that is connected to the same network as follows.
 
@@ -41,7 +41,7 @@ docker run --detach -p 8545:8545 -p 7545:7545 --network=pub-sub-oracle-network -
 
 If you want to deploy the on-chain publish-subscribe oracle manually, you can switch to the `ethereumOnChainSubscription` folder and execute `truffle migrate`.
 
-# Prerequirements
+## Developer Prerequirements
 
 To develop and run the different components locally a bunch of thing need to be installed
 
@@ -57,7 +57,7 @@ Install requirements on ubuntu by running
 sudo sh ./install.sh
 ```
 
-# Interface documentation
+## Interface documentation
 
 You can find more information about the interfaces by starting the oracle factory locally and visiting http://localhost:8080/swagger/index.html
 
