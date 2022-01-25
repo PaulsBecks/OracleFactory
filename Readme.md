@@ -30,6 +30,11 @@ docker run -p 8080:8080 -d --name pub-sub-oracle --network=pub-sub-oracle-networ
 docker run -p 3000:3000 -d --name pub-sub-oracle-frontend --network=pub-sub-oracle-network paulsbecks/pub-sub-oracle-frontend
 ```
 
+## From Binary
+
+```
+make docker frontend-build oracle-blueprint docker-network docker-start frontend-start
+```
 
 ## Ethereum Testnet
 
@@ -94,4 +99,9 @@ Next, to execute the tests run
 
 ```
 make performance-test
+```
+
+To prune all created docker networks, images and containers run
+```
+make prune-test-setup
 ```
